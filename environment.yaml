@@ -32,6 +32,7 @@ channels:
   - r
 dependencies:
   - bioconductor-geoquery
+  - bioconductor-rsubread
   - bioconductor-sradb
   - r-base
   - r-dplyr
