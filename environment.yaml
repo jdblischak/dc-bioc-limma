@@ -25,12 +25,12 @@
 
 name: dc
 channels:
-  - jdblischak
   - bioconda
   - conda-forge
   - defaults
   - r
 dependencies:
+  - bioconductor-biomart
   - bioconductor-geoquery
   - bioconductor-rsubread
   - bioconductor-sradb
