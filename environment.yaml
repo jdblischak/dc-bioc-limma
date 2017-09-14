@@ -31,7 +31,9 @@ channels:
   - r
 dependencies:
   - bioconductor-biomart
+  - bioconductor-edger
   - bioconductor-geoquery
+  - bioconductor-limma
   - bioconductor-rsubread
   - bioconductor-sradb
   - r-base

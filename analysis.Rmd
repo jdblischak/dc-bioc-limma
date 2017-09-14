@@ -1,0 +1,60 @@
+---
+title: "Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, message=FALSE}
+library("edgeR")
+```
+
+Import
+
+```{r import}
+counts <- readDGE(files = Sys.glob("/project2/gilad/jdblischak/dc/counts/*"))
+```
+
+Inspect
+
+```{r inspect}
+class(counts)
+dim(counts)
+head(colnames(counts))
+str(counts)
+```
+
+Clean up
+
+```{r clean-up}
+samples <- basename(colnames(counts))
+colnames(counts) <- samples
+counts$samples$group <- samples
+counts$samples
+```
+
+Standardize
+
+```{r standardize}
+counts$samples$lib.size
+counts_cpm <- cpm(counts, log = TRUE)
+```
+
+Filter genes
+
+```{r filter-genes}
+plotDensities(counts_cpm, legend = FALSE)
+counts_filtered <- counts[rowMeans(counts_cpm) > 0, , keep.lib.sizes = FALSE]
+counts_filtered_cpm <- cpm(counts_filtered, log = TRUE)
+plotDensities(counts_filtered_cpm, legend = FALSE)
+```
+
+Dimension reduction
+
+```{r dimension-reduction}
+plotMDS(counts_filtered_cpm)
+plotMDS(counts_filtered_cpm, gene.selection = "common")
+plotMDS(counts_filtered_cpm, dim.plot = c(3, 4))
+```
