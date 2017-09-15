@@ -1,0 +1,243 @@
+Ch 3: Exploratory data analysis
+========================================================
+author: John Blischak
+date: 2017-09-15
+width: 1440
+height: 900
+
+Importing the gene counts
+========================================================
+incremental: true
+
+At the end of Ch. 2, we had counted the number of reads per gene for each of the
+12 samples.
+
+```
+data/
+└── counts
+    ├── con1.txt
+    ├── con2.txt
+    ├── con3.txt
+    ├── con4.txt
+    ├── exgf1.txt
+    ├── exgf2.txt
+    ├── exgf3.txt
+    ├── exgf4.txt
+    ├── gf1.txt
+    ├── gf2.txt
+    ├── gf3.txt
+    └── gf4.txt
+```
+
+To explore the data, we need to import all 12 files into R. We'll build up the
+import command in stages.
+
+Globbing filenames
+========================================================
+incremental: true
+
+We could type each of the 12 filenames manually, but that would be tedious and
+error-prone. Instead, we can use a glob pattern to select all the files. In R,
+this is done with the function `Sys.glob`.
+
+```{r glob-ex}
+# Obtain the filenames of all the germ-free (gf) samples
+Sys.glob("data/counts/gf*")
+```
+
+**Challenge:** Pass a pattern to `Sys.glob` to obtain all 12 filenames.
+
+readDGE
+========================================================
+incremental: true
+
+To combine all the counts from all 12 samples into a unified data set, we can
+use the function `readDGE` (DGE stands for Digital Gene Expression) from the
+Bioconductor package `edgeR`. Its first argument is a vector of filenames to
+import, which we will supply with our call to `Sys.glob`.
+
+```{r readDGE}
+library("edgeR")
+counts <- readDGE(files = Sys.glob("data/counts/*"))
+```
+
+`readDGE` does not return the counts data as the typical R data frame. Inspect
+`counts` using functions such as `class`, `dim`, `str`, `names`,  etc. to
+understand how the data is stored.
+
+Inspecting an object
+========================================================
+incremental: false
+
+**Challenge:** Which of the following statements is true?
+
+1. `counts` is an object of class DGE. It contains a data frame named `samples` with 12 rows and 4 columns and a data frame called `counts` with 21,948 rows and 12 columns.
+1. `counts` is an object of class DGEList. It contains a data frame named `samples` with 12 rows and 4 columns and a numeric matrix called `counts` with 21,948 rows and 12 columns.
+1. `counts` is an object of class DGEList. It contains a data frame with 21,948 rows and 12 columns.
+
+DGEList
+========================================================
+incremental: true
+
+A DGEList object contains a data frame called `samples` and a numeric matrix
+called `counts`. `counts$counts` contains the gene counts.
+
+```{r}
+counts$counts[1:2, 1:2]
+```
+
+The column names contain the path to data files. This is unnecessarily verbose.
+Also, if we can remove this, the column names would correspond to our sample
+names.
+
+DGEList
+========================================================
+incremental: true
+
+To strip the path from the column names, we can use the function `basename`.
+This function removes the preceding directories from the file path.
+
+```{r basename}
+(sample_names <- basename(colnames(counts$counts)))
+```
+
+**Challenge:** Update the column names of `counts$counts` to be `sample_names`.
+```{r echo=FALSE}
+colnames(counts$counts) <- sample_names
+```
+
+samples
+========================================================
+incremental: true
+
+Next let's explore the data frame `samples`.
+
+```{r samples}
+head(counts$samples)
+```
+
+**Challenge**: Update `group` to be `sample_names`.
+```{r echo=FALSE}
+counts$samples$group <- sample_names
+```
+
+lib.size
+========================================================
+incremental: true
+
+The column `lib.size` is especially important. Gene counts from an RNA-seq
+experiment are **not** on an absolute scale. No two samples will have the same
+number of total reads sequenced. The total number of reads is often referred to
+as the "library size".
+
+```{r}
+head(counts$samples$lib.size)
+```
+
+**Challenge:** What's the difference in library size between the sample with the
+largest library size and the sample with the smallest library size?
+
+```{r include=FALSE}
+max(counts$samples$lib.size) - min(counts$samples$lib.size)
+```
+
+Counts per million (cpm)
+========================================================
+incremental: true
+
+In order to compare the gene expression levels across samples, we have to
+standardize the counts. We can use the `edgeR` function `cpm` to calculate the
+**c**ounts **p**er **m**illion, i.e. the number of counts for a given gene
+divided by the library size of that particular sample.
+
+<!-- As an analogy, imagine trying to determine the fastest car from a data set that -->
+<!-- only contained the distance traveled. Without knowing how much time it to took -->
+<!-- to travel that distance, it is impossible to determine. -->
+
+```{r}
+counts_cpm <- cpm(counts, log = TRUE)
+```
+
+Note that we take the log of the cpm values here to improve the visualizations
+in the next step.
+
+plotDensities
+========================================================
+incremental: true
+
+Now that the gene expression levels have been standardized, we can visualize the
+distribution of each sample. To do this, we can use the function `plotDensities`
+from the Bioconductor package `limma` (which was automatically loaded when we
+loaded `edgeR` earlier).
+
+```{r densities-pre-filter, fig.align='center'}
+plotDensities(counts_cpm, legend = FALSE)
+```
+
+Remove lowly expressed genes
+========================================================
+incremental: true
+
+To focus the analysis on those genes that are expressed in the prefrontal cortex
+tissue, we can remove any genes with a mean log2 cpm less than zero.
+
+```{r}
+genes_keep <- rowMeans(counts_cpm) > 0
+sum(genes_keep)
+counts_filtered <- counts[genes_keep, , keep.lib.sizes = FALSE]
+```
+
+**Challenge:** Standardize the filtered counts and save the result as
+`counts_filtered_cpm`. Don't forget to log-transform the values.
+
+```{r echo=FALSE}
+counts_filtered_cpm <- cpm(counts_filtered, log = TRUE)
+```
+
+Visualizing the filtered data
+========================================================
+incremental: true
+
+After removing lowly expressed genes, we have a nice unimodal distribution of
+gene expression levels for each sample.
+
+```{r fig.align='center'}
+plotDensities(counts_filtered_cpm, legend = FALSE)
+```
+
+Dimension reduction
+========================================================
+incremental: true
+
+Dimension reduction techniques (e.g. principal components analysis and
+multidimensional scaling) are useful for exploring the sources of variation in a
+multidimensional data set. Instead of trying to visualize the differences in all
+genes between samples, dimension reduction techniques identify the largest
+sources of variation in a data set. This enables us to visualize the
+relationships between samples in only two dimensions.
+
+Below is a nice explanation of principal components analysis from [Risso et al.,
+2014][risso2014]. For context, there experiment measured 21,559 genes for 128
+samples.
+
+> The principal components are orthogonal linear combinations of the original
+21,559- dimensional gene expression profiles, with successively maximal variance
+across the 128 samples, that is, the first principal component is the weighted
+average of the 21,559 gene expression measures that provides the most separation
+between the 128 samples.
+
+[risso2014]: https://www.ncbi.nlm.nih.gov/pubmed/25150836
+
+plotMDS
+========================================================
+incremental: true
+
+To perform dimension reduction, we can use the function `plotMDS` from `limma`.
+It has default settings that are optimized for genomics experiments.
+
+```{r plotMDS, fig.align='center', fig.width=16, fig.height=8}
+plotMDS(counts_filtered_cpm, cex = 2)
+```
+
+<!-- Note that the sample names are used because we modified them with `basename` -->
+<!-- above. -->

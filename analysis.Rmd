@@ -14,7 +14,7 @@ library("edgeR")
 Import
 
 ```{r import}
-counts <- readDGE(files = Sys.glob("/project2/gilad/jdblischak/dc/counts/*"))
+counts <- readDGE(files = Sys.glob("data/counts/*"))
 ```
 
 Inspect
