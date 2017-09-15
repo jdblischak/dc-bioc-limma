@@ -1,11 +1,11 @@
 Ch 3: Exploratory data analysis
 ========================================================
 author: John Blischak
-date: 2017-09-15
+date: `r Sys.Date()`
 width: 1440
 height: 900
 
-Importing the gene counts
+Combining the gene counts
 ========================================================
 incremental: true
 
@@ -47,7 +47,7 @@ Sys.glob("data/counts/gf*")
 
 **Challenge:** Pass a pattern to `Sys.glob` to obtain all 12 filenames.
 
-readDGE
+Importing the gene counts with readDGE
 ========================================================
 incremental: true
 
@@ -75,7 +75,7 @@ incremental: false
 1. `counts` is an object of class DGEList. It contains a data frame named `samples` with 12 rows and 4 columns and a numeric matrix called `counts` with 21,948 rows and 12 columns.
 1. `counts` is an object of class DGEList. It contains a data frame with 21,948 rows and 12 columns.
 
-DGEList
+Exploring the gene counts
 ========================================================
 incremental: true
 
@@ -86,11 +86,11 @@ called `counts`. `counts$counts` contains the gene counts.
 counts$counts[1:2, 1:2]
 ```
 
-The column names contain the path to data files. This is unnecessarily verbose.
-Also, if we can remove this, the column names would correspond to our sample
-names.
+The column names contain the path to the data files. This is unnecessarily
+verbose. Also, if we can remove this, the column names would correspond to our
+sample names.
 
-DGEList
+Renaming samples
 ========================================================
 incremental: true
 
@@ -106,7 +106,7 @@ This function removes the preceding directories from the file path.
 colnames(counts$counts) <- sample_names
 ```
 
-samples
+Explore the sample-level data
 ========================================================
 incremental: true
 
@@ -116,12 +116,14 @@ Next let's explore the data frame `samples`.
 head(counts$samples)
 ```
 
-**Challenge**: Update `group` to be `sample_names`.
+**Challenge**: Add a column called "names" to `counts$samples` that contains the
+values in  `sample_names`.
+
 ```{r echo=FALSE}
-counts$samples$group <- sample_names
+counts$samples$names <- sample_names
 ```
 
-lib.size
+Library size
 ========================================================
 incremental: true
 
@@ -159,85 +161,6 @@ counts_cpm <- cpm(counts, log = TRUE)
 ```
 
 Note that we take the log of the cpm values here to improve the visualizations
-in the next step.
+in later steps.
 
-plotDensities
-========================================================
-incremental: true
-
-Now that the gene expression levels have been standardized, we can visualize the
-distribution of each sample. To do this, we can use the function `plotDensities`
-from the Bioconductor package `limma` (which was automatically loaded when we
-loaded `edgeR` earlier).
-
-```{r densities-pre-filter, fig.align='center'}
-plotDensities(counts_cpm, legend = FALSE)
-```
-
-Remove lowly expressed genes
-========================================================
-incremental: true
-
-To focus the analysis on those genes that are expressed in the prefrontal cortex
-tissue, we can remove any genes with a mean log2 cpm less than zero.
-
-```{r}
-genes_keep <- rowMeans(counts_cpm) > 0
-sum(genes_keep)
-counts_filtered <- counts[genes_keep, , keep.lib.sizes = FALSE]
-```
-
-**Challenge:** Standardize the filtered counts and save the result as
-`counts_filtered_cpm`. Don't forget to log-transform the values.
-
-```{r echo=FALSE}
-counts_filtered_cpm <- cpm(counts_filtered, log = TRUE)
-```
-
-Visualizing the filtered data
-========================================================
-incremental: true
-
-After removing lowly expressed genes, we have a nice unimodal distribution of
-gene expression levels for each sample.
-
-```{r fig.align='center'}
-plotDensities(counts_filtered_cpm, legend = FALSE)
-```
-
-Dimension reduction
-========================================================
-incremental: true
-
-Dimension reduction techniques (e.g. principal components analysis and
-multidimensional scaling) are useful for exploring the sources of variation in a
-multidimensional data set. Instead of trying to visualize the differences in all
-genes between samples, dimension reduction techniques identify the largest
-sources of variation in a data set. This enables us to visualize the
-relationships between samples in only two dimensions.
-
-Below is a nice explanation of principal components analysis from [Risso et al.,
-2014][risso2014]. For context, there experiment measured 21,559 genes for 128
-samples.
-
-> The principal components are orthogonal linear combinations of the original
-21,559- dimensional gene expression profiles, with successively maximal variance
-across the 128 samples, that is, the first principal component is the weighted
-average of the 21,559 gene expression measures that provides the most separation
-between the 128 samples.
-
-[risso2014]: https://www.ncbi.nlm.nih.gov/pubmed/25150836
-
-plotMDS
-========================================================
-incremental: true
-
-To perform dimension reduction, we can use the function `plotMDS` from `limma`.
-It has default settings that are optimized for genomics experiments.
-
-```{r plotMDS, fig.align='center', fig.width=16, fig.height=8}
-plotMDS(counts_filtered_cpm, cex = 2)
-```
-
-<!-- Note that the sample names are used because we modified them with `basename` -->
-<!-- above. -->
+<!-- Caused by a few highly expressed genes results in  long right tail (positive skew) -->

@@ -1,0 +1,87 @@
+audition-extra
+========================================================
+author: John Blischak
+date: `r Sys.Date()`
+width: 1440
+height: 900
+
+plotDensities
+========================================================
+incremental: true
+
+Now that the gene expression levels have been standardized, we can visualize the
+distribution of each sample. To do this, we can use the function `plotDensities`
+from the Bioconductor package `limma` (which was automatically loaded when we
+loaded `edgeR` earlier).
+
+```{r densities-pre-filter, fig.align='center'}
+plotDensities(counts_cpm, legend = FALSE)
+```
+
+Remove lowly expressed genes
+========================================================
+incremental: true
+
+To focus the analysis on those genes that are expressed in the prefrontal cortex
+tissue, we can remove any genes with a mean log2 cpm less than zero.
+
+```{r}
+genes_keep <- rowMeans(counts_cpm) > 0
+sum(genes_keep)
+counts_filtered <- counts[genes_keep, , keep.lib.sizes = FALSE]
+```
+
+**Challenge:** Standardize the filtered counts and save the result as
+`counts_filtered_cpm`. Don't forget to log-transform the values.
+
+```{r echo=FALSE}
+counts_filtered_cpm <- cpm(counts_filtered, log = TRUE)
+```
+
+Visualizing the filtered data
+========================================================
+incremental: true
+
+After removing lowly expressed genes, we have a nice unimodal distribution of
+gene expression levels for each sample.
+
+```{r fig.align='center'}
+plotDensities(counts_filtered_cpm, legend = FALSE)
+```
+
+Dimension reduction
+========================================================
+incremental: true
+
+Dimension reduction techniques (e.g. principal components analysis and
+multidimensional scaling) are useful for exploring the sources of variation in a
+multidimensional data set. Instead of trying to visualize the differences in all
+genes between samples, dimension reduction techniques identify the largest
+sources of variation in a data set. This enables us to visualize the
+relationships between samples in only two dimensions.
+
+Below is a nice explanation of principal components analysis from [Risso et al.,
+2014][risso2014]. For context, there experiment measured 21,559 genes for 128
+samples.
+
+> The principal components are orthogonal linear combinations of the original
+21,559- dimensional gene expression profiles, with successively maximal variance
+across the 128 samples, that is, the first principal component is the weighted
+average of the 21,559 gene expression measures that provides the most separation
+between the 128 samples.
+
+[risso2014]: https://www.ncbi.nlm.nih.gov/pubmed/25150836
+
+plotMDS
+========================================================
+incremental: true
+
+To perform dimension reduction, we can use the function `plotMDS` from `limma`.
+It has default settings that are optimized for genomics experiments.
+
+```{r plotMDS, fig.align='center', fig.width=16, fig.height=8}
+plotMDS(counts_filtered_cpm, cex = 2)
+```
+
+<!-- Note that the sample names are used because we modified them with `basename` -->
+<!-- above. -->
