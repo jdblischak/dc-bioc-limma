@@ -1,7 +1,7 @@
 #!/bin/bash
 
 bam_dir=/project2/gilad/jdblischak/dc/bam
-counts_dir=/project2/gilad/jdblischak/dc/counts
+counts_dir=data/counts
 exons=/project2/gilad/jdblischak/dc/genome/exons.saf
 
 mkdir -p $counts_dir
