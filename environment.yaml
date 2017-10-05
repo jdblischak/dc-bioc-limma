@@ -39,5 +39,6 @@ dependencies:
   - r-base
   - r-dplyr
   - r-stringr
+  - r-upsetr
   - sra-tools
 

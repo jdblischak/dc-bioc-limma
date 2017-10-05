@@ -58,3 +58,36 @@ plotMDS(counts_filtered_cpm)
 plotMDS(counts_filtered_cpm, gene.selection = "common")
 plotMDS(counts_filtered_cpm, dim.plot = c(3, 4))
 ```
+
+limma+voom pipeline
+
+```{r limma}
+library("stringr")
+y <- DGEList(counts = counts_filtered)
+y <- calcNormFactors(y)
+condition <- str_extract(samples, "[a-z]+")
+design <- model.matrix(~0 + condition)
+colnames(design) <- str_replace(colnames(design), "condition", "")
+v <- voom(y, design)
+fit <- lmFit(v, design)
+cont_mat <- makeContrasts(gf.con = gf - con,
+                          exgf.con = exgf - con,
+                          exgf.gf = exgf - gf,
+                          levels = design)
+fit2 <- contrasts.fit(fit, contrasts = cont_mat)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
+```
+
+Venn Diagram using `limma::vennDiagram`
+
+```{r vennDiagram}
+vennDiagram(results)
+```
+
+Venn Diagram using UpSetR
+
+```{r upset}
+library("UpSetR")
+upset(as.data.frame(abs(results)))
+```
