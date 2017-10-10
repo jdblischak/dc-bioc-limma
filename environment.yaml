@@ -30,6 +30,7 @@ channels:
   - defaults
   - r
 dependencies:
+  - bioconductor-biobase
   - bioconductor-biomart
   - bioconductor-edger
   - bioconductor-geoquery
