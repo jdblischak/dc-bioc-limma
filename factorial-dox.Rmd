@@ -24,6 +24,7 @@ library("dplyr")
 library("GEOquery")
 options('download.file.method.GEOquery' = 'wget')
 library("limma")
+library("stringr")
 library("UpSetR")
 ```
 
@@ -32,7 +33,7 @@ eset_file <- "factorial-dox.rds"
 if (file.exists(eset_file)) {
   eset <- readRDS(eset_file)
 } else {
-  eset <- getGEO("GSE40289", GSEMatrix = TRUE, getGPL = FALSE)[[1]]
+  eset <- getGEO("GSE40289", GSEMatrix = TRUE, getGPL = TRUE)[[1]]
   saveRDS(eset, file = "factorial-dox.rds")
 }
 ```
@@ -48,17 +49,37 @@ table(pData(eset)$characteristics_ch1.4)
 levels(pData(eset)$description)
 ```
 
-Create nice metadata columns.
+Create nice phenotype data columns.
 
 ```{r}
 pdata_orig <- pData(eset)
-data_new <- data.frame(title = pdata_orig$title, stringsAsFactors = FALSE)
-data_new <- mutate(data_new,
+pdata_new <- data.frame(title = pdata_orig$title, stringsAsFactors = FALSE)
+pdata_new <- mutate(pdata_new,
                    genotype = ifelse(grepl("WT", title), "WT", "Tob2b"),
                    treatment = ifelse(grepl("PBS", title), "PBS", "Dox"),
                    timepoint = ifelse(grepl("16hr", title), "16hr", "72hr"))
-pData(eset) <- data_new
-data_new
+pData(eset) <- pdata_new
+pdata_new
+```
+
+Create nice feature data columns.
+
+```{r}
+fdata_orig <- fData(eset)
+fdata_new <- fdata_orig %>%
+  mutate(chr = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 1],
+         pos = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 2],
+         start = str_split_fixed(pos, "-", 2)[, 1],
+         end = str_split_fixed(pos, "-", 2)[, 2]) %>%
+  select(probe = NAME,
+         chr,
+         start,
+         end,
+         symbol = GENE_SYMBOL,
+         ensembl = ENSEMBL_ID,
+         refseq = GB_ACC,
+         name = GENE_NAME)
+fData(eset) <- fdata_new
 ```
 
 View gene expression distributions.
