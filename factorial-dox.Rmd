@@ -23,6 +23,7 @@ library("Biobase")
 library("dplyr")
 library("GEOquery")
 options('download.file.method.GEOquery' = 'wget')
+library("ggplot2")
 library("limma")
 library("stringr")
 library("UpSetR")
@@ -81,6 +82,23 @@ fdata_new <- fdata_orig %>%
          name = GENE_NAME)
 fData(eset) <- fdata_new
 ```
+
+Confirm Top2b expression levels lower in knockout mice.
+
+```{r}
+top2b <- exprs(eset)[fData(eset)$symbol == "Top2b", ]
+boxplot(top2b ~ eset$genotype + eset$treatment)
+```
+
+Using ggplot2.
+
+```{r}
+top2b <- data.frame(pData(eset),
+                    top2b = exprs(eset)[fData(eset)$symbol == "Top2b", ])
+ggplot(top2b, aes(x = treatment, y = top2b, fill = genotype)) +
+  geom_boxplot()
+```
+
 
 View gene expression distributions.
 
