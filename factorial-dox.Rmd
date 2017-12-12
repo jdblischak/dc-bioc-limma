@@ -79,6 +79,7 @@ fdata_new <- fdata_orig %>%
          symbol = GENE_SYMBOL,
          ensembl = ENSEMBL_ID,
          refseq = GB_ACC,
+         entrez = GENE_ID,
          name = GENE_NAME)
 fData(eset) <- fdata_new
 ```
@@ -228,3 +229,25 @@ upset(as.data.frame(abs(results)))
 ```
 
 Similar to the results from the paper, there is less of an effect of dox in the Top2b null mice.
+
+KEGG enrichment
+
+```{r}
+enrich_kegg_wt <- kegga(fit2, coef = "DoxWT",
+                        geneid = fit2$genes$entrez, species = "Mm")
+topKEGG(enrich_kegg_wt)
+enrich_kegg_inter <- kegga(fit2, coef = "Interaction",
+                        geneid = fit2$genes$entrez, species = "Mm")
+topKEGG(enrich_kegg_inter)
+```
+
+GO enrichment
+
+```{r}
+enrich_go_wt <- goana(fit2, coef = "DoxWT",
+                      geneid = fit2$genes$entrez, species = "Mm")
+topGO(enrich_go_wt, ontology = "BP")
+enrich_go_inter <- goana(fit2, coef = "Interaction",
+                         geneid = fit2$genes$entrez, species = "Mm")
+topGO(enrich_go_inter, ontology = "BP")
+```
