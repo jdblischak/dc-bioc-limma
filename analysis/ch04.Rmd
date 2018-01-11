@@ -1,0 +1,172 @@
+---
+title: "Differential expression analysis for studies with a 2x2 factorial design"
+author: "John Blischak"
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+Analayze microarray data from Zhang et al., 2012, which measured gene expression
+in hearts from wild type and Top2b null mice treated with doxorubicin or a
+control.
+
+```{r setup, message=FALSE}
+library("Biobase")
+library("ggplot2")
+library("limma")
+eset <- readRDS("../data/ch04.rds")
+```
+
+## Studies with a 2x2 factorial design (Video)
+
+Describe the scientific question, the experimental design, and the data
+collected for the 2x2 factorial study.
+
+## Expression level of Top2b
+
+Create a boxplot of the expression level of Top2b to confirm the null mice have
+lower levels of Top2b expression. Use `pData` and `table` to access and explore
+the phenotype measurements to be used in the plot.
+
+```{r}
+head(fData(eset))
+top2b <- exprs(eset)[fData(eset)$symbol == "Top2b", ]
+head(pData(eset))
+d <- data.frame(pData(eset), top2b)
+ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
+  geom_boxplot()
+```
+
+## Visualize gene expression distribution with boxplots
+
+Use boxplots as an alternative to density plots for checking the distribution of
+gene expression levels. Note pro (easier to see which sample belongs to each
+distribution) and con (hides any multimodality).
+
+```{r}
+boxplot(log(exprs(eset)))
+```
+
+## Perform PCA
+
+Use `prcomp` to calculate PCs and plot PC1 vs. PC2 to confirm that the
+samples are separated by genotype and treatment. Note that Top2b mice
+all cluster with untreated WT samples since they are resistant to the
+treatment.
+
+```{r}
+pca <- prcomp(t(exprs(eset)), scale. = TRUE)
+plot(pca)
+d <- data.frame(pData(eset), pca$x)
+ggplot(d, aes(x = PC1, y = PC2, color = genotype, shape = treatment)) +
+  geom_point()
+ggplot(d, aes(x = treatment, y = PC1, fill = genotype)) +
+  geom_boxplot()
+ggplot(d, aes(x = treatment, y = PC2, fill = genotype)) +
+  geom_boxplot()
+```
+
+## Differential expression for 2x2 factorial designs (Video)
+
+Discuss how to construct a design and contrasts matrix for a 2x2 factorial
+design. Note how to create a combined factor and how to write the contrast for
+the interaction term.
+
+## Create design matrix for 2x2 factorial design
+
+Create a combined factor using `paste`. Use `model.matrix` to create a linear
+model with 4 binary variables (group-means parametrization).
+
+```{r}
+f <- paste(pData(eset)$genotype, pData(eset)$treatment, sep = ".")
+design <- model.matrix(~0 + f)
+colnames(design) <- sub("f", "", colnames(design))
+colSums(design)
+```
+
+## Create contrasts matrix for 2x2 factorial design
+
+Use `limma::makeContrasts` to test the main effects and the
+interaction between genotype and treatment.
+
+```{r}
+cont_mat <- makeContrasts(DoxWT = WT.Dox - WT.PBS,
+                          DoxTop = Tob2b.Dox - Tob2b.PBS,
+                          Interaction = (Tob2b.Dox - Tob2b.PBS) -
+                                        (WT.Dox - WT.PBS),
+                          levels = design)
+```
+
+## Fit and test 2x2 factorial design
+
+Use `limma::lmFit`, `limma::contrasts.fit`, `limma::eBayes`, and
+`limma::decideTests` to fit and test the model. Use `limma::vennDiagram` to
+visualize overlap of differentially expressed genes.
+
+```{r}
+fit <- lmFit(eset, design)
+fit2 <- contrasts.fit(fit, contrasts = cont_mat)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
+vennDiagram(results)
+```
+
+## Enrichment analysis (Video)
+
+Describe common approaches for testing for enrichment of gene sets. Discuss Gene
+Onotlogy categories and KEGG pathways. Introduce Fisher's Exact Test. Stress the
+importance of choosing the correct background set of genes and caution against
+over-interpretation (especially for directional effect). Mention at the end that
+there are more sophisticated algorithms such as `limma::camera`, `limma::roast`,
+and `goseq::goseq`.
+
+## Enrichment of KEGG pathways
+
+Use `limma::kegga` and `limma::topKEGG` to test for enrichment of differentially
+expressed genes in KEGG pathways.
+
+```{r}
+enrich_kegg_wt <- kegga(fit2, coef = "DoxWT",
+                        geneid = fit2$genes$entrez, species = "Mm")
+topKEGG(enrich_kegg_wt)
+enrich_kegg_inter <- kegga(fit2, coef = "Interaction",
+                        geneid = fit2$genes$entrez, species = "Mm")
+topKEGG(enrich_kegg_inter)
+```
+
+## Enrichment of Gene Ontology categories
+
+Use `limma::goana` and `limma::topGO` to test for enrichment of differentially
+expressed genes in Gene Ontology categories.
+
+```{r}
+enrich_go_wt <- goana(fit2, coef = "DoxWT",
+                      geneid = fit2$genes$entrez, species = "Mm")
+topGO(enrich_go_wt, ontology = "BP")
+enrich_go_inter <- goana(fit2, coef = "Interaction",
+                         geneid = fit2$genes$entrez, species = "Mm")
+topGO(enrich_go_inter, ontology = "BP")
+```
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```
