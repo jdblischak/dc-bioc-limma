@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Blischak" />
+
+
+<title>Differential expression analysis for studies with a 2x2 factorial design</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DE analysis with limma</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/dc-bioc-limma">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Differential expression analysis for studies with a 2x2 factorial design</h1>
+<h4 class="author"><em>John Blischak</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-01-11</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 5db0175</p>
+<p>Analayze microarray data from Zhang et al., 2012, which measured gene expression in hearts from wild type and Top2b null mice treated with doxorubicin or a control.</p>
+<pre class="r"><code>library(&quot;Biobase&quot;)
+library(&quot;ggplot2&quot;)
+library(&quot;limma&quot;)
+eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
+<div id="studies-with-a-2x2-factorial-design-video" class="section level2">
+<h2>Studies with a 2x2 factorial design (Video)</h2>
+<p>Describe the scientific question, the experimental design, and the data collected for the 2x2 factorial study.</p>
+</div>
+<div id="expression-level-of-top2b" class="section level2">
+<h2>Expression level of Top2b</h2>
+<p>Create a boxplot of the expression level of Top2b to confirm the null mice have lower levels of Top2b expression. Use <code>pData</code> and <code>table</code> to access and explore the phenotype measurements to be used in the plot.</p>
+<pre class="r"><code>head(fData(eset))</code></pre>
+<pre><code>           probe   chr     start       end symbol            ensembl
+1  A_55_P2051983 chr18  62753954  62753895 Spink7 ENSMUST00000076194
+2   A_52_P169082 chr11  76031955  76032014  Dbil5                   
+3 A_30_P01028193 chr14  47982421  47982480                          
+4   A_52_P237997  chr3 156834624 156834683  Negr1                   
+5   A_51_P414243  chr9 121890800 121890741 C85492 ENSMUST00000084743
+6  A_55_P2136348  chr9 120003293 120003352   Ccr8 ENSMUST00000048777
+        refseq entrez                                                name
+1 NM_001001803 408198 serine peptidase inhibitor, Kazal type 7 (putative)
+2    NM_021294  13168                   diazepam binding inhibitor-like 5
+3                  NA                                                    
+4    NM_177274 320840                         neuronal growth regulator 1
+5    NM_153540 215494                           expressed sequence C85492
+6    NM_007720  12776                    chemokine (C-C motif) receptor 8</code></pre>
+<pre class="r"><code>top2b &lt;- exprs(eset)[fData(eset)$symbol == &quot;Top2b&quot;, ]
+head(pData(eset))</code></pre>
+<pre><code>                                                       title genotype
+WT.PBS.16hr.r1         WT Cardiomyocytes 16hr after PBS rep1       WT
+WT.PBS.16hr.r2         WT Cardiomyocytes 16hr after PBS rep2       WT
+WT.PBS.16hr.r3         WT Cardiomyocytes 16hr after PBS rep3       WT
+WT.Dox.16hr.r1 WT Cardiomyocytes 16hr after doxorubicin rep1       WT
+WT.Dox.16hr.r2 WT Cardiomyocytes 16hr after doxorubicin rep2       WT
+WT.Dox.16hr.r3 WT Cardiomyocytes 16hr after doxorubicin rep3       WT
+               treatment timepoint rep
+WT.PBS.16hr.r1       PBS      16hr  r1
+WT.PBS.16hr.r2       PBS      16hr  r2
+WT.PBS.16hr.r3       PBS      16hr  r3
+WT.Dox.16hr.r1       Dox      16hr  r1
+WT.Dox.16hr.r2       Dox      16hr  r2
+WT.Dox.16hr.r3       Dox      16hr  r3</code></pre>
+<pre class="r"><code>d &lt;- data.frame(pData(eset), top2b)
+ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="visualize-gene-expression-distribution-with-boxplots" class="section level2">
+<h2>Visualize gene expression distribution with boxplots</h2>
+<p>Use boxplots as an alternative to density plots for checking the distribution of gene expression levels. Note pro (easier to see which sample belongs to each distribution) and con (hides any multimodality).</p>
+<pre class="r"><code>boxplot(log(exprs(eset)))</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="perform-pca" class="section level2">
+<h2>Perform PCA</h2>
+<p>Use <code>prcomp</code> to calculate PCs and plot PC1 vs. PC2 to confirm that the samples are separated by genotype and treatment. Note that Top2b mice all cluster with untreated WT samples since they are resistant to the treatment.</p>
+<pre class="r"><code>pca &lt;- prcomp(t(exprs(eset)), scale. = TRUE)
+plot(pca)</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>d &lt;- data.frame(pData(eset), pca$x)
+ggplot(d, aes(x = PC1, y = PC2, color = genotype, shape = treatment)) +
+  geom_point()</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(d, aes(x = treatment, y = PC1, fill = genotype)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(d, aes(x = treatment, y = PC2, fill = genotype)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="differential-expression-for-2x2-factorial-designs-video" class="section level2">
+<h2>Differential expression for 2x2 factorial designs (Video)</h2>
+<p>Discuss how to construct a design and contrasts matrix for a 2x2 factorial design. Note how to create a combined factor and how to write the contrast for the interaction term.</p>
+</div>
+<div id="create-design-matrix-for-2x2-factorial-design" class="section level2">
+<h2>Create design matrix for 2x2 factorial design</h2>
+<p>Create a combined factor using <code>paste</code>. Use <code>model.matrix</code> to create a linear model with 4 binary variables (group-means parametrization).</p>
+<pre class="r"><code>f &lt;- paste(pData(eset)$genotype, pData(eset)$treatment, sep = &quot;.&quot;)
+design &lt;- model.matrix(~0 + f)
+colnames(design) &lt;- sub(&quot;f&quot;, &quot;&quot;, colnames(design))
+colSums(design)</code></pre>
+<pre><code>Tob2b.Dox Tob2b.PBS    WT.Dox    WT.PBS 
+        3         3         3         3 </code></pre>
+</div>
+<div id="create-contrasts-matrix-for-2x2-factorial-design" class="section level2">
+<h2>Create contrasts matrix for 2x2 factorial design</h2>
+<p>Use <code>limma::makeContrasts</code> to test the main effects and the interaction between genotype and treatment.</p>
+<pre class="r"><code>cont_mat &lt;- makeContrasts(DoxWT = WT.Dox - WT.PBS,
+                          DoxTop = Tob2b.Dox - Tob2b.PBS,
+                          Interaction = (Tob2b.Dox - Tob2b.PBS) -
+                                        (WT.Dox - WT.PBS),
+                          levels = design)</code></pre>
+</div>
+<div id="fit-and-test-2x2-factorial-design" class="section level2">
+<h2>Fit and test 2x2 factorial design</h2>
+<p>Use <code>limma::lmFit</code>, <code>limma::contrasts.fit</code>, <code>limma::eBayes</code>, and <code>limma::decideTests</code> to fit and test the model. Use <code>limma::vennDiagram</code> to visualize overlap of differentially expressed genes.</p>
+<pre class="r"><code>fit &lt;- lmFit(eset, design)
+fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
+fit2 &lt;- eBayes(fit2)
+results &lt;- decideTests(fit2)
+vennDiagram(results)</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="enrichment-analysis-video" class="section level2">
+<h2>Enrichment analysis (Video)</h2>
+<p>Describe common approaches for testing for enrichment of gene sets. Discuss Gene Onotlogy categories and KEGG pathways. Introduce Fisher’s Exact Test. Stress the importance of choosing the correct background set of genes and caution against over-interpretation (especially for directional effect). Mention at the end that there are more sophisticated algorithms such as <code>limma::camera</code>, <code>limma::roast</code>, and <code>goseq::goseq</code>.</p>
+</div>
+<div id="enrichment-of-kegg-pathways" class="section level2">
+<h2>Enrichment of KEGG pathways</h2>
+<p>Use <code>limma::kegga</code> and <code>limma::topKEGG</code> to test for enrichment of differentially expressed genes in KEGG pathways.</p>
+<pre class="r"><code>enrich_kegg_wt &lt;- kegga(fit2, coef = &quot;DoxWT&quot;,
+                        geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+topKEGG(enrich_kegg_wt)</code></pre>
+<pre><code>                                                             Pathway   N
+path:mmu05322                           Systemic lupus erythematosus 110
+path:mmu05034                                             Alcoholism 165
+path:mmu03008                      Ribosome biogenesis in eukaryotes  77
+path:mmu05203                                   Viral carcinogenesis 212
+path:mmu05412 Arrhythmogenic right ventricular cardiomyopathy (ARVC)  72
+path:mmu04137                                     Mitophagy - animal  63
+path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
+path:mmu04022                             cGMP-PKG signaling pathway 166
+path:mmu05414                           Dilated cardiomyopathy (DCM)  88
+path:mmu04012                                 ErbB signaling pathway  85
+path:mmu04971                                 Gastric acid secretion  74
+path:mmu04217                                            Necroptosis 158
+path:mmu05410                      Hypertrophic cardiomyopathy (HCM)  83
+path:mmu04144                                            Endocytosis 262
+path:mmu05202                Transcriptional misregulation in cancer 174
+path:mmu05205                                Proteoglycans in cancer 201
+path:mmu03040                                            Spliceosome 129
+path:mmu04066                                HIF-1 signaling pathway 103
+path:mmu03013                                          RNA transport 166
+path:mmu04115                                  p53 signaling pathway  67
+              Up Down         P.Up       P.Down
+path:mmu05322 25    1 1.445629e-10 9.997056e-01
+path:mmu05034 29   12 3.150428e-09 5.042364e-01
+path:mmu03008 19    2 5.715709e-09 9.763314e-01
+path:mmu05203 33   11 6.196366e-09 8.934805e-01
+path:mmu05412  0   20 1.000000e+00 6.742399e-08
+path:mmu04137 15    7 3.917672e-07 1.553469e-01
+path:mmu04261  5   27 8.677290e-01 2.660300e-06
+path:mmu04022  4   29 9.728352e-01 4.336931e-06
+path:mmu05414  0   19 1.000000e+00 9.063803e-06
+path:mmu04012  5   18 4.360113e-01 2.062262e-05
+path:mmu04971  2   16 8.968306e-01 4.515269e-05
+path:mmu04217 21   14 4.603228e-05 2.270119e-01
+path:mmu05410  0   17 1.000000e+00 5.474988e-05
+path:mmu04144 29   20 5.879705e-05 3.946532e-01
+path:mmu05202 22   10 6.588871e-05 7.963958e-01
+path:mmu05205 13   30 2.230463e-01 7.014844e-05
+path:mmu03040 18   11 8.459920e-05 3.041181e-01
+path:mmu04066  8   19 1.528074e-01 9.188294e-05
+path:mmu03013 21    8 9.558815e-05 9.093518e-01
+path:mmu04115 12    2 1.193210e-04 9.559196e-01</code></pre>
+<pre class="r"><code>enrich_kegg_inter &lt;- kegga(fit2, coef = &quot;Interaction&quot;,
+                        geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+topKEGG(enrich_kegg_inter)</code></pre>
+<pre><code>                                                             Pathway   N
+path:mmu03008                      Ribosome biogenesis in eukaryotes  77
+path:mmu05322                           Systemic lupus erythematosus 110
+path:mmu05034                                             Alcoholism 165
+path:mmu05203                                   Viral carcinogenesis 212
+path:mmu04919                      Thyroid hormone signaling pathway 115
+path:mmu00230                                      Purine metabolism 174
+path:mmu05414                           Dilated cardiomyopathy (DCM)  88
+path:mmu05412 Arrhythmogenic right ventricular cardiomyopathy (ARVC)  72
+path:mmu05212                                      Pancreatic cancer  75
+path:mmu05220                               Chronic myeloid leukemia  78
+path:mmu05205                                Proteoglycans in cancer 201
+path:mmu04930                              Type II diabetes mellitus  48
+path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
+path:mmu04211                           Longevity regulating pathway  90
+path:mmu05222                                 Small cell lung cancer  92
+path:mmu04210                                              Apoptosis 134
+path:mmu05213                                     Endometrial cancer  58
+path:mmu04933   AGE-RAGE signaling pathway in diabetic complications 100
+path:mmu05217                                   Basal cell carcinoma  63
+path:mmu01522                                   Endocrine resistance  93
+              Up Down         P.Up       P.Down
+path:mmu03008  0   10 1.0000000000 1.119484e-08
+path:mmu05322  0   10 1.0000000000 3.542337e-07
+path:mmu05034  5   11 0.5260830788 2.029508e-06
+path:mmu05203  3   12 0.9493700306 3.768436e-06
+path:mmu04919 11    2 0.0004861726 3.715400e-01
+path:mmu00230 14    3 0.0005169701 3.106942e-01
+path:mmu05414  9    0 0.0009760229 1.000000e+00
+path:mmu05412  8    0 0.0010801125 1.000000e+00
+path:mmu05212  3    5 0.3724186427 1.482217e-03
+path:mmu05220  4    5 0.1907179097 1.765959e-03
+path:mmu05205 14    5 0.0020995746 7.514875e-02
+path:mmu04930  6    1 0.0024857768 4.194785e-01
+path:mmu04261 11    1 0.0032323457 8.085831e-01
+path:mmu04211  3    5 0.4882763637 3.309962e-03
+path:mmu05222  1    5 0.9346648370 3.639530e-03
+path:mmu04210  6    6 0.1942442355 3.846721e-03
+path:mmu05213  3    4 0.2371528010 3.970272e-03
+path:mmu04933  6    5 0.0704206513 5.196118e-03
+path:mmu05217  4    4 0.1099188308 5.342779e-03
+path:mmu01522  8    3 0.0054661338 8.651154e-02</code></pre>
+</div>
+<div id="enrichment-of-gene-ontology-categories" class="section level2">
+<h2>Enrichment of Gene Ontology categories</h2>
+<p>Use <code>limma::goana</code> and <code>limma::topGO</code> to test for enrichment of differentially expressed genes in Gene Ontology categories.</p>
+<pre class="r"><code>enrich_go_wt &lt;- goana(fit2, coef = &quot;DoxWT&quot;,
+                      geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+topGO(enrich_go_wt, ontology = &quot;BP&quot;)</code></pre>
+<pre><code>                                                       Term Ont    N  Up
+GO:0090304                   nucleic acid metabolic process  BP 4320 411
+GO:0044260         cellular macromolecule metabolic process  BP 7119 574
+GO:0016070                            RNA metabolic process  BP 3866 371
+GO:0006139 nucleobase-containing compound metabolic process  BP 4868 428
+GO:0034641     cellular nitrogen compound metabolic process  BP 5483 461
+GO:0046483                    heterocycle metabolic process  BP 4987 430
+GO:0006725     cellular aromatic compound metabolic process  BP 5044 432
+GO:0043170                  macromolecule metabolic process  BP 7787 594
+GO:0010467                                  gene expression  BP 4584 401
+GO:0006807              nitrogen compound metabolic process  BP 5772 474
+GO:1901360        organic cyclic compound metabolic process  BP 5218 434
+GO:0006396                                   RNA processing  BP  752 112
+GO:0044237                       cellular metabolic process  BP 8868 640
+GO:0022613             ribonucleoprotein complex biogenesis  BP  365  71
+GO:0044238                        primary metabolic process  BP 8881 631
+GO:0044763                 single-organism cellular process  BP 9405 524
+GO:0034645      cellular macromolecule biosynthetic process  BP 4071 342
+GO:0009059               macromolecule biosynthetic process  BP 4189 347
+GO:0071704              organic substance metabolic process  BP 9265 644
+GO:0032774                         RNA biosynthetic process  BP 3128 278
+           Down         P.Up       P.Down
+GO:0090304  331 8.237144e-36 1.933475e-02
+GO:0044260  582 2.562324e-32 2.605503e-07
+GO:0016070  306 2.634152e-32 4.728531e-03
+GO:0006139  395 1.986706e-29 1.458069e-04
+GO:0034641  452 1.080822e-27 6.550268e-06
+GO:0046483  409 1.139985e-27 3.881083e-05
+GO:0006725  412 3.540449e-27 5.247892e-05
+GO:0043170  625 1.076190e-26 1.009762e-06
+GO:0010467  369 1.336454e-26 4.980610e-04
+GO:0006807  469 2.851898e-26 1.935534e-05
+GO:1901360  424 1.605578e-24 6.287642e-05
+GO:0006396   66 8.890930e-23 2.842314e-02
+GO:0044237  740 1.082989e-22 2.998919e-12
+GO:0022613   25 2.882609e-21 5.557635e-01
+GO:0044238  728 3.338037e-20 3.451549e-10
+GO:0044763  814 2.248867e-01 3.148649e-19
+GO:0034645  332 6.059148e-19 4.291718e-04
+GO:0009059  339 2.848717e-18 6.358933e-04
+GO:0071704  764 2.961528e-18 1.291450e-11
+GO:0032774  243 3.168260e-18 2.640811e-02</code></pre>
+<pre class="r"><code>enrich_go_inter &lt;- goana(fit2, coef = &quot;Interaction&quot;,
+                         geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+topGO(enrich_go_inter, ontology = &quot;BP&quot;)</code></pre>
+<pre><code>                                           Term Ont    N  Up Down
+GO:0034470                     ncRNA processing  BP  298  10   20
+GO:0006334                  nucleosome assembly  BP   86   1   12
+GO:0034728              nucleosome organization  BP  111   2   13
+GO:0006396                       RNA processing  BP  752  29   30
+GO:0034660              ncRNA metabolic process  BP  406  13   22
+GO:0071103              DNA conformation change  BP  175   3   15
+GO:0042254                  ribosome biogenesis  BP  245   4   17
+GO:0031497                   chromatin assembly  BP  105   1   12
+GO:0060047                    heart contraction  BP  197  25    2
+GO:0003015                        heart process  BP  200  25    2
+GO:0006996               organelle organization  BP 3306 157   58
+GO:0016072               rRNA metabolic process  BP  201   4   15
+GO:0006364                      rRNA processing  BP  173   3   14
+GO:0008016      regulation of heart contraction  BP  163  22    2
+GO:0044763     single-organism cellular process  BP 9405 356  101
+GO:0061337                   cardiac conduction  BP   54  13    0
+GO:0086003      cardiac muscle cell contraction  BP   55  13    0
+GO:0006333    chromatin assembly or disassembly  BP  127   2   12
+GO:0022613 ribonucleoprotein complex biogenesis  BP  365  12   19
+GO:0090304       nucleic acid metabolic process  BP 4320 145   80
+                   P.Up       P.Down
+GO:0034470 4.186529e-01 4.221255e-11
+GO:0006334 9.298010e-01 8.594260e-11
+GO:0034728 8.545642e-01 1.325168e-10
+GO:0006396 1.119846e-01 2.382955e-10
+GO:0034660 4.618739e-01 2.687212e-10
+GO:0071103 9.037569e-01 4.308571e-10
+GO:0042254 9.421080e-01 7.750073e-10
+GO:0031497 9.610251e-01 9.237360e-10
+GO:0060047 1.602977e-09 6.069567e-01
+GO:0003015 2.201973e-09 6.151907e-01
+GO:0006996 2.278770e-09 2.205572e-05
+GO:0016072 8.628904e-01 2.950107e-09
+GO:0006364 8.995292e-01 3.543597e-09
+GO:0008016 4.825936e-09 5.044555e-01
+GO:0044763 5.589447e-09 3.282408e-01
+GO:0061337 5.788772e-09 1.000000e+00
+GO:0086003 7.372161e-09 1.000000e+00
+GO:0006333 9.014547e-01 8.340962e-09
+GO:0022613 4.303453e-01 9.070431e-09
+GO:0090304 9.200455e-02 1.882863e-08</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 17.04
+
+Matrix products: default
+BLAS: /usr/lib/libblas/libblas.so.3.7.0
+LAPACK: /usr/lib/lapack/liblapack.so.3.7.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] limma_3.32.2        ggplot2_2.2.1       Biobase_2.36.2     
+[4] BiocGenerics_0.22.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.11         AnnotationDbi_1.38.0 knitr_1.18          
+ [4] magrittr_1.5         IRanges_2.10.0       munsell_0.4.3       
+ [7] colorspace_1.3-2     rlang_0.1.6          stringr_1.2.0       
+[10] plyr_1.8.4           tools_3.4.3          grid_3.4.3          
+[13] gtable_0.2.0         DBI_0.7              git2r_0.21.0        
+[16] htmltools_0.3.6      yaml_2.1.16          lazyeval_0.2.1      
+[19] rprojroot_1.3-2      digest_0.6.13        tibble_1.3.3        
+[22] org.Mm.eg.db_3.4.1   S4Vectors_0.14.0     memoise_1.1.0       
+[25] RSQLite_1.1-2        evaluate_0.10.1      rmarkdown_1.8       
+[28] labeling_0.3         stringi_1.1.5        GO.db_3.4.1         
+[31] compiler_3.4.3       scales_0.5.0         backports_1.1.2     
+[34] stats4_3.4.3        </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
