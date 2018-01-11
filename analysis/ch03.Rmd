@@ -1,0 +1,107 @@
+---
+title: "Differential expression analysis for studies with more than 2 groups"
+author: "John Blischak"
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+Analyze RNA-seq data from Hoban et al., 2016, which measured gene expression in
+the prefrontal cortex of 3 groups of mice: conventional (con), germ-free (gf),
+and germ-free colonized with normal microbiota (exgf).
+
+```{r setup, message=FALSE}
+library("Biobase")
+library("edgeR")
+library("ggplot2")
+library("limma")
+dge <- readRDS("../data/ch03.rds")
+```
+
+## Studies with more than 2 groups (Video)
+
+Describe the scientific question, the experimental design, and the data
+collected for the 3-group study. Review RNA-seq technique and the need to
+standardize by library size.
+
+## Calculate the library size
+
+Use `colSums` to calculate the library sizes and run `summary` to appreciate the
+variability.
+
+## Calculate counts per million
+
+Use `edgeR::calcNormFactors` and `edgeR::cpm` to calculate TMM-normalized counts
+per million.
+
+## Create density plots of counts versus counts per million
+
+Use `limma::plotDensities` to visualize the distribution of counts and the
+distribution of counts per million.
+
+## Filtering genes and samples (Video)
+
+Describe the process of filtering lowly expressed genes (show density plots from
+previous exercise to demonstrate bimodal distribution) and identifying outlier
+samples with PCA. Discuss the nuances of removing outlier samples.
+
+## Remove lowly expressed genes
+
+Remove any gene that does not have at least a log2 cpm > 0 in at least 4 samples
+(n = 4 per group). Use `limma::plotDensities` to confirm the distribution of
+counts per million is unimodal post-filtering.
+
+## Use PCA to identify outlier sample
+
+Use `prcomp` to calculate PCA and then plot PC1 vs. PC2. Remove the exgf sample
+that clusters with the gf samples.
+
+## Differential expression for RNA-seq with voom (Video)
+
+Review how to use `model.matrix` and `limma::makeContrasts`. Describe how
+`limma::voom` corrects for the mean-variance relationship of the count data.
+
+## Create design matrix for study with 3 groups
+
+Use `model.matrix` to create a linear model with three binary variables
+(group-means parametrization).
+
+## Create contrasts matrix for study with 3 groups
+
+Use `limma::makeContrasts` to test all pairwise comparisions.
+
+## Account for mean-variance relationship with voom
+
+Use `limma::voom` to calculate weights for the linear model to account for the
+mean-variance relationship of the counts. Set `plot = TRUE` to visualize the
+mean-variance trend. Explore the EList object returned to confirm that the
+expression values in `E` are simply the counts per million.
+
+## Fit and test model for study with 3 groups
+
+Use `limma::lmFit`, `limma::contrasts.fit`, `limma::eBayes`, and
+`limma::decideTests` to fit and test the model. Use `limma::vennDiagram` to
+visualize overlap of differentially expressed genes.
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

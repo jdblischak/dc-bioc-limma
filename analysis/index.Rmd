@@ -7,4 +7,7 @@ output:
 
 Lesson material for differential expression analysis with [limma][].
 
+* [Chapter 3][ch03.html]
+* [Chapter 4][ch04.html]
+
 [limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
