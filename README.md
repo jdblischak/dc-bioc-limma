@@ -1,4 +1,4 @@
-# dc-bioc-limma
+# Differential expression analysis with limma
 
 Lesson on RNA-seq analysis using the data from [GSE75816][]. The scripts in
 `code/` process the raw data to gene counts, which are availablin in

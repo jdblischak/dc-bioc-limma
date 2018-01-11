@@ -1,0 +1,13 @@
+---
+title: "About"
+output:
+  html_document:
+    toc: false
+---
+
+I'm [John Blischak][jdb]. I work with [Matthew Stephens][ms] at the University
+of Chicago to develop software and lesson material to support reproducible
+research.
+
+[jdb]: https://github.com/jdblischak
+[ms]: http://stephenslab.uchicago.edu/

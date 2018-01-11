@@ -1,0 +1,25 @@
+name: Differential expression analysis with limma
+output_dir: "../docs"
+include: [".nojekyll"]
+exclude: ["include"]
+navbar:
+  title: DE analysis with limma
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "License"
+      href: license.html
+  right:
+    - icon: fa-github
+      href: https://github.com/jdblischak/dc-bioc-limma
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: textmate
+    include:
+      before_body: include/header.html
+      after_body: include/footer.html
