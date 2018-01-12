@@ -32,6 +32,7 @@ library("Biobase")
 library("edgeR")
 library("ggplot2")
 library("limma")
+library("stringr")
 dge <- readRDS("../data/ch03.rds")
 ```
 
@@ -46,15 +47,29 @@ standardize by library size.
 Use `colSums` to calculate the library sizes and run `summary` to appreciate the
 variability.
 
+```{r}
+lib_size <- colSums(dge$counts)
+summary(lib_size)
+```
+
 ## Calculate counts per million
 
 Use `edgeR::calcNormFactors` and `edgeR::cpm` to calculate TMM-normalized counts
 per million.
 
+```{r}
+dge <- calcNormFactors(dge)
+dge_cpm <- cpm(dge, log = TRUE)
+```
+
 ## Create density plots of counts versus counts per million
 
 Use `limma::plotDensities` to visualize the distribution of counts and the
 distribution of counts per million.
+
+```{r}
+plotDensities(dge_cpm, legend = FALSE)
+```
 
 ## Filtering genes and samples (Video)
 
@@ -68,10 +83,29 @@ Remove any gene that does not have at least a log2 cpm > 0 in at least 4 samples
 (n = 4 per group). Use `limma::plotDensities` to confirm the distribution of
 counts per million is unimodal post-filtering.
 
+```{r}
+dge_filt <- dge[rowSums(dge_cpm > 0) >= 4, ]
+dge_filt <- calcNormFactors(dge_filt)
+dge_filt_cpm <- cpm(dge_filt, log = TRUE)
+plotDensities(dge_filt_cpm, legend = FALSE)
+```
+
 ## Use PCA to identify outlier sample
 
 Use `prcomp` to calculate PCA and then plot PC1 vs. PC2. Remove the exgf sample
 that clusters with the gf samples.
+
+```{r}
+pca <- prcomp(t(dge_filt_cpm), scale. = TRUE)
+plot(pca)
+d <- data.frame(dge_filt$samples, pca$x)
+ggplot(d, aes(x = PC1, y = PC2, color = group)) +
+  geom_text(aes(label = id))
+
+plotMDS(dge_filt)
+
+dge_final <- dge_filt[, dge_filt$samples$id != "exgf1"]
+```
 
 ## Differential expression for RNA-seq with voom (Video)
 
@@ -83,9 +117,23 @@ Review how to use `model.matrix` and `limma::makeContrasts`. Describe how
 Use `model.matrix` to create a linear model with three binary variables
 (group-means parametrization).
 
+```{r}
+design <- model.matrix(~0 + group, data = dge_final$samples)
+colnames(design) <- str_replace(colnames(design), "group", "")
+colSums(design)
+```
+
 ## Create contrasts matrix for study with 3 groups
 
 Use `limma::makeContrasts` to test all pairwise comparisions.
+
+```{r}
+cont_mat <- makeContrasts(gf.con = gf - con,
+                          exgf.con = exgf - con,
+                          exgf.gf = exgf - gf,
+                          levels = design)
+cont_mat
+```
 
 ## Account for mean-variance relationship with voom
 
@@ -94,11 +142,27 @@ mean-variance relationship of the counts. Set `plot = TRUE` to visualize the
 mean-variance trend. Explore the EList object returned to confirm that the
 expression values in `E` are simply the counts per million.
 
+```{r}
+dge_final <- calcNormFactors(dge_final)
+v <- voom(dge_final, design, plot = TRUE)
+plotDensities(v$E, legend = FALSE)
+dge_final_cpm <- cpm(dge_final, log = TRUE)
+plot(v$E[, 1], dge_final_cpm[, 1])
+```
+
 ## Fit and test model for study with 3 groups
 
 Use `limma::lmFit`, `limma::contrasts.fit`, `limma::eBayes`, and
 `limma::decideTests` to fit and test the model. Use `limma::vennDiagram` to
 visualize overlap of differentially expressed genes.
+
+```{r}
+fit <- lmFit(v, design)
+fit2 <- contrasts.fit(fit, contrasts = cont_mat)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
+vennDiagram(results)
+```
 
 ## Session information
 
