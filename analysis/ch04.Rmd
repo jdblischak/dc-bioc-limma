@@ -61,7 +61,7 @@ gene expression levels. Note pro (easier to see which sample belongs to each
 distribution) and con (hides any multimodality).
 
 ```{r}
-boxplot(log(exprs(eset)))
+boxplot(log(exprs(eset)), las = 2)
 ```
 
 ## Perform PCA
@@ -122,9 +122,11 @@ visualize overlap of differentially expressed genes.
 
 ```{r}
 fit <- lmFit(eset, design)
+head(fit$coefficients)
 fit2 <- contrasts.fit(fit, contrasts = cont_mat)
 fit2 <- eBayes(fit2)
 results <- decideTests(fit2)
+summary(results)
 vennDiagram(results)
 ```
 
@@ -143,11 +145,12 @@ Use `limma::kegga` and `limma::topKEGG` to test for enrichment of differentially
 expressed genes in KEGG pathways.
 
 ```{r}
+entrez <- fit2$genes$entrez
 enrich_kegg_wt <- kegga(fit2, coef = "DoxWT",
-                        geneid = fit2$genes$entrez, species = "Mm")
+                        geneid = entrez, species = "Mm")
 topKEGG(enrich_kegg_wt)
 enrich_kegg_inter <- kegga(fit2, coef = "Interaction",
-                        geneid = fit2$genes$entrez, species = "Mm")
+                        geneid = entrez, species = "Mm")
 topKEGG(enrich_kegg_inter)
 ```
 
@@ -158,10 +161,10 @@ expressed genes in Gene Ontology categories.
 
 ```{r}
 enrich_go_wt <- goana(fit2, coef = "DoxWT",
-                      geneid = fit2$genes$entrez, species = "Mm")
+                      geneid = entrez, species = "Mm")
 topGO(enrich_go_wt, ontology = "BP")
 enrich_go_inter <- goana(fit2, coef = "Interaction",
-                         geneid = fit2$genes$entrez, species = "Mm")
+                         geneid = entrez, species = "Mm")
 topGO(enrich_go_inter, ontology = "BP")
 ```
 
