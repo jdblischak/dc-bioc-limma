@@ -319,10 +319,10 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-01-11</p>
+<p><strong>Last updated:</strong> 2018-01-25</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 5db0175</p>
+<p><strong>Code version:</strong> dc82382</p>
 <p>Analayze microarray data from Zhang et al., 2012, which measured gene expression in hearts from wild type and Top2b null mice treated with doxorubicin or a control.</p>
 <pre class="r"><code>library(&quot;Biobase&quot;)
 library(&quot;ggplot2&quot;)
@@ -352,20 +352,20 @@ eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
 6    NM_007720  12776                    chemokine (C-C motif) receptor 8</code></pre>
 <pre class="r"><code>top2b &lt;- exprs(eset)[fData(eset)$symbol == &quot;Top2b&quot;, ]
 head(pData(eset))</code></pre>
-<pre><code>                                                       title genotype
-WT.PBS.16hr.r1         WT Cardiomyocytes 16hr after PBS rep1       WT
-WT.PBS.16hr.r2         WT Cardiomyocytes 16hr after PBS rep2       WT
-WT.PBS.16hr.r3         WT Cardiomyocytes 16hr after PBS rep3       WT
-WT.Dox.16hr.r1 WT Cardiomyocytes 16hr after doxorubicin rep1       WT
-WT.Dox.16hr.r2 WT Cardiomyocytes 16hr after doxorubicin rep2       WT
-WT.Dox.16hr.r3 WT Cardiomyocytes 16hr after doxorubicin rep3       WT
-               treatment timepoint rep
-WT.PBS.16hr.r1       PBS      16hr  r1
-WT.PBS.16hr.r2       PBS      16hr  r2
-WT.PBS.16hr.r3       PBS      16hr  r3
-WT.Dox.16hr.r1       Dox      16hr  r1
-WT.Dox.16hr.r2       Dox      16hr  r2
-WT.Dox.16hr.r3       Dox      16hr  r3</code></pre>
+<pre><code>                                                  title genotype treatment
+WT.PBS.r1         WT Cardiomyocytes 16hr after PBS rep1       WT       PBS
+WT.PBS.r2         WT Cardiomyocytes 16hr after PBS rep2       WT       PBS
+WT.PBS.r3         WT Cardiomyocytes 16hr after PBS rep3       WT       PBS
+WT.Dox.r1 WT Cardiomyocytes 16hr after doxorubicin rep1       WT       Dox
+WT.Dox.r2 WT Cardiomyocytes 16hr after doxorubicin rep2       WT       Dox
+WT.Dox.r3 WT Cardiomyocytes 16hr after doxorubicin rep3       WT       Dox
+          rep
+WT.PBS.r1  r1
+WT.PBS.r2  r2
+WT.PBS.r3  r3
+WT.Dox.r1  r1
+WT.Dox.r2  r2
+WT.Dox.r3  r3</code></pre>
 <pre class="r"><code>d &lt;- data.frame(pData(eset), top2b)
 ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
   geom_boxplot()</code></pre>
@@ -374,7 +374,7 @@ ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
 <div id="visualize-gene-expression-distribution-with-boxplots" class="section level2">
 <h2>Visualize gene expression distribution with boxplots</h2>
 <p>Use boxplots as an alternative to density plots for checking the distribution of gene expression levels. Note pro (easier to see which sample belongs to each distribution) and con (hides any multimodality).</p>
-<pre class="r"><code>boxplot(log(exprs(eset)))</code></pre>
+<pre class="r"><code>boxplot(log(exprs(eset)), las = 2)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="perform-pca" class="section level2">
@@ -421,10 +421,23 @@ colSums(design)</code></pre>
 <h2>Fit and test 2x2 factorial design</h2>
 <p>Use <code>limma::lmFit</code>, <code>limma::contrasts.fit</code>, <code>limma::eBayes</code>, and <code>limma::decideTests</code> to fit and test the model. Use <code>limma::vennDiagram</code> to visualize overlap of differentially expressed genes.</p>
 <pre class="r"><code>fit &lt;- lmFit(eset, design)
-fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
+head(fit$coefficients)</code></pre>
+<pre><code>    Tob2b.Dox   Tob2b.PBS      WT.Dox      WT.PBS
+1   0.2975107   0.2945810   0.3539563   0.3620450
+2   4.2250150   4.6055087   3.6762460   3.1691957
+3   0.3001070   0.3196167   0.6157077   0.3739970
+4   0.3012637   0.2955227   0.3532647   0.3616193
+5 264.7589623 245.4630817 294.2404533 274.2917363
+6   0.3032463   0.2958423   0.3525713   0.3611247</code></pre>
+<pre class="r"><code>fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
 fit2 &lt;- eBayes(fit2)
 results &lt;- decideTests(fit2)
-vennDiagram(results)</code></pre>
+summary(results)</code></pre>
+<pre><code>   DoxWT DoxTop Interaction
+-1  2311      0         320
+0  55050  59304       58071
+1   1944      1         914</code></pre>
+<pre class="r"><code>vennDiagram(results)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="enrichment-analysis-video" class="section level2">
@@ -434,8 +447,9 @@ vennDiagram(results)</code></pre>
 <div id="enrichment-of-kegg-pathways" class="section level2">
 <h2>Enrichment of KEGG pathways</h2>
 <p>Use <code>limma::kegga</code> and <code>limma::topKEGG</code> to test for enrichment of differentially expressed genes in KEGG pathways.</p>
-<pre class="r"><code>enrich_kegg_wt &lt;- kegga(fit2, coef = &quot;DoxWT&quot;,
-                        geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+<pre class="r"><code>entrez &lt;- fit2$genes$entrez
+enrich_kegg_wt &lt;- kegga(fit2, coef = &quot;DoxWT&quot;,
+                        geneid = entrez, species = &quot;Mm&quot;)
 topKEGG(enrich_kegg_wt)</code></pre>
 <pre><code>                                                             Pathway   N
 path:mmu05322                           Systemic lupus erythematosus 110
@@ -448,8 +462,8 @@ path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
 path:mmu04022                             cGMP-PKG signaling pathway 166
 path:mmu05414                           Dilated cardiomyopathy (DCM)  88
 path:mmu04012                                 ErbB signaling pathway  85
-path:mmu04971                                 Gastric acid secretion  74
 path:mmu04217                                            Necroptosis 158
+path:mmu04971                                 Gastric acid secretion  74
 path:mmu05410                      Hypertrophic cardiomyopathy (HCM)  83
 path:mmu04144                                            Endocytosis 262
 path:mmu05202                Transcriptional misregulation in cancer 174
@@ -459,28 +473,28 @@ path:mmu04066                                HIF-1 signaling pathway 103
 path:mmu03013                                          RNA transport 166
 path:mmu04115                                  p53 signaling pathway  67
               Up Down         P.Up       P.Down
-path:mmu05322 25    1 1.445629e-10 9.997056e-01
-path:mmu05034 29   12 3.150428e-09 5.042364e-01
-path:mmu03008 19    2 5.715709e-09 9.763314e-01
-path:mmu05203 33   11 6.196366e-09 8.934805e-01
-path:mmu05412  0   20 1.000000e+00 6.742399e-08
-path:mmu04137 15    7 3.917672e-07 1.553469e-01
-path:mmu04261  5   27 8.677290e-01 2.660300e-06
-path:mmu04022  4   29 9.728352e-01 4.336931e-06
-path:mmu05414  0   19 1.000000e+00 9.063803e-06
-path:mmu04012  5   18 4.360113e-01 2.062262e-05
-path:mmu04971  2   16 8.968306e-01 4.515269e-05
-path:mmu04217 21   14 4.603228e-05 2.270119e-01
-path:mmu05410  0   17 1.000000e+00 5.474988e-05
-path:mmu04144 29   20 5.879705e-05 3.946532e-01
-path:mmu05202 22   10 6.588871e-05 7.963958e-01
-path:mmu05205 13   30 2.230463e-01 7.014844e-05
-path:mmu03040 18   11 8.459920e-05 3.041181e-01
-path:mmu04066  8   19 1.528074e-01 9.188294e-05
-path:mmu03013 21    8 9.558815e-05 9.093518e-01
-path:mmu04115 12    2 1.193210e-04 9.559196e-01</code></pre>
+path:mmu05322 25    1 1.426245e-10 9.997085e-01
+path:mmu05034 29   12 3.105091e-09 5.059241e-01
+path:mmu03008 19    2 5.656212e-09 9.764694e-01
+path:mmu05203 33   11 6.099541e-09 8.943148e-01
+path:mmu05412  0   20 1.000000e+00 6.876649e-08
+path:mmu04137 15    7 3.885675e-07 1.560142e-01
+path:mmu04261  5   27 8.673626e-01 2.721260e-06
+path:mmu04022  4   29 9.727255e-01 4.439987e-06
+path:mmu05414  0   19 1.000000e+00 9.219800e-06
+path:mmu04012  5   18 4.354549e-01 2.095579e-05
+path:mmu04217 21   14 4.560626e-05 2.283053e-01
+path:mmu04971  2   16 8.966206e-01 4.580638e-05
+path:mmu05410  0   17 1.000000e+00 5.557234e-05
+path:mmu04144 29   20 5.812766e-05 3.967395e-01
+path:mmu05202 22   10 6.526743e-05 7.975774e-01
+path:mmu05205 13   30 2.223823e-01 7.169396e-05
+path:mmu03040 18   11 8.390967e-05 3.054608e-01
+path:mmu04066  8   19 1.524219e-01 9.334771e-05
+path:mmu03013 21    8 9.472685e-05 9.099991e-01
+path:mmu04115 12    2 1.185986e-04 9.561380e-01</code></pre>
 <pre class="r"><code>enrich_kegg_inter &lt;- kegga(fit2, coef = &quot;Interaction&quot;,
-                        geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+                        geneid = entrez, species = &quot;Mm&quot;)
 topKEGG(enrich_kegg_inter)</code></pre>
 <pre><code>                                                             Pathway   N
 path:mmu03008                      Ribosome biogenesis in eukaryotes  77
@@ -504,32 +518,32 @@ path:mmu04933   AGE-RAGE signaling pathway in diabetic complications 100
 path:mmu05217                                   Basal cell carcinoma  63
 path:mmu01522                                   Endocrine resistance  93
               Up Down         P.Up       P.Down
-path:mmu03008  0   10 1.0000000000 1.119484e-08
-path:mmu05322  0   10 1.0000000000 3.542337e-07
-path:mmu05034  5   11 0.5260830788 2.029508e-06
-path:mmu05203  3   12 0.9493700306 3.768436e-06
-path:mmu04919 11    2 0.0004861726 3.715400e-01
-path:mmu00230 14    3 0.0005169701 3.106942e-01
-path:mmu05414  9    0 0.0009760229 1.000000e+00
-path:mmu05412  8    0 0.0010801125 1.000000e+00
-path:mmu05212  3    5 0.3724186427 1.482217e-03
-path:mmu05220  4    5 0.1907179097 1.765959e-03
-path:mmu05205 14    5 0.0020995746 7.514875e-02
-path:mmu04930  6    1 0.0024857768 4.194785e-01
-path:mmu04261 11    1 0.0032323457 8.085831e-01
-path:mmu04211  3    5 0.4882763637 3.309962e-03
-path:mmu05222  1    5 0.9346648370 3.639530e-03
-path:mmu04210  6    6 0.1942442355 3.846721e-03
-path:mmu05213  3    4 0.2371528010 3.970272e-03
-path:mmu04933  6    5 0.0704206513 5.196118e-03
-path:mmu05217  4    4 0.1099188308 5.342779e-03
-path:mmu01522  8    3 0.0054661338 8.651154e-02</code></pre>
+path:mmu03008  0   10 1.0000000000 1.112720e-08
+path:mmu05322  0   10 1.0000000000 3.521623e-07
+path:mmu05034  5   11 0.5255044610 2.016981e-06
+path:mmu05203  3   12 0.9492156881 3.743765e-06
+path:mmu04919 11    2 0.0004835667 3.712397e-01
+path:mmu00230 14    3 0.0005136952 3.103476e-01
+path:mmu05414  9    0 0.0009716250 1.000000e+00
+path:mmu05412  8    0 0.0010756656 1.000000e+00
+path:mmu05212  3    5 0.3720331617 1.478029e-03
+path:mmu05220  4    5 0.1904216149 1.760999e-03
+path:mmu05205 14    5 0.0020872023 7.498761e-02
+path:mmu04930  6    1 0.0024778049 4.192730e-01
+path:mmu04261 11    1 0.0032165847 8.083757e-01
+path:mmu04211  3    5 0.4878447796 3.300887e-03
+path:mmu05222  1    5 0.9345473342 3.629591e-03
+path:mmu04210  6    6 0.1938597213 3.834680e-03
+path:mmu05213  3    4 0.2368628122 3.961212e-03
+path:mmu04933  6    5 0.0702488039 5.182159e-03
+path:mmu05217  4    4 0.1097270801 5.330731e-03
+path:mmu01522  8    3 0.0054454308 8.638351e-02</code></pre>
 </div>
 <div id="enrichment-of-gene-ontology-categories" class="section level2">
 <h2>Enrichment of Gene Ontology categories</h2>
 <p>Use <code>limma::goana</code> and <code>limma::topGO</code> to test for enrichment of differentially expressed genes in Gene Ontology categories.</p>
 <pre class="r"><code>enrich_go_wt &lt;- goana(fit2, coef = &quot;DoxWT&quot;,
-                      geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+                      geneid = entrez, species = &quot;Mm&quot;)
 topGO(enrich_go_wt, ontology = &quot;BP&quot;)</code></pre>
 <pre><code>                                                       Term Ont    N  Up
 GO:0090304                   nucleic acid metabolic process  BP 4320 411
@@ -574,7 +588,7 @@ GO:0009059  339 2.848717e-18 6.358933e-04
 GO:0071704  764 2.961528e-18 1.291450e-11
 GO:0032774  243 3.168260e-18 2.640811e-02</code></pre>
 <pre class="r"><code>enrich_go_inter &lt;- goana(fit2, coef = &quot;Interaction&quot;,
-                         geneid = fit2$genes$entrez, species = &quot;Mm&quot;)
+                         geneid = entrez, species = &quot;Mm&quot;)
 topGO(enrich_go_inter, ontology = &quot;BP&quot;)</code></pre>
 <pre><code>                                           Term Ont    N  Up Down
 GO:0034470                     ncRNA processing  BP  298  10   20
@@ -625,11 +639,11 @@ GO:0090304 9.200455e-02 1.882863e-08</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 17.04
+Running under: Ubuntu 17.10
 
 Matrix products: default
-BLAS: /usr/lib/libblas/libblas.so.3.7.0
-LAPACK: /usr/lib/lapack/liblapack.so.3.7.0
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -648,18 +662,18 @@ other attached packages:
 [4] BiocGenerics_0.22.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.11         AnnotationDbi_1.38.0 knitr_1.18          
+ [1] Rcpp_0.12.14         AnnotationDbi_1.38.0 knitr_1.18          
  [4] magrittr_1.5         IRanges_2.10.0       munsell_0.4.3       
- [7] colorspace_1.3-2     rlang_0.1.6          stringr_1.2.0       
+ [7] colorspace_1.3-2     rlang_0.1.6.9003     stringr_1.2.0       
 [10] plyr_1.8.4           tools_3.4.3          grid_3.4.3          
 [13] gtable_0.2.0         DBI_0.7              git2r_0.21.0        
 [16] htmltools_0.3.6      yaml_2.1.16          lazyeval_0.2.1      
-[19] rprojroot_1.3-2      digest_0.6.13        tibble_1.3.3        
+[19] rprojroot_1.3-2      digest_0.6.14        tibble_1.4.2        
 [22] org.Mm.eg.db_3.4.1   S4Vectors_0.14.0     memoise_1.1.0       
 [25] RSQLite_1.1-2        evaluate_0.10.1      rmarkdown_1.8       
-[28] labeling_0.3         stringi_1.1.5        GO.db_3.4.1         
-[31] compiler_3.4.3       scales_0.5.0         backports_1.1.2     
-[34] stats4_3.4.3        </code></pre>
+[28] labeling_0.3         stringi_1.1.6        GO.db_3.4.1         
+[31] compiler_3.4.3       pillar_1.1.0         scales_0.5.0        
+[34] backports_1.1.2      stats4_3.4.3        </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
