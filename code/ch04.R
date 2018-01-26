@@ -40,7 +40,8 @@ varmetadata <- data.frame(labelDescription = c(
 
 pdata <- new("AnnotatedDataFrame", data = pheno, varMetadata = varmetadata)
 
-# Create nice feature data columns
+# Create nice feature data columns ---------------------------------------------
+
 feature <- fData(geo) %>%
   mutate(chr = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 1],
          pos = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 2],

@@ -1,0 +1,175 @@
+---
+title: "Differential expression analysis for studies with 2 groups"
+author: "John Blischak"
+date: 2018-01-26
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+Analyze proteomics data set that compares 2 groups.
+
+```{r setup, message=FALSE}
+library("Biobase")
+library("ggplot2")
+library("limma")
+eset <- readRDS("../data/ch02.rds")
+```
+
+## Studies with 2 groups (Video)
+
+Describe the scientific question, the experimental design, and the data
+collected for the 2-group study. Introduce the ExpressionSet object that
+contains the data. Review the quality control procedures covered in past
+Bioconductor courses (specifically comparing distributions and PCA).
+
+## Plot a differentially expressed gene
+
+Create boxplots of a few pre-selected genes (one clearly DE, one
+clearly not, and one in between). Use `pData` to select the phenotype
+variables and `exprs` to access the expression data.
+
+```{r}
+boxplot(exprs(eset)[3, ] ~ pData(eset)$spikein, main = fData(eset)$protein[3])
+boxplot(exprs(eset)[5, ] ~ pData(eset)$spikein, main = fData(eset)$protein[5])
+boxplot(exprs(eset)[463, ] ~ pData(eset)$spikein, main = fData(eset)$protein[463])
+```
+
+## Create a density plot to compare distribution across samples
+
+Use `limma::plotDensities` to confirm that the distribution of gene
+expression levels is consistent across the samples.
+
+```{r}
+plotDensities(exprs(eset), legend = FALSE)
+```
+
+## Create a PCA plot to assess source of variation
+
+Use `prcomp` to compute principal components and then plot PC1 vs. PC2
+to confirm that the biological effect is the main source of variation.
+
+```{r}
+pca <- prcomp(t(exprs(eset)[1:7, ]), scale. = TRUE)
+plot(pca)
+d <- data.frame(pData(eset), pca$x)
+ggplot(d, aes(x = PC1, y = PC2, color = spikein)) +
+  geom_point()
+```
+
+## limma for differential expression  (Video)
+
+Describe the standard limma workflow. Describe the 2 main techniques
+for constructing the linear model: treatment-contrasts versus
+group-means parametrizations.
+
+## Create design matrix for treatment-contrasts parametrization
+
+Use `model.matrix` to create a linear model with an intercept and one
+binary variable. Use `colSums` to reason about how this relates to the
+samples (e.g. the intercept represents the mean across samples because
+it is 1 for every sample).
+
+```{r}
+design <- model.matrix(~spikein, data = pData(eset))
+colSums(design)
+```
+
+## Fit and test model for treatment-contrasts parametrization
+
+Use `limma::lmFit`, `limma::eBayes`, and `limma::decideTests` to fit
+and test the model.
+
+```{r}
+fit <- lmFit(eset, design)
+head(fit$coefficients)
+fit <- eBayes(fit)
+results <- decideTests(fit[, 2])
+summary(results)
+```
+
+## Create design matrix and contrasts matrix for group-means parametrization
+
+Use `model.matrix` to create a linear model with two binary variables
+(and no intercept). Use `colSums` to reason about how this relates to
+the samples (e.g. each of the terms represents the mean for its group
+of samples because it is the only term that is 1 for those samples).
+Use `limma::makeContrasts` to create a contrasts matrix based on this
+new linear model.
+
+```{r}
+design <- model.matrix(~0 + spikein, data = pData(eset))
+colSums(design)
+cont_mat <- makeContrasts(spike_effect = spikein25fmol - spikein10fmol,
+                          levels = design)
+cont_mat
+```
+
+## Fit and test model for group-means parametrization
+
+Use `limma::lmFit`, `limma::contrasts.fit`, `limma::eBayes`, and
+`limma::decideTests` to fit and test the model. Confirm that the
+results are identical to the more traditional linear modelling
+approach used previously.
+
+```{r}
+fit <- lmFit(eset, design)
+head(fit$coefficients)
+fit2 <- contrasts.fit(fit, contrasts = cont_mat)
+head(fit2$coefficients)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
+summary(results)
+```
+
+## Visualizing the results  (Video)
+
+Describe how to access the results with `topTable` and describe the
+columns. Demonstrate some common visualizations.
+
+## Create a histogram of p-values
+
+Use `geom_histogram` to plot `P.Value` column from `limma::topTable`.
+Ask question to confirm they understand that the p-value distribution
+corresponds to the number of differentially expressed genes
+identified.
+
+```{r}
+topTable(fit2)
+stats <- topTable(fit2, number = nrow(fit2), sort.by = "none")
+ggplot(stats, aes(x = P.Value)) +
+  geom_histogram()
+```
+
+## Create a volcano plot
+
+Use `geom_point()` to plot `-log10(P.Value)` vs. `logFC`. Mention
+`limma::volcanoPlot` after exercise is completed.
+
+```{r}
+ggplot(stats, aes(x = logFC, y = -log10(P.Value))) +
+  geom_point()
+```
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```
