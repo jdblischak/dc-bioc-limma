@@ -1,0 +1,97 @@
+---
+title: "Introduction to differential expression analysis"
+author: "John Blischak"
+date: 2018-02-10
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+Cover the basics of the biology and the statistics.
+
+## What is differential expression? (Video)
+
+Describe a simple model of gene regulation (transcription factors, DNA, RNA,
+protein) and the functional genomics technologies used to measure the various
+features. Focus on the type of data they return (continuous vs. discrete).
+
+## Functional genomics technologies (MultipleChoiceExercise)
+
+Choose which is true. The options will be various combinations of genomics
+technologies, what they measure, and the type of data they return. For example,
+"Microarrays measure RNA levels and return continuous data. ChIP-seq measures
+transcription factor binding to DNA and returns discrete data." is true.
+
+## Visualize one differentially expressed gene
+
+Visualize one differentially expressed gene with boxplots (geom_boxplot).
+
+## Visualize many differentially expressed genes
+
+Visualize many differentially expressed genes with a heatmap (stats::heatmap).
+
+## What is a linear model? (Video)
+
+Review the basics of multiple linear regression (dependent vs independent
+variables, continuous vs discrete covariates, intercept term, error term).
+Demonstrate how to specify equations in R (e.g. `lm` and `model.matrix`).
+
+## Standard linear model for differential expression of one gene
+
+Run lm on one gene.
+
+## Standard linear model for differential expression of many genes
+
+Use for loop to run lm on many genes (exact number of genes will be determined
+by 5 sec time limit for DataCamp exercises).
+
+## Visualize results of standard differential expression analysis
+
+Use geom_point to plot effect size versus variance and color by statistical
+significance.
+
+## limma: linear models for functional genomics (Video)
+
+Explain the advantages of using limma for functional genomics experiments over
+traditional linear models: 1) share information across genes to reduce
+uncertainty of variance, 2) flexible system for specifying contrasts of
+interest, 3) integrated into standard differential expression workflow.
+Introduce a limma workflow diagram to orient the individual steps in the
+following chapters within the larger analysis.
+
+## limma for differential expression of many genes
+
+Run pre-written limma code to easily test thousands of genes.
+
+## Visualize results of limma differential expression analysis
+
+Use geom_point to plot effect size versus variance and color by statistical
+significance.
+
+## The benefit of sharing information across genes
+
+Visualize the gene expression pattern of a gene called DE by a traditional
+linear model but not by limma.
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+```

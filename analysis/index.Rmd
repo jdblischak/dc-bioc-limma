@@ -7,6 +7,7 @@ output:
 
 Lesson material for differential expression analysis with [limma][].
 
+* [Chapter 1](ch01.html)
 * [Chapter 2](ch02.html)
 * [Chapter 3](ch03.html)
 * [Chapter 4](ch04.html)
