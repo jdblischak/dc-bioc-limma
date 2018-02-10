@@ -53,6 +53,55 @@ Review the basics of multiple linear regression (dependent vs independent
 variables, continuous vs discrete covariates, intercept term, error term).
 Demonstrate how to specify equations in R (e.g. `lm` and `model.matrix`).
 
+**Transcript:** As you just visualized, differential expression describes the
+situation in which a gene has a different mean expression level between
+conditions. While some gene expression patterns are easily diagnosed as
+differential expression or not from a quick visualization, you also some
+examples that are more ambiguous. Furthermore, you need a method that is more
+robust than a quick visual inspection and also scales to thousands of genes. For
+this you will use the tools of statistical inference to determine if the
+difference in mean expression level is larger than that expected by chance.
+Specifically, you will use linear models to perform the hypothesis tests. Linear
+models are an ideal choice for genomics experiments because their flexibility
+and robustness to assumptions allow you to conveniently model data from various
+study designs and data sources.
+
+You should have already been introduced to linear models, for example in a
+DataCamp course such as Correlation and Regression, or in an introductory
+statistics course. Here I'll review the terminology we will use in the remainder
+of the course, how to specify a linear model in R, and the intuition behind
+linear models.
+
+$$ Y =  \beta_0 + \beta_1 X_1 + \epsilon $$
+
+In this equation of a linear model, Y is the response variable. It must be a
+continous variable. In the context of differential expression, it is a relative
+measure of either RNA or protein expression level for one gene. $X_1$ is an
+explanatory variable, which can be continuous or discrete, for example, control
+group versus treatment, or mutant versus wild type. $\beta_1$ quantifies the
+effect of the explanatory variable on the response variable. Furthermore, we can
+add additional explanatory variables to the equation for more complicated
+experimental designs. Lastly, \epsilon models the random noise in the
+measurements.
+
+In R, you specify a linear model with the function `lm`. This uses R's formula
+syntax. On the left is the object that contains the response variable, and to
+the right of the tilde are the objects that contain the explanatory variable.
+
+```{r eval=FALSE}
+lm(y ~ x1)
+```
+
+A second explanatory variable can be added with a plus sign.
+
+$$ Y =  \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon $$
+
+```{r eval=FALSE}
+lm(y ~ x1 + x2)
+```
+
+
+
 ## Standard linear model for differential expression of one gene
 
 Run lm on one gene.
