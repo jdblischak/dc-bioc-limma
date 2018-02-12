@@ -56,8 +56,8 @@ Demonstrate how to specify equations in R (e.g. `lm` and `model.matrix`).
 **Transcript:** As you just visualized, differential expression describes the
 situation in which a gene has a different mean expression level between
 conditions. While some gene expression patterns are easily diagnosed as
-differential expression or not from a quick visualization, you also some
-examples that are more ambiguous. Furthermore, you need a method that is more
+differential expression or not from a quick visualization, you also saw some
+examples that were more ambiguous. Furthermore, you need a method that is more
 robust than a quick visual inspection and also scales to thousands of genes. For
 this you will use the tools of statistical inference to determine if the
 difference in mean expression level is larger than that expected by chance.
@@ -75,7 +75,7 @@ linear models.
 $$ Y =  \beta_0 + \beta_1 X_1 + \epsilon $$
 
 In this equation of a linear model, Y is the response variable. It must be a
-continous variable. In the context of differential expression, it is a relative
+continuous variable. In the context of differential expression, it is a relative
 measure of either RNA or protein expression level for one gene. $X_1$ is an
 explanatory variable, which can be continuous or discrete, for example, control
 group versus treatment, or mutant versus wild type. $\beta_1$ quantifies the
