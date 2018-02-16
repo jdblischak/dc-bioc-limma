@@ -126,6 +126,122 @@ $$ Y =  \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon $$
 lm(y ~ x1 + x2)
 ```
 
+Building some intuition.
+
+```{r inuition}
+set.seed(1)
+# baseline
+x <- runif(10, min = 0, max = 50)
+y1 <- x * 2 + rnorm(10, sd = 5)
+y1_bar <- mean(y1)
+plot(x, y1)
+abline(h = y1_bar, col = "blue", lty = 2)
+mapply(lines, x, y1_bar)
+mod <- lm(y1 ~ x)
+summary(mod)
+abline(mod, col = "red")
+
+# More error
+y2 <- x * 2 + rnorm(10, sd = 25)
+plot(x, y2)
+mod <- lm(y2 ~ x)
+summary(mod)
+abline(mod, col = "red")
+abline(h = mean(y2), col = "blue", lty = 2)
+# Smaller effect
+y3 <- x * 0.25 + rnorm(10, sd = 5)
+plot(x, y3)
+mod <- lm(y3 ~ x)
+summary(mod)
+abline(mod, col = "red")
+abline(h = mean(y3), col = "blue", lty = 2)
+```
+
+```{r}
+library("broom")
+library("cowplot")
+library("dplyr")
+library("ggplot2")
+theme_set(theme_classic())
+
+sim_lm <- function(n, effect, error, seed = 1) {
+  stopifnot(is.numeric(n), n > 0, length(n) == 1)
+  stopifnot(is.numeric(effect), length(effect) == 1)
+  stopifnot(is.numeric(error), error > 0, length(error) == 1)
+  stopifnot(is.numeric(seed), length(seed) == 1)
+  
+  set.seed(seed)
+  x = runif(n, min = 0, max = 50)
+  y = x * effect + rnorm(n, sd = error)
+  y_bar = mean(y)
+  mod <- lm(y ~ x)
+  coefs <- coef(mod)
+  intercept <- coefs[1]
+  slope <- coefs[2]
+  y_hat = fitted(mod)
+  anova_tidy <- tidy(anova(mod))
+  fstat <- anova_tidy$statistic[1]
+  ss <- anova_tidy$sumsq
+  ssr <- ss[2]
+  sst <- sum(ss)
+  stopifnot(ssr - sum(residuals(mod)^2) < 0.01)
+  stopifnot(sst - sum((y - y_bar)^2) < 0.01)
+  return(data.frame(x, y, y_bar, intercept, slope, y_hat, fstat, ssr, sst,
+                    row.names = 1:n))
+}
+
+plot_ssr <- function(d) {
+  ggplot(d, aes(x = x, y = y)) +
+    geom_point() +
+    geom_abline(aes(intercept = intercept, slope = slope)) +
+    geom_linerange(aes(ymin = y, ymax = y_hat), color = "red",
+                   linetype = "dashed") +
+    geom_text(aes(x = quantile(x, 0.25), y = quantile(y, 0.75),
+                  label = round(ssr, 2)), color = "red") +
+    labs(title = "Sum of squared residuals (noise)")
+}
+
+plot_sst <- function(d) {
+  ggplot(d, aes(x = x, y = y)) +
+    geom_point() +
+    geom_hline(aes(yintercept = y_bar)) +
+    geom_linerange(aes(ymin = y, ymax = y_bar), color = "blue",
+                   linetype = "dashed") +
+    geom_text(aes(x = quantile(x, 0.25), y = quantile(y, 0.75),
+                  label = round(sst, 2)), color = "blue") +
+    labs(title = "Total sum of squares")
+}
+
+# baseline
+baseline <- sim_lm(n = 10, effect = 2, error = 5)
+baseline_ssr <- plot_ssr(baseline)
+dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
+ggsave("../figure/ch01/baseline_ssr.png", baseline_ssr, width = 5, height = 6)
+baseline_sst <- plot_sst(baseline)
+ggsave("../figure/ch01/baseline_sst.png", baseline_sst, width = 5, height = 6)
+plot_grid(baseline_ssr, baseline_sst)
+baseline$fstat[1]
+
+# Increased error
+more_error <- sim_lm(n = 10, effect = 2, error = 25)
+more_error_ssr <- plot_ssr(more_error)
+dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
+ggsave("../figure/ch01/more_error_ssr.png", more_error_ssr, width = 5, height = 6)
+more_error_sst <- plot_sst(more_error)
+ggsave("../figure/ch01/more_error_sst.png", more_error_sst, width = 5, height = 6)
+plot_grid(more_error_ssr, more_error_sst)
+more_error$fstat[1]
+
+# Decreased signal
+less_signal <- sim_lm(n = 10, effect = 0.25, error = 5)
+less_signal_ssr <- plot_ssr(less_signal)
+dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
+ggsave("../figure/ch01/less_signal_ssr.png", less_signal_ssr, width = 5, height = 6)
+less_signal_sst <- plot_sst(less_signal)
+ggsave("../figure/ch01/less_signal_sst.png", less_signal_sst, width = 5, height = 6)
+plot_grid(less_signal_ssr, less_signal_sst)
+less_signal$fstat[1]
+```
 
 
 ## Standard linear model for differential expression of one gene
