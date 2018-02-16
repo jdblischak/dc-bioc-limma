@@ -128,13 +128,31 @@ lm(y ~ x1 + x2)
 
 Building some intuition.
 
-```{r inuition, fig.width = 10, fig.height = 5}
+```{r inuition, fig.width = 10, fig.height = 5, message=FALSE}
 library("broom")
 library("cowplot")
 library("dplyr")
 library("ggplot2")
 theme_set(theme_classic(base_size = 16))
 
+# Simulate a linear regression.
+#
+# n = sample size
+# effect = slope
+# error = standard deviation of distribution of residuals
+# seed = seed for random number generator
+#
+# Returns a data.frame with the following columns:
+#
+# x          Explanatory variable
+# y          Response variable
+# y_bar      Mean of response variable
+# intercept  Intercept of least squares regression line
+# slope      Slope of least squares regression line
+# y_hat      Fitted values
+# fstat      F-statistic
+# ss_exp     Explained sum of squares
+# ss_res     Residual sum of squares (noise)
 sim_lm <- function(n, effect, error, seed = 1) {
   stopifnot(is.numeric(n), n > 0, length(n) == 1)
   stopifnot(is.numeric(effect), length(effect) == 1)
@@ -157,10 +175,11 @@ sim_lm <- function(n, effect, error, seed = 1) {
   ss_res <- ss[2]
   stopifnot(ss_exp - sum((y_hat - y_bar)^2) < 0.01)
   stopifnot(ss_res - sum(residuals(mod)^2) < 0.01)
-  return(data.frame(x, y, y_bar, intercept, slope, y_hat, fstat, ss_res, ss_exp,
+  return(data.frame(x, y, y_bar, intercept, slope, y_hat, fstat, ss_exp, ss_res,
                     row.names = 1:n))
 }
 
+# Visualize the residual sum of squares
 plot_ss_res <- function(d) {
   ggplot(d, aes(x = x, y = y)) +
     geom_point() +
@@ -173,6 +192,7 @@ plot_ss_res <- function(d) {
     ylim(-60, 60)
 }
 
+# Visualize the explained sum of squares
 plot_ss_exp <- function(d) {
   ggplot(d, aes(x = x, y = y)) +
     geom_abline(aes(intercept = intercept, slope = slope)) +
