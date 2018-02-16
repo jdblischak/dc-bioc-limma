@@ -67,7 +67,7 @@ Use `prcomp` to compute principal components and then plot PC1 vs. PC2
 to confirm that the biological effect is the main source of variation.
 
 ```{r}
-pca <- prcomp(t(exprs(eset)[1:7, ]), scale. = TRUE)
+pca <- prcomp(t(exprs(eset)), scale. = TRUE)
 plot(pca)
 d <- data.frame(pData(eset), pca$x)
 ggplot(d, aes(x = PC1, y = PC2, color = spikein)) +
@@ -164,7 +164,8 @@ Use `geom_point()` to plot `-log10(P.Value)` vs. `logFC`. Mention
 `limma::volcanoPlot` after exercise is completed.
 
 ```{r}
-ggplot(stats, aes(x = logFC, y = -log10(P.Value))) +
+stats$significant <- stats$adj.P.Val < 0.05
+ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = significant)) +
   geom_point()
 ```
 
