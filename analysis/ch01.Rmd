@@ -128,41 +128,12 @@ lm(y ~ x1 + x2)
 
 Building some intuition.
 
-```{r inuition}
-set.seed(1)
-# baseline
-x <- runif(10, min = 0, max = 50)
-y1 <- x * 2 + rnorm(10, sd = 5)
-y1_bar <- mean(y1)
-plot(x, y1)
-abline(h = y1_bar, col = "blue", lty = 2)
-mapply(lines, x, y1_bar)
-mod <- lm(y1 ~ x)
-summary(mod)
-abline(mod, col = "red")
-
-# More error
-y2 <- x * 2 + rnorm(10, sd = 25)
-plot(x, y2)
-mod <- lm(y2 ~ x)
-summary(mod)
-abline(mod, col = "red")
-abline(h = mean(y2), col = "blue", lty = 2)
-# Smaller effect
-y3 <- x * 0.25 + rnorm(10, sd = 5)
-plot(x, y3)
-mod <- lm(y3 ~ x)
-summary(mod)
-abline(mod, col = "red")
-abline(h = mean(y3), col = "blue", lty = 2)
-```
-
-```{r}
+```{r inuition, fig.width = 10, fig.height = 5}
 library("broom")
 library("cowplot")
 library("dplyr")
 library("ggplot2")
-theme_set(theme_classic())
+theme_set(theme_classic(base_size = 16))
 
 sim_lm <- function(n, effect, error, seed = 1) {
   stopifnot(is.numeric(n), n > 0, length(n) == 1)
@@ -171,7 +142,7 @@ sim_lm <- function(n, effect, error, seed = 1) {
   stopifnot(is.numeric(seed), length(seed) == 1)
   
   set.seed(seed)
-  x = runif(n, min = 0, max = 50)
+  x = runif(n, min = -25, max = 25)
   y = x * effect + rnorm(n, sd = error)
   y_bar = mean(y)
   mod <- lm(y ~ x)
@@ -198,7 +169,8 @@ plot_ss_res <- function(d) {
                    linetype = "dashed") +
     geom_text(aes(x = quantile(x, 0.25), y = quantile(y, 0.75),
                   label = round(ss_res, 2)), color = "red") +
-    labs(title = "Residual sum of squares (noise)")
+    labs(title = "Residual sum of squares (noise)") +
+    ylim(-60, 60)
 }
 
 plot_ss_exp <- function(d) {
@@ -209,7 +181,8 @@ plot_ss_exp <- function(d) {
                    linetype = "dashed") +
     geom_text(aes(x = quantile(x, 0.25), y = quantile(y, 0.75),
                   label = round(ss_exp, 2)), color = "blue") +
-    labs(title = "Explained sum of squares")
+    labs(title = "Explained sum of squares") +
+    ylim(-60, 60)
 }
 
 # baseline
@@ -223,7 +196,7 @@ plot_grid(baseline_ss_res, baseline_ss_exp)
 baseline$fstat[1]
 
 # Increased error
-more_error <- sim_lm(n = 10, effect = 2, error = 25)
+more_error <- sim_lm(n = 10, effect = 2, error = 10)
 more_error_ss_res <- plot_ss_res(more_error)
 dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
 ggsave("../figure/ch01/more_error_ss_res.png", more_error_ss_res, width = 5, height = 6)
@@ -233,7 +206,7 @@ plot_grid(more_error_ss_res, more_error_ss_exp)
 more_error$fstat[1]
 
 # Decreased signal
-less_signal <- sim_lm(n = 10, effect = 0.25, error = 5)
+less_signal <- sim_lm(n = 10, effect = 1, error = 5)
 less_signal_ss_res <- plot_ss_res(less_signal)
 dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
 ggsave("../figure/ch01/less_signal_ss_res.png", less_signal_ss_res, width = 5, height = 6)
