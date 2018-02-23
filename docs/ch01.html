@@ -321,10 +321,10 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-02-16</p>
+<p><strong>Last updated:</strong> 2018-02-23</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 980afe1</p>
+<p><strong>Code version:</strong> f3df390</p>
 <p>Cover the basics of the biology and the statistics.</p>
 <pre class="r"><code>gexp &lt;- readRDS(&quot;../data/ch01.rds&quot;)</code></pre>
 <div id="what-is-differential-expression-video" class="section level2">
@@ -377,11 +377,39 @@ gene06 13.48818 21.89078 21.25145 12.72401 23.44257 19.38827</code></pre>
 <div id="what-is-a-linear-model-video" class="section level2">
 <h2>What is a linear model? (Video)</h2>
 <p>Review the basics of multiple linear regression (dependent vs independent variables, continuous vs discrete covariates, intercept term, error term). Demonstrate how to specify equations in R (e.g. <code>lm</code> and <code>model.matrix</code>).</p>
+<pre class="r"><code>library(&quot;dplyr&quot;)
+library(&quot;ggplot2&quot;)
+df_vis &lt;- data.frame(status = rep(c(&quot;con&quot;, &quot;treat&quot;), each = 50)) %&gt;%
+  mutate(gene_de = c(rpois(n() / 2, lambda = 12), rpois(n() / 2, lambda = 30)),
+         gene_var =c(rpois(n() / 2, lambda = 15) + rnorm(n() / 2, sd = 10),
+                     rpois(n() / 2, lambda = 25) + rnorm(n() / 2, sd = 10)))
+ggplot(df_vis, aes(x = status, y = gene_de)) +
+  geom_boxplot() +
+  theme_classic(base_size = 16) +
+  ylim(0, 40) +
+  labs(x = &quot;Treatment status&quot;, y = &quot;Gene expression level&quot;)</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;../figure/ch01/gene-de.png&quot;, width = 5, height = 6)</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre class="r"><code>ggplot(df_vis, aes(x = status, y = gene_var)) +
+  geom_boxplot() +
+  theme_classic(base_size = 16) +
+  ylim(0, 40) +
+  labs(x = &quot;Treatment status&quot;, y = &quot;Gene expression level&quot;)</code></pre>
+<pre><code>Warning: Removed 8 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;../figure/ch01/gene-ambiguous.png&quot;, width = 5, height = 6)</code></pre>
+<pre><code>Warning: Removed 8 rows containing non-finite values (stat_boxplot).</code></pre>
 <p><strong>Transcript:</strong> As you just visualized, differential expression describes the situation in which a gene has a different mean expression level between conditions. While some gene expression patterns are easily diagnosed as differential expression or not from a quick visualization, you also saw some examples that were more ambiguous. Furthermore, you need a method that is more robust than a quick visual inspection and also scales to thousands of genes. For this you will use the tools of statistical inference to determine if the difference in mean expression level is larger than that expected by chance. Specifically, you will use linear models to perform the hypothesis tests. Linear models are an ideal choice for genomics experiments because their flexibility and robustness to assumptions allow you to conveniently model data from various study designs and data sources.</p>
 <p>You should have already been introduced to linear models, for example in a DataCamp course such as Correlation and Regression, or in an introductory statistics course. Here I’ll review the terminology we will use in the remainder of the course, how to specify a linear model in R, and the intuition behind linear models.</p>
+<div class="figure">
+<img src="../figure/ch01/temperature.png" alt="Temperature experiment" />
+<p class="caption">Temperature experiment</p>
+</div>
 <p><span class="math display">\[ Y =  \beta_0 + \beta_1 X_1 + \epsilon \]</span></p>
 <p>In this equation of a linear model, Y is the response variable. It must be a continuous variable. In the context of differential expression, it is a relative measure of either RNA or protein expression level for one gene. <span class="math inline">\(X_1\)</span> is an explanatory variable, which can be continuous or discrete, for example, control group versus treatment, or mutant versus wild type. <span class="math inline">\(\beta_1\)</span> quantifies the effect of the explanatory variable on the response variable. Furthermore, we can add additional explanatory variables to the equation for more complicated experimental designs. Lastly, models the random noise in the measurements.</p>
-<p>In R, you specify a linear model with the function <code>lm</code>. This uses R’s formula syntax. On the left is the object that contains the response variable, and to the right of the tilde are the objects that contain the explanatory variable.</p>
+<p>In R, you specify a linear model with the function <code>lm</code>. This uses R’s formula syntax. On the left is the object that contains the response variable, and to the right of the tilde are the objects that contain the explanatory variables.</p>
 <pre class="r"><code>lm(y ~ x1)</code></pre>
 <p>A second explanatory variable can be added with a plus sign.</p>
 <p><span class="math display">\[ Y =  \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon \]</span></p>
@@ -529,30 +557,40 @@ plot_grid(less_signal_ss_res, less_signal_ss_exp)</code></pre>
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X Yosemite 10.10.5
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 17.10
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] cowplot_0.9.2 broom_0.4.2   ggplot2_2.2.1 bindrcpp_0.2  stringr_1.2.0
-[6] tidyr_0.6.3   dplyr_0.7.2  
+[1] cowplot_0.9.2 broom_0.4.3   ggplot2_2.2.1 bindrcpp_0.2  stringr_1.3.0
+[6] tidyr_0.8.0   dplyr_0.7.4  
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.14     git2r_0.21.0     plyr_1.8.4       bindr_0.1       
- [5] tools_3.3.2      digest_0.6.13    evaluate_0.10.1  tibble_1.3.3    
- [9] gtable_0.2.0     nlme_3.1-128     lattice_0.20-34  pkgconfig_2.0.1 
-[13] rlang_0.1.6      psych_1.7.5      yaml_2.1.16      parallel_3.3.2  
-[17] knitr_1.18       rprojroot_1.3-2  grid_3.3.2       glue_1.1.1      
-[21] R6_2.2.2         foreign_0.8-67   rmarkdown_1.8    reshape2_1.4.2  
-[25] magrittr_1.5     backports_1.1.2  scales_0.4.1     htmltools_0.3.6 
-[29] assertthat_0.2.0 mnormt_1.5-5     colorspace_1.3-2 labeling_0.3    
-[33] stringi_1.1.5    lazyeval_0.2.1   munsell_0.4.3   </code></pre>
+ [1] Rcpp_0.12.15     pillar_1.1.0     compiler_3.4.3   git2r_0.21.0    
+ [5] plyr_1.8.4       bindr_0.1        tools_3.4.3      digest_0.6.14   
+ [9] evaluate_0.10.1  tibble_1.4.2     gtable_0.2.0     nlme_3.1-131    
+[13] lattice_0.20-35  pkgconfig_2.0.1  rlang_0.1.6.9003 psych_1.7.8     
+[17] yaml_2.1.16      parallel_3.4.3   knitr_1.20       rprojroot_1.3-2 
+[21] grid_3.4.3       glue_1.2.0       R6_2.2.2         foreign_0.8-69  
+[25] rmarkdown_1.8    reshape2_1.4.3   purrr_0.2.4      magrittr_1.5    
+[29] backports_1.1.2  scales_0.5.0     htmltools_0.3.6  assertthat_0.2.0
+[33] mnormt_1.5-5     colorspace_1.3-2 labeling_0.3     stringi_1.1.6   
+[37] lazyeval_0.2.1   munsell_0.4.3   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
