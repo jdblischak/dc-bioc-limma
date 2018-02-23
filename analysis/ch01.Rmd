@@ -79,6 +79,28 @@ Review the basics of multiple linear regression (dependent vs independent
 variables, continuous vs discrete covariates, intercept term, error term).
 Demonstrate how to specify equations in R (e.g. `lm` and `model.matrix`).
 
+```{r}
+library("dplyr")
+library("ggplot2")
+df_vis <- data.frame(status = rep(c("con", "treat"), each = 50)) %>%
+  mutate(gene_de = c(rpois(n() / 2, lambda = 12), rpois(n() / 2, lambda = 30)),
+         gene_var =c(rpois(n() / 2, lambda = 15) + rnorm(n() / 2, sd = 10),
+                     rpois(n() / 2, lambda = 25) + rnorm(n() / 2, sd = 10)))
+ggplot(df_vis, aes(x = status, y = gene_de)) +
+  geom_boxplot() +
+  theme_classic(base_size = 16) +
+  ylim(0, 40) +
+  labs(x = "Treatment status", y = "Gene expression level")
+ggsave("../figure/ch01/gene-de.png", width = 5, height = 6)
+ggplot(df_vis, aes(x = status, y = gene_var)) +
+  geom_boxplot() +
+  theme_classic(base_size = 16) +
+  ylim(0, 40) +
+  labs(x = "Treatment status", y = "Gene expression level")
+ggsave("../figure/ch01/gene-ambiguous.png", width = 5, height = 6)
+```
+
+
 **Transcript:** As you just visualized, differential expression describes the
 situation in which a gene has a different mean expression level between
 conditions. While some gene expression patterns are easily diagnosed as
@@ -98,6 +120,8 @@ statistics course. Here I'll review the terminology we will use in the remainder
 of the course, how to specify a linear model in R, and the intuition behind
 linear models.
 
+![Temperature experiment](../figure/ch01/temperature.png)
+
 $$ Y =  \beta_0 + \beta_1 X_1 + \epsilon $$
 
 In this equation of a linear model, Y is the response variable. It must be a
@@ -112,7 +136,7 @@ measurements.
 
 In R, you specify a linear model with the function `lm`. This uses R's formula
 syntax. On the left is the object that contains the response variable, and to
-the right of the tilde are the objects that contain the explanatory variable.
+the right of the tilde are the objects that contain the explanatory variables.
 
 ```{r eval=FALSE}
 lm(y ~ x1)
