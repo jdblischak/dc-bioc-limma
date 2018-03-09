@@ -319,15 +319,16 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-01-25</p>
+<p><strong>Last updated:</strong> 2018-03-09</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> dc82382</p>
+<p><strong>Code version:</strong> a2fc9a7</p>
 <p>Analayze microarray data from Zhang et al., 2012, which measured gene expression in hearts from wild type and Top2b null mice treated with doxorubicin or a control.</p>
 <pre class="r"><code>library(&quot;Biobase&quot;)
 library(&quot;ggplot2&quot;)
-library(&quot;limma&quot;)
-eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
+library(&quot;limma&quot;)</code></pre>
+<pre><code>Warning: package &#39;limma&#39; was built under R version 3.3.3</code></pre>
+<pre class="r"><code>eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
 <div id="studies-with-a-2x2-factorial-design-video" class="section level2">
 <h2>Studies with a 2x2 factorial design (Video)</h2>
 <p>Describe the scientific question, the experimental design, and the data collected for the 2x2 factorial study.</p>
@@ -374,12 +375,16 @@ ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
 <div id="visualize-gene-expression-distribution-with-boxplots" class="section level2">
 <h2>Visualize gene expression distribution with boxplots</h2>
 <p>Use boxplots as an alternative to density plots for checking the distribution of gene expression levels. Note pro (easier to see which sample belongs to each distribution) and con (hides any multimodality).</p>
-<pre class="r"><code>boxplot(log(exprs(eset)), las = 2)</code></pre>
+<pre class="r"><code>boxplot(exprs(eset))</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>boxplot(log(exprs(eset)))</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>boxplot(log(exprs(eset)), las = 2)</code></pre>
+<p><img src="figure/ch04.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="perform-pca" class="section level2">
 <h2>Perform PCA</h2>
-<p>Use <code>prcomp</code> to calculate PCs and plot PC1 vs. PC2 to confirm that the samples are separated by genotype and treatment. Note that Top2b mice all cluster with untreated WT samples since they are resistant to the treatment.</p>
+<p>Use <code>prcomp</code> to calculate PCs and plot PC2 vs. PC1 to confirm that the samples are separated by genotype and treatment. Note that Top2b mice all cluster with untreated WT samples since they are resistant to the treatment.</p>
 <pre class="r"><code>pca &lt;- prcomp(t(exprs(eset)), scale. = TRUE)
 plot(pca)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -415,7 +420,14 @@ colSums(design)</code></pre>
                           DoxTop = Tob2b.Dox - Tob2b.PBS,
                           Interaction = (Tob2b.Dox - Tob2b.PBS) -
                                         (WT.Dox - WT.PBS),
-                          levels = design)</code></pre>
+                          levels = design)
+cont_mat</code></pre>
+<pre><code>           Contrasts
+Levels      DoxWT DoxTop Interaction
+  Tob2b.Dox     0      1           1
+  Tob2b.PBS     0     -1          -1
+  WT.Dox        1      0          -1
+  WT.PBS       -1      0           1</code></pre>
 </div>
 <div id="fit-and-test-2x2-factorial-design" class="section level2">
 <h2>Fit and test 2x2 factorial design</h2>
@@ -430,7 +442,16 @@ head(fit$coefficients)</code></pre>
 5 264.7589623 245.4630817 294.2404533 274.2917363
 6   0.3032463   0.2958423   0.3525713   0.3611247</code></pre>
 <pre class="r"><code>fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
-fit2 &lt;- eBayes(fit2)
+head(fit2$coefficients)</code></pre>
+<pre><code>   Contrasts
+           DoxWT       DoxTop Interaction
+  1 -0.008088667  0.002929667  0.01101833
+  2  0.507050333 -0.380493667 -0.88754400
+  3  0.241710667 -0.019509667 -0.26122033
+  4 -0.008354667  0.005741000  0.01409567
+  5 19.948717000 19.295880667 -0.65283633
+  6 -0.008553333  0.007404000  0.01595733</code></pre>
+<pre class="r"><code>fit2 &lt;- eBayes(fit2)
 results &lt;- decideTests(fit2)
 summary(results)</code></pre>
 <pre><code>   DoxWT DoxTop Interaction
@@ -464,35 +485,35 @@ path:mmu05414                           Dilated cardiomyopathy (DCM)  88
 path:mmu04012                                 ErbB signaling pathway  85
 path:mmu04217                                            Necroptosis 158
 path:mmu04971                                 Gastric acid secretion  74
-path:mmu05410                      Hypertrophic cardiomyopathy (HCM)  83
 path:mmu04144                                            Endocytosis 262
+path:mmu05410                      Hypertrophic cardiomyopathy (HCM)  83
 path:mmu05202                Transcriptional misregulation in cancer 174
 path:mmu05205                                Proteoglycans in cancer 201
 path:mmu03040                                            Spliceosome 129
-path:mmu04066                                HIF-1 signaling pathway 103
 path:mmu03013                                          RNA transport 166
+path:mmu04066                                HIF-1 signaling pathway 103
 path:mmu04115                                  p53 signaling pathway  67
               Up Down         P.Up       P.Down
-path:mmu05322 25    1 1.426245e-10 9.997085e-01
-path:mmu05034 29   12 3.105091e-09 5.059241e-01
-path:mmu03008 19    2 5.656212e-09 9.764694e-01
-path:mmu05203 33   11 6.099541e-09 8.943148e-01
-path:mmu05412  0   20 1.000000e+00 6.876649e-08
-path:mmu04137 15    7 3.885675e-07 1.560142e-01
-path:mmu04261  5   27 8.673626e-01 2.721260e-06
-path:mmu04022  4   29 9.727255e-01 4.439987e-06
-path:mmu05414  0   19 1.000000e+00 9.219800e-06
-path:mmu04012  5   18 4.354549e-01 2.095579e-05
-path:mmu04217 21   14 4.560626e-05 2.283053e-01
-path:mmu04971  2   16 8.966206e-01 4.580638e-05
-path:mmu05410  0   17 1.000000e+00 5.557234e-05
-path:mmu04144 29   20 5.812766e-05 3.967395e-01
-path:mmu05202 22   10 6.526743e-05 7.975774e-01
-path:mmu05205 13   30 2.223823e-01 7.169396e-05
-path:mmu03040 18   11 8.390967e-05 3.054608e-01
-path:mmu04066  8   19 1.524219e-01 9.334771e-05
-path:mmu03013 21    8 9.472685e-05 9.099991e-01
-path:mmu04115 12    2 1.185986e-04 9.561380e-01</code></pre>
+path:mmu05322 25    1 1.360149e-10 9.997123e-01
+path:mmu05034 29   12 2.951438e-09 5.082281e-01
+path:mmu03008 19    2 5.449275e-09 9.766541e-01
+path:mmu05203 33   11 5.774019e-09 8.954277e-01
+path:mmu05412  0   20 1.000000e+00 7.074448e-08
+path:mmu04137 15    7 3.772740e-07 1.569358e-01
+path:mmu04261  5   27 8.659872e-01 2.812002e-06
+path:mmu04022  4   29 9.723100e-01 4.593838e-06
+path:mmu05414  0   19 1.000000e+00 9.447132e-06
+path:mmu04012  5   18 4.333938e-01 2.143931e-05
+path:mmu04217 21   14 4.411142e-05 2.300946e-01
+path:mmu04971  2   16 8.958342e-01 4.674899e-05
+path:mmu04144 29   20 5.580969e-05 3.996049e-01
+path:mmu05410  0   17 1.000000e+00 5.676062e-05
+path:mmu05202 22   10 6.308956e-05 7.991679e-01
+path:mmu05205 13   30 2.199450e-01 7.398417e-05
+path:mmu03040 18   11 8.147315e-05 3.073089e-01
+path:mmu03013 21    8 9.169936e-05 9.108638e-01
+path:mmu04066  8   19 1.510066e-01 9.547073e-05
+path:mmu04115 12    2 1.160126e-04 9.564316e-01</code></pre>
 <pre class="r"><code>enrich_kegg_inter &lt;- kegga(fit2, coef = &quot;Interaction&quot;,
                         geneid = entrez, species = &quot;Mm&quot;)
 topKEGG(enrich_kegg_inter)</code></pre>
@@ -509,8 +530,8 @@ path:mmu05212                                      Pancreatic cancer  75
 path:mmu05220                               Chronic myeloid leukemia  78
 path:mmu05205                                Proteoglycans in cancer 201
 path:mmu04930                              Type II diabetes mellitus  48
-path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
 path:mmu04211                           Longevity regulating pathway  90
+path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
 path:mmu05222                                 Small cell lung cancer  92
 path:mmu04210                                              Apoptosis 134
 path:mmu05213                                     Endometrial cancer  58
@@ -518,26 +539,26 @@ path:mmu04933   AGE-RAGE signaling pathway in diabetic complications 100
 path:mmu05217                                   Basal cell carcinoma  63
 path:mmu01522                                   Endocrine resistance  93
               Up Down         P.Up       P.Down
-path:mmu03008  0   10 1.0000000000 1.112720e-08
-path:mmu05322  0   10 1.0000000000 3.521623e-07
-path:mmu05034  5   11 0.5255044610 2.016981e-06
-path:mmu05203  3   12 0.9492156881 3.743765e-06
-path:mmu04919 11    2 0.0004835667 3.712397e-01
-path:mmu00230 14    3 0.0005136952 3.103476e-01
-path:mmu05414  9    0 0.0009716250 1.000000e+00
-path:mmu05412  8    0 0.0010756656 1.000000e+00
-path:mmu05212  3    5 0.3720331617 1.478029e-03
-path:mmu05220  4    5 0.1904216149 1.760999e-03
-path:mmu05205 14    5 0.0020872023 7.498761e-02
-path:mmu04930  6    1 0.0024778049 4.192730e-01
-path:mmu04261 11    1 0.0032165847 8.083757e-01
-path:mmu04211  3    5 0.4878447796 3.300887e-03
-path:mmu05222  1    5 0.9345473342 3.629591e-03
-path:mmu04210  6    6 0.1938597213 3.834680e-03
-path:mmu05213  3    4 0.2368628122 3.961212e-03
-path:mmu04933  6    5 0.0702488039 5.182159e-03
-path:mmu05217  4    4 0.1097270801 5.330731e-03
-path:mmu01522  8    3 0.0054454308 8.638351e-02</code></pre>
+path:mmu03008  0   10 1.0000000000 1.037456e-08
+path:mmu05322  0   10 1.0000000000 3.290826e-07
+path:mmu05034  5   11 0.5267414152 1.877653e-06
+path:mmu05203  3   12 0.9495292564 3.469990e-06
+path:mmu04919 11    2 0.0004897690 3.677806e-01
+path:mmu00230 14    3 0.0005216390 3.063599e-01
+path:mmu05414  9    0 0.0009819112 1.000000e+00
+path:mmu05412  8    0 0.0010859864 1.000000e+00
+path:mmu05212  3    5 0.3728647626 1.430468e-03
+path:mmu05220  4    5 0.1910693728 1.704663e-03
+path:mmu05205 14    5 0.0021168933 7.314734e-02
+path:mmu04930  6    1 0.0024959647 4.169037e-01
+path:mmu04211  3    5 0.4887699119 3.197753e-03
+path:mmu04261 11    1 0.0032536513 8.059738e-01
+path:mmu05222  1    5 0.9347916590 3.516638e-03
+path:mmu04210  6    6 0.1947050270 3.698151e-03
+path:mmu05213  3    4 0.2374929187 3.857974e-03
+path:mmu04933  6    5 0.0706320008 5.023456e-03
+path:mmu05217  4    4 0.1101489261 5.193414e-03
+path:mmu01522  8    3 0.0054930754 8.491627e-02</code></pre>
 </div>
 <div id="enrichment-of-gene-ontology-categories" class="section level2">
 <h2>Enrichment of Gene Ontology categories</h2>
@@ -546,134 +567,124 @@ path:mmu01522  8    3 0.0054454308 8.638351e-02</code></pre>
                       geneid = entrez, species = &quot;Mm&quot;)
 topGO(enrich_go_wt, ontology = &quot;BP&quot;)</code></pre>
 <pre><code>                                                       Term Ont    N  Up
-GO:0090304                   nucleic acid metabolic process  BP 4320 411
-GO:0044260         cellular macromolecule metabolic process  BP 7119 574
-GO:0016070                            RNA metabolic process  BP 3866 371
-GO:0006139 nucleobase-containing compound metabolic process  BP 4868 428
-GO:0034641     cellular nitrogen compound metabolic process  BP 5483 461
-GO:0046483                    heterocycle metabolic process  BP 4987 430
-GO:0006725     cellular aromatic compound metabolic process  BP 5044 432
-GO:0043170                  macromolecule metabolic process  BP 7787 594
-GO:0010467                                  gene expression  BP 4584 401
-GO:0006807              nitrogen compound metabolic process  BP 5772 474
-GO:1901360        organic cyclic compound metabolic process  BP 5218 434
-GO:0006396                                   RNA processing  BP  752 112
-GO:0044237                       cellular metabolic process  BP 8868 640
-GO:0022613             ribonucleoprotein complex biogenesis  BP  365  71
-GO:0044238                        primary metabolic process  BP 8881 631
-GO:0044763                 single-organism cellular process  BP 9405 524
-GO:0034645      cellular macromolecule biosynthetic process  BP 4071 342
-GO:0009059               macromolecule biosynthetic process  BP 4189 347
-GO:0071704              organic substance metabolic process  BP 9265 644
-GO:0032774                         RNA biosynthetic process  BP 3128 278
+GO:0090304                   nucleic acid metabolic process  BP 4256 411
+GO:0016070                            RNA metabolic process  BP 3810 373
+GO:0044260         cellular macromolecule metabolic process  BP 7072 577
+GO:0006139 nucleobase-containing compound metabolic process  BP 4786 426
+GO:0034641     cellular nitrogen compound metabolic process  BP 5404 460
+GO:0046483                    heterocycle metabolic process  BP 4882 427
+GO:0043170                  macromolecule metabolic process  BP 7739 598
+GO:0006725     cellular aromatic compound metabolic process  BP 4945 429
+GO:0010467                                  gene expression  BP 4539 403
+GO:0006807              nitrogen compound metabolic process  BP 5725 474
+GO:1901360        organic cyclic compound metabolic process  BP 5109 432
+GO:0006396                                   RNA processing  BP  742 113
+GO:0044237                       cellular metabolic process  BP 8723 633
+GO:0022613             ribonucleoprotein complex biogenesis  BP  366  71
+GO:0044238                        primary metabolic process  BP 8743 626
+GO:0034645      cellular macromolecule biosynthetic process  BP 4075 344
+GO:0071704              organic substance metabolic process  BP 9212 645
+GO:0051252              regulation of RNA metabolic process  BP 3121 280
+GO:0032774                         RNA biosynthetic process  BP 3092 278
+GO:0097659             nucleic acid-templated transcription  BP 3078 277
            Down         P.Up       P.Down
-GO:0090304  331 8.237144e-36 1.933475e-02
-GO:0044260  582 2.562324e-32 2.605503e-07
-GO:0016070  306 2.634152e-32 4.728531e-03
-GO:0006139  395 1.986706e-29 1.458069e-04
-GO:0034641  452 1.080822e-27 6.550268e-06
-GO:0046483  409 1.139985e-27 3.881083e-05
-GO:0006725  412 3.540449e-27 5.247892e-05
-GO:0043170  625 1.076190e-26 1.009762e-06
-GO:0010467  369 1.336454e-26 4.980610e-04
-GO:0006807  469 2.851898e-26 1.935534e-05
-GO:1901360  424 1.605578e-24 6.287642e-05
-GO:0006396   66 8.890930e-23 2.842314e-02
-GO:0044237  740 1.082989e-22 2.998919e-12
-GO:0022613   25 2.882609e-21 5.557635e-01
-GO:0044238  728 3.338037e-20 3.451549e-10
-GO:0044763  814 2.248867e-01 3.148649e-19
-GO:0034645  332 6.059148e-19 4.291718e-04
-GO:0009059  339 2.848717e-18 6.358933e-04
-GO:0071704  764 2.961528e-18 1.291450e-11
-GO:0032774  243 3.168260e-18 2.640811e-02</code></pre>
+GO:0090304  331 1.504047e-37 8.626750e-03
+GO:0016070  306 1.468665e-34 1.970377e-03
+GO:0044260  589 2.147486e-34 9.800194e-09
+GO:0006139  393 1.214879e-30 5.157099e-05
+GO:0034641  453 4.594157e-29 8.906329e-07
+GO:0046483  406 5.642472e-29 1.051022e-05
+GO:0043170  630 7.077190e-29 8.377610e-08
+GO:0006725  409 2.423666e-28 1.647989e-05
+GO:0010467  378 2.692286e-28 2.196723e-05
+GO:0006807  472 2.722933e-27 3.295379e-06
+GO:1901360  420 4.358967e-26 2.178695e-05
+GO:0006396   65 7.616058e-24 3.022888e-02
+GO:0044237  731 3.723539e-23 1.744190e-12
+GO:0022613   26 3.096042e-21 4.775639e-01
+GO:0044238  725 4.779276e-21 2.905773e-11
+GO:0034645  334 1.552262e-19 2.752467e-04
+GO:0071704  765 2.262336e-19 1.992779e-12
+GO:0051252  254 4.844028e-19 2.593424e-03
+GO:0032774  244 5.051745e-19 1.343578e-02
+GO:0097659  242 5.273962e-19 1.615435e-02</code></pre>
 <pre class="r"><code>enrich_go_inter &lt;- goana(fit2, coef = &quot;Interaction&quot;,
                          geneid = entrez, species = &quot;Mm&quot;)
 topGO(enrich_go_inter, ontology = &quot;BP&quot;)</code></pre>
-<pre><code>                                           Term Ont    N  Up Down
-GO:0034470                     ncRNA processing  BP  298  10   20
-GO:0006334                  nucleosome assembly  BP   86   1   12
-GO:0034728              nucleosome organization  BP  111   2   13
-GO:0006396                       RNA processing  BP  752  29   30
-GO:0034660              ncRNA metabolic process  BP  406  13   22
-GO:0071103              DNA conformation change  BP  175   3   15
-GO:0042254                  ribosome biogenesis  BP  245   4   17
-GO:0031497                   chromatin assembly  BP  105   1   12
-GO:0060047                    heart contraction  BP  197  25    2
-GO:0003015                        heart process  BP  200  25    2
-GO:0006996               organelle organization  BP 3306 157   58
-GO:0016072               rRNA metabolic process  BP  201   4   15
-GO:0006364                      rRNA processing  BP  173   3   14
-GO:0008016      regulation of heart contraction  BP  163  22    2
-GO:0044763     single-organism cellular process  BP 9405 356  101
-GO:0061337                   cardiac conduction  BP   54  13    0
-GO:0086003      cardiac muscle cell contraction  BP   55  13    0
-GO:0006333    chromatin assembly or disassembly  BP  127   2   12
-GO:0022613 ribonucleoprotein complex biogenesis  BP  365  12   19
-GO:0090304       nucleic acid metabolic process  BP 4320 145   80
+<pre><code>                                                    Term Ont    N  Up Down
+GO:0034470                              ncRNA processing  BP  300  10   20
+GO:0042254                           ribosome biogenesis  BP  249   4   18
+GO:0006334                           nucleosome assembly  BP   90   1   12
+GO:0006396                                RNA processing  BP  742  28   30
+GO:0034728                       nucleosome organization  BP  114   2   13
+GO:0034660                       ncRNA metabolic process  BP  402  12   22
+GO:0071103                       DNA conformation change  BP  174   3   15
+GO:0031497                            chromatin assembly  BP  106   1   12
+GO:0022613          ribonucleoprotein complex biogenesis  BP  366  11   20
+GO:0016043               cellular component organization  BP 5401 230   67
+GO:0006364                               rRNA processing  BP  169   3   14
+GO:0060047                             heart contraction  BP  187  24    2
+GO:0003015                                 heart process  BP  190  24    2
+GO:0016072                        rRNA metabolic process  BP  174   3   14
+GO:0090304                nucleic acid metabolic process  BP 4256 143   81
+GO:0061337                            cardiac conduction  BP   45  12    0
+GO:0086003               cardiac muscle cell contraction  BP   46  12    0
+GO:0006333             chromatin assembly or disassembly  BP  127   2   12
+GO:0071840 cellular component organization or biogenesis  BP 5552 232   78
+GO:0030490                        maturation of SSU-rRNA  BP   47   0    8
                    P.Up       P.Down
-GO:0034470 4.186529e-01 4.221255e-11
-GO:0006334 9.298010e-01 8.594260e-11
-GO:0034728 8.545642e-01 1.325168e-10
-GO:0006396 1.119846e-01 2.382955e-10
-GO:0034660 4.618739e-01 2.687212e-10
-GO:0071103 9.037569e-01 4.308571e-10
-GO:0042254 9.421080e-01 7.750073e-10
-GO:0031497 9.610251e-01 9.237360e-10
-GO:0060047 1.602977e-09 6.069567e-01
-GO:0003015 2.201973e-09 6.151907e-01
-GO:0006996 2.278770e-09 2.205572e-05
-GO:0016072 8.628904e-01 2.950107e-09
-GO:0006364 8.995292e-01 3.543597e-09
-GO:0008016 4.825936e-09 5.044555e-01
-GO:0044763 5.589447e-09 3.282408e-01
-GO:0061337 5.788772e-09 1.000000e+00
-GO:0086003 7.372161e-09 1.000000e+00
-GO:0006333 9.014547e-01 8.340962e-09
-GO:0022613 4.303453e-01 9.070431e-09
-GO:0090304 9.200455e-02 1.882863e-08</code></pre>
+GO:0034470 4.276026e-01 4.956310e-11
+GO:0042254 9.468523e-01 1.280676e-10
+GO:0006334 9.380859e-01 1.522812e-10
+GO:0006396 1.404747e-01 1.829287e-10
+GO:0034728 8.649106e-01 1.912084e-10
+GO:0034660 5.655911e-01 2.325658e-10
+GO:0071103 9.018931e-01 4.099080e-10
+GO:0031497 9.622922e-01 1.058346e-09
+GO:0022613 5.571261e-01 1.637937e-09
+GO:0016043 2.509447e-09 5.204254e-02
+GO:0006364 8.908148e-01 2.688905e-09
+GO:0060047 2.742485e-09 5.797084e-01
+GO:0003015 3.784836e-09 5.883840e-01
+GO:0016072 9.018931e-01 3.928343e-09
+GO:0090304 9.322263e-02 4.457810e-09
+GO:0061337 6.378454e-09 1.000000e+00
+GO:0086003 8.393293e-09 1.000000e+00
+GO:0006333 9.016483e-01 8.547694e-09
+GO:0071840 1.190080e-08 1.306441e-03
+GO:0030490 1.000000e+00 2.600262e-08</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.4.3 (2017-11-30)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 17.10
-
-Matrix products: default
-BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
-LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X Yosemite 10.10.5
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] parallel  stats     graphics  grDevices utils     datasets  methods  
 [8] base     
 
 other attached packages:
-[1] limma_3.32.2        ggplot2_2.2.1       Biobase_2.36.2     
-[4] BiocGenerics_0.22.1
+[1] limma_3.30.13       ggplot2_2.2.1       Biobase_2.34.0     
+[4] BiocGenerics_0.20.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.14         AnnotationDbi_1.38.0 knitr_1.18          
- [4] magrittr_1.5         IRanges_2.10.0       munsell_0.4.3       
- [7] colorspace_1.3-2     rlang_0.1.6.9003     stringr_1.2.0       
-[10] plyr_1.8.4           tools_3.4.3          grid_3.4.3          
-[13] gtable_0.2.0         DBI_0.7              git2r_0.21.0        
+ [1] Rcpp_0.12.14         AnnotationDbi_1.36.2 knitr_1.18          
+ [4] magrittr_1.5         IRanges_2.8.2        munsell_0.4.3       
+ [7] colorspace_1.3-2     rlang_0.1.6          stringr_1.2.0       
+[10] plyr_1.8.4           tools_3.3.2          grid_3.3.2          
+[13] gtable_0.2.0         DBI_0.6-1            git2r_0.21.0        
 [16] htmltools_0.3.6      yaml_2.1.16          lazyeval_0.2.1      
-[19] rprojroot_1.3-2      digest_0.6.14        tibble_1.4.2        
-[22] org.Mm.eg.db_3.4.1   S4Vectors_0.14.0     memoise_1.1.0       
-[25] RSQLite_1.1-2        evaluate_0.10.1      rmarkdown_1.8       
-[28] labeling_0.3         stringi_1.1.6        GO.db_3.4.1         
-[31] compiler_3.4.3       pillar_1.1.0         scales_0.5.0        
-[34] backports_1.1.2      stats4_3.4.3        </code></pre>
+[19] rprojroot_1.3-2      digest_0.6.13        tibble_1.3.4        
+[22] org.Mm.eg.db_3.4.0   S4Vectors_0.12.2     memoise_1.1.0       
+[25] RSQLite_1.1-2        evaluate_0.10.1      rmarkdown_1.8.10    
+[28] labeling_0.3         stringi_1.1.5        GO.db_3.4.0         
+[31] scales_0.4.1         backports_1.1.2      stats4_3.3.2        </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
