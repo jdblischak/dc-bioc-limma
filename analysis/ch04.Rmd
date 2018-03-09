@@ -61,12 +61,14 @@ gene expression levels. Note pro (easier to see which sample belongs to each
 distribution) and con (hides any multimodality).
 
 ```{r}
+boxplot(exprs(eset))
+boxplot(log(exprs(eset)))
 boxplot(log(exprs(eset)), las = 2)
 ```
 
 ## Perform PCA
 
-Use `prcomp` to calculate PCs and plot PC1 vs. PC2 to confirm that the
+Use `prcomp` to calculate PCs and plot PC2 vs. PC1 to confirm that the
 samples are separated by genotype and treatment. Note that Top2b mice
 all cluster with untreated WT samples since they are resistant to the
 treatment.
@@ -112,6 +114,7 @@ cont_mat <- makeContrasts(DoxWT = WT.Dox - WT.PBS,
                           Interaction = (Tob2b.Dox - Tob2b.PBS) -
                                         (WT.Dox - WT.PBS),
                           levels = design)
+cont_mat
 ```
 
 ## Fit and test 2x2 factorial design
@@ -124,6 +127,7 @@ visualize overlap of differentially expressed genes.
 fit <- lmFit(eset, design)
 head(fit$coefficients)
 fit2 <- contrasts.fit(fit, contrasts = cont_mat)
+head(fit2$coefficients)
 fit2 <- eBayes(fit2)
 results <- decideTests(fit2)
 summary(results)
