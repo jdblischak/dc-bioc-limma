@@ -321,6 +321,22 @@ hist(p)
 Use geom_point to plot effect size versus variance and color by statistical
 significance.
 
+
+```{r}
+results_lm <- data.frame(effect_size = stats$lm_beta,
+                         std_dev = stats$sd,
+                         de = stats$lm_p < 0.05)
+```
+
+
+```{r}
+head(results_lm)
+
+ggplot(results_lm, aes(x = std_dev, y = effect_size, color = de)) +
+  geom_point()
+```
+
+
 ## limma: linear models for functional genomics (Video)
 
 Explain the advantages of using limma for functional genomics experiments over
@@ -338,6 +354,7 @@ Run pre-written limma code to easily test thousands of genes.
 
 ```{r}
 library("limma")
+print(group)
 
 # Setup the study design matrix
 design <- model.matrix(~group)
@@ -348,7 +365,7 @@ fit <- lmFit(gexp, design)
 fit <- eBayes(fit)
 
 # Summarize results
-results <- decideTests(fit[, 2])
+results <- decideTests(fit[, "group"])
 summary(results)
 ```
 
@@ -356,6 +373,23 @@ summary(results)
 
 Use geom_point to plot effect size versus variance and color by statistical
 significance.
+
+
+
+```{r}
+results_limma <- data.frame(effect_size = stats$logFC,
+                            std_dev = stats$sd,
+                            de = stats$adj.P.Val < 0.05)
+```
+
+
+```{r}
+head(results_lm)
+
+ggplot(results_lm, aes(x = std_dev, y = effect_size, color = de)) +
+  geom_point()
+```
+
 
 ## The benefit of sharing information across genes
 
