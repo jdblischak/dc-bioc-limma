@@ -29,6 +29,9 @@ Cover the basics of the biology and the statistics.
 ```{r setup}
 gexp <- readRDS("../data/ch01.rds")
 stats <- readRDS("../data/ch01-stats.rds")
+de <- readRDS("../data/de.rds")
+single_gene <- readRDS("../data/single_gene.rds")
+compare <- readRDS("../data/compare.rds")
 ```
 
 ## What is differential expression? (Video)
@@ -47,18 +50,6 @@ transcription factor binding to DNA and returns discrete data." is true.
 ## Visualize one differentially expressed gene
 
 Visualize one differentially expressed gene with boxplots (geom_boxplot).
-
-```{r}
-index <- which(stats$labels_pre == "DE-up; low-var" & stats$labels == "DE")[1]
-library("dplyr")
-library("tidyr")
-library("stringr")
-single_gene <- gexp %>% as.data.frame %>%
-  slice(index) %>%
-  gather(key = "group", value = "gene") %>%
-  mutate(group = str_extract(group, "[a-z]*")) %>%
-  as.data.frame()
-```
 
 ```{r}
 library("ggplot2")
@@ -323,16 +314,9 @@ significance.
 
 
 ```{r}
-results_lm <- data.frame(effect_size = stats$lm_beta,
-                         std_dev = stats$sd,
-                         de = stats$lm_p < 0.05)
-```
+head(de)
 
-
-```{r}
-head(results_lm)
-
-ggplot(results_lm, aes(x = std_dev, y = effect_size, color = de)) +
+ggplot(de, aes(x = std_dev, y = effect_size, color = lm)) +
   geom_point()
 ```
 
@@ -375,18 +359,13 @@ Use geom_point to plot effect size versus variance and color by statistical
 significance.
 
 
-
 ```{r}
-results_limma <- data.frame(effect_size = stats$logFC,
-                            std_dev = stats$sd,
-                            de = stats$adj.P.Val < 0.05)
-```
+head(de)
 
+# View the number of discrepancies
+table(de$lm, de$limma)
 
-```{r}
-head(results_lm)
-
-ggplot(results_lm, aes(x = std_dev, y = effect_size, color = de)) +
+ggplot(de, aes(x = std_dev, y = effect_size, color = limma)) +
   geom_point()
 ```
 
@@ -395,6 +374,14 @@ ggplot(results_lm, aes(x = std_dev, y = effect_size, color = de)) +
 
 Visualize the gene expression pattern of a gene called DE by a traditional
 linear model but not by limma.
+
+```{r}
+head(compare)
+
+ggplot(compare, aes(x = group, y = gene)) +
+  geom_boxplot() +
+  facet_wrap(~type, nrow = 1)
+```
 
 ## Session information
 

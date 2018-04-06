@@ -93,6 +93,53 @@ table(stats$labels, stats$labels_pre)
 
 saveRDS(stats, "../data/ch01-stats.rds")
 
+stopifnot(stats$logFC == stats$lm_beta)
+
+de <- data.frame(effect_size = stats$lm_beta,
+                 std_dev = stats$sd,
+                 lm = stats$lm_p < 0.05,
+                 limma = stats$adj.P.Val < 0.05)
+
+saveRDS(de, "../data/de.rds")
+
+# Example genes ----------------------------------------------------------------
+
+library("dplyr")
+library("tidyr")
+library("stringr")
+
+# Find a good example of a DE gene
+index <- which(stats$labels_pre == "DE-up; low-var" & stats$labels == "DE")[1]
+single_gene <- gexp %>% as.data.frame %>%
+  slice(index) %>%
+  gather(key = "group", value = "gene") %>%
+  mutate(group = str_extract(group, "[a-z]*")) %>%
+  as.data.frame()
+
+saveRDS(single_gene, "../data/single_gene.rds")
+
+# Find a gene that is DE for both, DE for lm-only, and DE for limma-only
+de_not <- de_lm <- which(stats$labels == "non-DE" &
+                           stats$labels_pre == "non-DE; high-var" &
+                           stats$logFC > 0)[1]
+de_both <- which(stats$labels == "DE" &
+                   stats$labels_pre == "DE-up; low-var")[1]
+de_lm <- which(stats$labels == "lm-only" &
+                 stats$labels_pre == "non-DE; low-var" &
+                 stats$logFC > 0)[1]
+de_limma <- which(stats$labels == "limma-only" &
+                    stats$labels_pre == "DE-up; high-var")[1]
+
+compare <- gexp %>%
+  as.data.frame() %>%
+  slice(c(de_not, de_both, de_lm, de_limma)) %>%
+  mutate(type = c("neither", "both", "lm-only", "limma-only")) %>%
+  gather(key = "group", value = "gene", con1:treat3) %>%
+  mutate(group = str_extract(group, "[a-z]*")) %>%
+  as.data.frame()
+
+saveRDS(compare, "../data/compare.rds")
+
 # Visualization ----------------------------------------------------------------
 
 library("ggplot2")
