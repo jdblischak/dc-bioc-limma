@@ -2,28 +2,7 @@
 
 # Create some synthetic data for illustrating concepts in chapter 01.
 
-set.seed(1)
-n <- 6
-g <- 50
-group <- rep(c("con", "treat"), each = n / 2)
-samples <- paste0(group, 1:3)
-genes <- sprintf("gene%02d", 1:g)
-gexp <- matrix(rnorm(n = n * g, mean = 0, sd = 3),
-               nrow = g, ncol = n,
-               dimnames = list(genes, samples))
-# Add mean expression level
-means <- runif(n = g, min = 14, max = 16)
-gexp <- sweep(gexp, 1, means, FUN = "+")
-# Make 10% of genes DE
-genes_de <- sample(1:g, size = round(0.25 * g))
-for (i in genes_de) {
-  gexp[i, ] <- ifelse(group == "treat", gexp[i, ] * 2, gexp[i, ])
-}
-heatmap(gexp)
-
-saveRDS(gexp, "../data/ch01.rds")
-
-# Improved simulation ----------------------------------------------------------
+# Simulation -------------------------------------------------------------------
 
 set.seed(12345)
 create_exp_mat <- function(n1, n2, ng,
@@ -56,30 +35,70 @@ x <- rbind(
 )
 image(t(x))
 
-n1 <- 3
-n2 <- 3
-status <- c(rep(0, n1), rep(1, n2))
+# Add names for samples
+group <- rep(c("con", "treat"), each = ncol(x) / 2)
+samples <- paste0(group, 1:3)
+colnames(x) <- samples
+
+# Add names for genes
+genes <- sprintf("gene%02d", 1:nrow(x))
+rownames(x) <- genes
+
+saveRDS(x, "../data/ch01.rds")
+
+# Analysis ---------------------------------------------------------------------
+
 # limma
 library("limma")
-design <- model.matrix(~status)
+design <- model.matrix(~group)
+colnames(design) <- c("Intercept", "treat")
 fit <- lmFit(x, design)
 head(fit$coefficients)
 fit <- eBayes(fit)
 results <- decideTests(fit[, 2])
 summary(results)
-stats <- topTable(fit, coef = "status", number = nrow(fit), sort.by = "none")
+stats <- topTable(fit, coef = "treat", number = nrow(fit), sort.by = "none")
 
 # lm
 p <- numeric(length = nrow(x))
 for (i in 1:length(p)) {
-  mod <- lm(x[i, ] ~ status)
+  mod <- lm(x[i, ] ~ group)
   p[i] <- summary(mod)$coefficients[2, 4]
 }
 
 stats <- cbind(stats,
                sd = apply(x, 1, sd),
                lm = p.adjust(p, method = "BH"))
+
+stats$labels_pre <- c(rep("non-DE; high-var", 30),
+                      rep("non-DE; low-var", 30),
+                      rep("DE-up; low-var", 10),
+                      rep("DE-up; high-var", 10),
+                      rep("DE-down; low-var", 10),
+                      rep("DE-down; high-var", 10))
+
+stats$labels <- rep("non-DE", nrow(stats))
+stats$labels[stats$adj.P.Val < 0.05 & stats$lm < 0.05] <- "DE"
+stats$labels[stats$adj.P.Val < 0.05 & stats$lm >= 0.05] <- "limma-only"
+stats$labels[stats$adj.P.Val >= 0.05 & stats$lm < 0.05] <- "lm-only"
+table(stats$labels)
+table(stats$labels, stats$labels_pre)
+
+saveRDS(stats, "../data/ch01-stats.rds")
+
+# Visualization ----------------------------------------------------------------
+
 library("ggplot2")
+
+ggplot(stats, aes(x = sd, y = logFC, color = labels)) +
+  geom_point()
+
+ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = labels)) +
+  geom_point()
+
+ggplot(stats, aes(x = logFC, y = -log10(lm), color = labels)) +
+  geom_point()
+
 ggplot(stats, aes(x = sd, y = logFC, color = adj.P.Val < 0.05)) +
   geom_point()
 ggplot(stats, aes(x = sd, y = logFC, color = lm < 0.05)) +
@@ -88,6 +107,8 @@ plot(stats$adj.P.Val, stats$lm)
 table(limma = stats$adj.P.Val < 0.05, lm = stats$lm < 0.05)
 which(stats$adj.P.Val < 0.05)
 which(stats$lm < 0.05)
+
+
 
 ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = adj.P.Val < 0.05)) +
   geom_point()

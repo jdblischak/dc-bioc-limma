@@ -28,6 +28,7 @@ Cover the basics of the biology and the statistics.
 
 ```{r setup}
 gexp <- readRDS("../data/ch01.rds")
+stats <- readRDS("../data/ch01-stats.rds")
 ```
 
 ## What is differential expression? (Video)
@@ -48,18 +49,23 @@ transcription factor binding to DNA and returns discrete data." is true.
 Visualize one differentially expressed gene with boxplots (geom_boxplot).
 
 ```{r}
+index <- which(stats$labels_pre == "DE-up; low-var" & stats$labels == "DE")[1]
 library("dplyr")
 library("tidyr")
 library("stringr")
 single_gene <- gexp %>% as.data.frame %>%
-  slice(34) %>%
-  gather(key = "status", value = "gene") %>%
-  mutate(status = str_extract(status, "[a-z]*"))
+  slice(index) %>%
+  gather(key = "group", value = "gene") %>%
+  mutate(group = str_extract(group, "[a-z]*")) %>%
+  as.data.frame()
 ```
 
 ```{r}
 library("ggplot2")
-ggplot(single_gene, aes(x = status, y = gene)) +
+
+head(single_gene)
+
+ggplot(single_gene, aes(x = group, y = gene)) +
   geom_boxplot()
 ```
 
@@ -68,8 +74,13 @@ ggplot(single_gene, aes(x = status, y = gene)) +
 Visualize many differentially expressed genes with a heatmap (stats::heatmap).
 
 ```{r}
+# Check the dimensions
 dim(gexp)
+
+# View the first few rows
 head(gexp)
+
+# Plot a heatmap
 heatmap(gexp)
 ```
 
@@ -264,10 +275,46 @@ less_signal$fstat[1]
 
 Run lm on one gene.
 
+```{r}
+head(single_gene)
+
+# Fit the linear model
+mod <- lm(gene ~ group, data = single_gene)
+
+# Summarize the results
+result <- summary(mod)
+result$coefficients
+```
+
 ## Standard linear model for differential expression of many genes
 
 Use for loop to run lm on many genes (exact number of genes will be determined
 by 5 sec time limit for DataCamp exercises).
+
+```{r}
+group <- rep(c("con", "treat"), each = ncol(gexp) / 2)
+```
+
+
+```{r}
+dim(gexp)
+print(group)
+
+# Initialize a vector to save the p-value from testing each gene
+p <- numeric(length = nrow(gexp))
+
+# Use a for loop to test each gene
+for (i in 1:length(p)) {
+  # Fit the model
+  mod <- lm(gexp[i, ] ~ group)
+  # Extract the p-value
+  result <- summary(mod)
+  p[i] <- result$coefficients[2, 4]
+}
+
+# Visualize p-value distribution with a histogram
+hist(p)
+```
 
 ## Visualize results of standard differential expression analysis
 
@@ -286,6 +333,24 @@ following chapters within the larger analysis.
 ## limma for differential expression of many genes
 
 Run pre-written limma code to easily test thousands of genes.
+
+
+
+```{r}
+library("limma")
+
+# Setup the study design matrix
+design <- model.matrix(~group)
+colnames(design) <- c("Intercept", "group")
+
+# Fit the model
+fit <- lmFit(gexp, design)
+fit <- eBayes(fit)
+
+# Summarize results
+results <- decideTests(fit[, 2])
+summary(results)
+```
 
 ## Visualize results of limma differential expression analysis
 
