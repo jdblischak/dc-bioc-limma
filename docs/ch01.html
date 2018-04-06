@@ -321,12 +321,16 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-02-23</p>
+<p><strong>Last updated:</strong> 2018-04-06</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> f3df390</p>
+<p><strong>Code version:</strong> 3571e14</p>
 <p>Cover the basics of the biology and the statistics.</p>
-<pre class="r"><code>gexp &lt;- readRDS(&quot;../data/ch01.rds&quot;)</code></pre>
+<pre class="r"><code>gexp &lt;- readRDS(&quot;../data/ch01.rds&quot;)
+stats &lt;- readRDS(&quot;../data/ch01-stats.rds&quot;)
+de &lt;- readRDS(&quot;../data/de.rds&quot;)
+single_gene &lt;- readRDS(&quot;../data/single_gene.rds&quot;)
+compare &lt;- readRDS(&quot;../data/compare.rds&quot;)</code></pre>
 <div id="what-is-differential-expression-video" class="section level2">
 <h2>What is differential expression? (Video)</h2>
 <p>Describe a simple model of gene regulation (transcription factors, DNA, RNA, protein) and the functional genomics technologies used to measure the various features. Focus on the type of data they return (continuous vs. discrete).</p>
@@ -338,6 +342,42 @@ shared across the workflowr files. -->
 <div id="visualize-one-differentially-expressed-gene" class="section level2">
 <h2>Visualize one differentially expressed gene</h2>
 <p>Visualize one differentially expressed gene with boxplots (geom_boxplot).</p>
+<pre class="r"><code>library(&quot;ggplot2&quot;)
+
+head(single_gene)</code></pre>
+<pre><code>  group      gene
+1   con  8.555641
+2   con  7.977472
+3   con 10.388985
+4 treat 13.629643
+5 treat 15.940644
+6 treat 13.341958</code></pre>
+<pre class="r"><code>ggplot(single_gene, aes(x = group, y = gene)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="visualize-many-differentially-expressed-genes" class="section level2">
+<h2>Visualize many differentially expressed genes</h2>
+<p>Visualize many differentially expressed genes with a heatmap (stats::heatmap).</p>
+<pre class="r"><code># Check the dimensions
+dim(gexp)</code></pre>
+<pre><code>[1] 100   6</code></pre>
+<pre class="r"><code># View the first few rows
+head(gexp)</code></pre>
+<pre><code>            con1      con2      con3    treat1    treat2   treat3
+gene01 11.034305  7.693824 15.220120  5.539417  7.662184 13.37325
+gene02  6.681872  8.144218 14.673822 14.551493 12.759165 10.32855
+gene03 11.550606 15.551538 10.857151 13.525733 11.723725 12.09515
+gene04 14.316391  8.371045 14.139368  7.759454 13.570094 16.37769
+gene05  8.845249  7.663989  9.342168 10.534286 13.306553  9.02550
+gene06  2.684912 10.244040  4.705581  8.920392  9.902485 10.62007</code></pre>
+<pre class="r"><code># Plot a heatmap
+heatmap(gexp)</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="what-is-a-linear-model-video" class="section level2">
+<h2>What is a linear model? (Video)</h2>
+<p>Review the basics of multiple linear regression (dependent vs independent variables, continuous vs discrete covariates, intercept term, error term). Demonstrate how to specify equations in R (e.g. <code>lm</code> and <code>model.matrix</code>).</p>
 <pre class="r"><code>library(&quot;dplyr&quot;)</code></pre>
 <pre><code>
 Attaching package: &#39;dplyr&#39;</code></pre>
@@ -347,38 +387,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(&quot;tidyr&quot;)
-library(&quot;stringr&quot;)
-single_gene &lt;- gexp %&gt;% as.data.frame %&gt;%
-  slice(34) %&gt;%
-  gather(key = &quot;status&quot;, value = &quot;gene&quot;) %&gt;%
-  mutate(status = str_extract(status, &quot;[a-z]*&quot;))</code></pre>
 <pre class="r"><code>library(&quot;ggplot2&quot;)
-ggplot(single_gene, aes(x = status, y = gene)) +
-  geom_boxplot()</code></pre>
-<p><img src="figure/ch01.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="visualize-many-differentially-expressed-genes" class="section level2">
-<h2>Visualize many differentially expressed genes</h2>
-<p>Visualize many differentially expressed genes with a heatmap (stats::heatmap).</p>
-<pre class="r"><code>dim(gexp)</code></pre>
-<pre><code>[1] 50  6</code></pre>
-<pre class="r"><code>head(gexp)</code></pre>
-<pre><code>           con1     con2     con3   treat1   treat2   treat3
-gene01 13.74914 16.82282 13.76740 16.97906 16.85671 16.03717
-gene02 16.40848 14.02148 15.98390 15.80187 20.92417 17.07906
-gene03 11.78808 15.31832 11.56220 13.34076 19.05473 14.08600
-gene04 20.28549 12.11155 15.97373 12.71156 14.50692 14.75665
-gene05 16.93984 20.25039 13.98756 22.97787 18.19122 36.07593
-gene06 13.48818 21.89078 21.25145 12.72401 23.44257 19.38827</code></pre>
-<pre class="r"><code>heatmap(gexp)</code></pre>
-<p><img src="figure/ch01.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="what-is-a-linear-model-video" class="section level2">
-<h2>What is a linear model? (Video)</h2>
-<p>Review the basics of multiple linear regression (dependent vs independent variables, continuous vs discrete covariates, intercept term, error term). Demonstrate how to specify equations in R (e.g. <code>lm</code> and <code>model.matrix</code>).</p>
-<pre class="r"><code>library(&quot;dplyr&quot;)
-library(&quot;ggplot2&quot;)
 df_vis &lt;- data.frame(status = rep(c(&quot;con&quot;, &quot;treat&quot;), each = 50)) %&gt;%
   mutate(gene_de = c(rpois(n() / 2, lambda = 12), rpois(n() / 2, lambda = 30)),
          gene_var =c(rpois(n() / 2, lambda = 15) + rnorm(n() / 2, sd = 10),
@@ -389,7 +398,7 @@ ggplot(df_vis, aes(x = status, y = gene_de)) +
   ylim(0, 40) +
   labs(x = &quot;Treatment status&quot;, y = &quot;Gene expression level&quot;)</code></pre>
 <pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
-<p><img src="figure/ch01.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(&quot;../figure/ch01/gene-de.png&quot;, width = 5, height = 6)</code></pre>
 <pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
 <pre class="r"><code>ggplot(df_vis, aes(x = status, y = gene_var)) +
@@ -398,7 +407,7 @@ ggplot(df_vis, aes(x = status, y = gene_de)) +
   ylim(0, 40) +
   labs(x = &quot;Treatment status&quot;, y = &quot;Gene expression level&quot;)</code></pre>
 <pre><code>Warning: Removed 8 rows containing non-finite values (stat_boxplot).</code></pre>
-<p><img src="figure/ch01.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(&quot;../figure/ch01/gene-ambiguous.png&quot;, width = 5, height = 6)</code></pre>
 <pre><code>Warning: Removed 8 rows containing non-finite values (stat_boxplot).</code></pre>
 <p><strong>Transcript:</strong> As you just visualized, differential expression describes the situation in which a gene has a different mean expression level between conditions. While some gene expression patterns are easily diagnosed as differential expression or not from a quick visualization, you also saw some examples that were more ambiguous. Furthermore, you need a method that is more robust than a quick visual inspection and also scales to thousands of genes. For this you will use the tools of statistical inference to determine if the difference in mean expression level is larger than that expected by chance. Specifically, you will use linear models to perform the hypothesis tests. Linear models are an ideal choice for genomics experiments because their flexibility and robustness to assumptions allow you to conveniently model data from various study designs and data sources.</p>
@@ -528,14 +537,62 @@ plot_grid(less_signal_ss_res, less_signal_ss_exp)</code></pre>
 <div id="standard-linear-model-for-differential-expression-of-one-gene" class="section level2">
 <h2>Standard linear model for differential expression of one gene</h2>
 <p>Run lm on one gene.</p>
+<pre class="r"><code>head(single_gene)</code></pre>
+<pre><code>  group      gene
+1   con  8.555641
+2   con  7.977472
+3   con 10.388985
+4 treat 13.629643
+5 treat 15.940644
+6 treat 13.341958</code></pre>
+<pre class="r"><code># Fit the linear model
+mod &lt;- lm(gene ~ group, data = single_gene)
+
+# Summarize the results
+result &lt;- summary(mod)
+result$coefficients</code></pre>
+<pre><code>            Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) 8.974033  0.7761637 11.562035 0.0003196394
+grouptreat  5.330049  1.0976613  4.855823 0.0083043428</code></pre>
 </div>
 <div id="standard-linear-model-for-differential-expression-of-many-genes" class="section level2">
 <h2>Standard linear model for differential expression of many genes</h2>
 <p>Use for loop to run lm on many genes (exact number of genes will be determined by 5 sec time limit for DataCamp exercises).</p>
+<pre class="r"><code>group &lt;- rep(c(&quot;con&quot;, &quot;treat&quot;), each = ncol(gexp) / 2)</code></pre>
+<pre class="r"><code>dim(gexp)</code></pre>
+<pre><code>[1] 100   6</code></pre>
+<pre class="r"><code>print(group)</code></pre>
+<pre><code>[1] &quot;con&quot;   &quot;con&quot;   &quot;con&quot;   &quot;treat&quot; &quot;treat&quot; &quot;treat&quot;</code></pre>
+<pre class="r"><code># Initialize a vector to save the p-value from testing each gene
+p &lt;- numeric(length = nrow(gexp))
+
+# Use a for loop to test each gene
+for (i in 1:length(p)) {
+  # Fit the model
+  mod &lt;- lm(gexp[i, ] ~ group)
+  # Extract the p-value
+  result &lt;- summary(mod)
+  p[i] &lt;- result$coefficients[2, 4]
+}
+
+# Visualize p-value distribution with a histogram
+hist(p)</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="visualize-results-of-standard-differential-expression-analysis" class="section level2">
 <h2>Visualize results of standard differential expression analysis</h2>
 <p>Use geom_point to plot effect size versus variance and color by statistical significance.</p>
+<pre class="r"><code>head(de)</code></pre>
+<pre><code>  effect_size  std_dev    lm limma
+1  -2.4577980 3.750555 FALSE FALSE
+2   2.7130980 3.353835 FALSE FALSE
+3  -0.2048963 1.715542 FALSE FALSE
+4   0.2934781 3.511502 FALSE FALSE
+5   2.3383110 1.955378 FALSE FALSE
+6   3.9361382 3.326517 FALSE FALSE</code></pre>
+<pre class="r"><code>ggplot(de, aes(x = std_dev, y = effect_size, color = lm)) +
+  geom_point()</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="limma-linear-models-for-functional-genomics-video" class="section level2">
 <h2>limma: linear models for functional genomics (Video)</h2>
@@ -544,20 +601,67 @@ plot_grid(less_signal_ss_res, less_signal_ss_exp)</code></pre>
 <div id="limma-for-differential-expression-of-many-genes" class="section level2">
 <h2>limma for differential expression of many genes</h2>
 <p>Run pre-written limma code to easily test thousands of genes.</p>
+<pre class="r"><code>library(&quot;limma&quot;)
+print(group)</code></pre>
+<pre><code>[1] &quot;con&quot;   &quot;con&quot;   &quot;con&quot;   &quot;treat&quot; &quot;treat&quot; &quot;treat&quot;</code></pre>
+<pre class="r"><code># Setup the study design matrix
+design &lt;- model.matrix(~group)
+colnames(design) &lt;- c(&quot;Intercept&quot;, &quot;group&quot;)
+
+# Fit the model
+fit &lt;- lmFit(gexp, design)
+fit &lt;- eBayes(fit)
+
+# Summarize results
+results &lt;- decideTests(fit[, &quot;group&quot;])
+summary(results)</code></pre>
+<pre><code>   group
+-1    15
+0     71
+1     14</code></pre>
 </div>
 <div id="visualize-results-of-limma-differential-expression-analysis" class="section level2">
 <h2>Visualize results of limma differential expression analysis</h2>
 <p>Use geom_point to plot effect size versus variance and color by statistical significance.</p>
+<pre class="r"><code>head(de)</code></pre>
+<pre><code>  effect_size  std_dev    lm limma
+1  -2.4577980 3.750555 FALSE FALSE
+2   2.7130980 3.353835 FALSE FALSE
+3  -0.2048963 1.715542 FALSE FALSE
+4   0.2934781 3.511502 FALSE FALSE
+5   2.3383110 1.955378 FALSE FALSE
+6   3.9361382 3.326517 FALSE FALSE</code></pre>
+<pre class="r"><code># View the number of discrepancies
+table(de$lm, de$limma)</code></pre>
+<pre><code>       
+        FALSE TRUE
+  FALSE    68    7
+  TRUE      3   22</code></pre>
+<pre class="r"><code>ggplot(de, aes(x = std_dev, y = effect_size, color = limma)) +
+  geom_point()</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="the-benefit-of-sharing-information-across-genes" class="section level2">
 <h2>The benefit of sharing information across genes</h2>
 <p>Visualize the gene expression pattern of a gene called DE by a traditional linear model but not by limma.</p>
+<pre class="r"><code>head(compare)</code></pre>
+<pre><code>        type group      gene
+1    neither   con  6.681872
+2       both   con  8.555641
+3    lm-only   con  9.959914
+4 limma-only   con 11.391149
+5    neither   con  8.144218
+6       both   con  7.977472</code></pre>
+<pre class="r"><code>ggplot(compare, aes(x = group, y = gene)) +
+  geom_boxplot() +
+  facet_wrap(~type, nrow = 1)</code></pre>
+<p><img src="figure/ch01.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.4.3 (2017-11-30)
+<pre><code>R version 3.4.4 (2018-03-15)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 17.10
 
@@ -577,20 +681,20 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] cowplot_0.9.2 broom_0.4.3   ggplot2_2.2.1 bindrcpp_0.2  stringr_1.3.0
-[6] tidyr_0.8.0   dplyr_0.7.4  
+[1] limma_3.32.2   cowplot_0.9.2  broom_0.4.4    bindrcpp_0.2.2
+[5] dplyr_0.7.4    ggplot2_2.2.1 
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.15     pillar_1.1.0     compiler_3.4.3   git2r_0.21.0    
- [5] plyr_1.8.4       bindr_0.1        tools_3.4.3      digest_0.6.14   
- [9] evaluate_0.10.1  tibble_1.4.2     gtable_0.2.0     nlme_3.1-131    
-[13] lattice_0.20-35  pkgconfig_2.0.1  rlang_0.1.6.9003 psych_1.7.8     
-[17] yaml_2.1.16      parallel_3.4.3   knitr_1.20       rprojroot_1.3-2 
-[21] grid_3.4.3       glue_1.2.0       R6_2.2.2         foreign_0.8-69  
-[25] rmarkdown_1.8    reshape2_1.4.3   purrr_0.2.4      magrittr_1.5    
-[29] backports_1.1.2  scales_0.5.0     htmltools_0.3.6  assertthat_0.2.0
-[33] mnormt_1.5-5     colorspace_1.3-2 labeling_0.3     stringi_1.1.6   
-[37] lazyeval_0.2.1   munsell_0.4.3   </code></pre>
+ [1] Rcpp_0.12.16     pillar_1.1.0     compiler_3.4.4   git2r_0.21.0    
+ [5] plyr_1.8.4       bindr_0.1.1      tools_3.4.4      digest_0.6.14   
+ [9] evaluate_0.10.1  tibble_1.4.2     gtable_0.2.0     nlme_3.1-131.1  
+[13] lattice_0.20-35  pkgconfig_2.0.1  rlang_0.2.0      psych_1.8.3.3   
+[17] parallel_3.4.4   yaml_2.1.18      stringr_1.3.0    knitr_1.20      
+[21] rprojroot_1.3-2  grid_3.4.4       glue_1.2.0       R6_2.2.2        
+[25] foreign_0.8-69   rmarkdown_1.9    reshape2_1.4.3   tidyr_0.8.0     
+[29] purrr_0.2.4      magrittr_1.5     backports_1.1.2  scales_0.5.0    
+[33] htmltools_0.3.6  assertthat_0.2.0 mnormt_1.5-5     colorspace_1.3-2
+[37] labeling_0.3     stringi_1.1.6    lazyeval_0.2.1   munsell_0.4.3   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
