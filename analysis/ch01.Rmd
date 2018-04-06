@@ -54,7 +54,7 @@ Visualize one differentially expressed gene with boxplots (geom_boxplot).
 ```{r}
 library("ggplot2")
 
-head(single_gene)
+print(single_gene)
 
 ggplot(single_gene, aes(x = group, y = gene)) +
   geom_boxplot()
