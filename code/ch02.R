@@ -14,6 +14,12 @@ library("stringr")
 
 data("Exp1_R25_prot")
 
+# Clean data -------------------------------------------------------------------
+
+# Remove features which have NAs
+missing <- apply(exprs(Exp1_R25_prot), 1, function(x) any(is.na(x)))
+Exp1_R25_prot <- Exp1_R25_prot[!missing, ]
+
 # Create nice phenotype data columns -------------------------------------------
 
 pheno <- pData(Exp1_R25_prot) %>%
@@ -54,7 +60,4 @@ colnames(assay) <- samples
 # Export ExpressionSet ---------------------------------------------------------
 
 eset <- ExpressionSet(assayData = assay, phenoData = pdata, featureData = fdata)
-# Remove features which have NAs
-missing <- apply(exprs(eset), 1, function(x) any(is.na(x)))
-eset <- eset[!missing, ]
 saveRDS(eset, file = "../data/ch02.rds")
