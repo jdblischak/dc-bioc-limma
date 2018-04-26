@@ -321,16 +321,15 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-02-16</p>
+<p><strong>Last updated:</strong> 2018-04-26</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 4d75cfb</p>
+<p><strong>Code version:</strong> d168283</p>
 <p>Analyze proteomics data set that compares 2 groups.</p>
 <pre class="r"><code>library(&quot;Biobase&quot;)
 library(&quot;ggplot2&quot;)
-library(&quot;limma&quot;)</code></pre>
-<pre><code>Warning: package &#39;limma&#39; was built under R version 3.3.3</code></pre>
-<pre class="r"><code>eset &lt;- readRDS(&quot;../data/ch02.rds&quot;)</code></pre>
+library(&quot;limma&quot;)
+eset &lt;- readRDS(&quot;../data/ch02.rds&quot;)</code></pre>
 <div id="studies-with-2-groups-video" class="section level2">
 <h2>Studies with 2 groups (Video)</h2>
 <p>Describe the scientific question, the experimental design, and the data collected for the 2-group study. Introduce the ExpressionSet object that contains the data. Review the quality control procedures covered in past Bioconductor courses (specifically comparing distributions and PCA).</p>
@@ -338,29 +337,35 @@ library(&quot;limma&quot;)</code></pre>
 <div id="plot-a-differentially-expressed-gene" class="section level2">
 <h2>Plot a differentially expressed gene</h2>
 <p>Create boxplots of a few pre-selected genes (one clearly DE, one clearly not, and one in between). Use <code>pData</code> to select the phenotype variables and <code>exprs</code> to access the expression data.</p>
-<pre class="r"><code>boxplot(exprs(eset)[3, ] ~ pData(eset)$spikein, main = fData(eset)$protein[3])</code></pre>
+<pre class="r"><code># Plot protein #3
+boxplot(exprs(eset)[3, ] ~ pData(eset)$spikein, main = fData(eset)$protein[3])</code></pre>
 <p><img src="figure/ch02.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>boxplot(exprs(eset)[5, ] ~ pData(eset)$spikein, main = fData(eset)$protein[5])</code></pre>
+<pre class="r"><code># Plot protein #5
+boxplot(exprs(eset)[5, ] ~ pData(eset)$spikein, main = fData(eset)$protein[5])</code></pre>
 <p><img src="figure/ch02.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>boxplot(exprs(eset)[463, ] ~ pData(eset)$spikein, main = fData(eset)$protein[463])</code></pre>
+<pre class="r"><code># Plot protein #463
+boxplot(exprs(eset)[463, ] ~ pData(eset)$spikein, main = fData(eset)$protein[463])</code></pre>
 <p><img src="figure/ch02.Rmd/unnamed-chunk-1-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="create-a-density-plot-to-compare-distribution-across-samples" class="section level2">
 <h2>Create a density plot to compare distribution across samples</h2>
 <p>Use <code>limma::plotDensities</code> to confirm that the distribution of gene expression levels is consistent across the samples.</p>
-<pre class="r"><code>plotDensities(exprs(eset), legend = FALSE)</code></pre>
+<pre class="r"><code>plotDensities(eset, group = pData(eset)$spikein,  legend = &quot;topright&quot;)</code></pre>
 <p><img src="figure/ch02.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="create-a-pca-plot-to-assess-source-of-variation" class="section level2">
 <h2>Create a PCA plot to assess source of variation</h2>
 <p>Use <code>prcomp</code> to compute principal components and then plot PC1 vs. PC2 to confirm that the biological effect is the main source of variation.</p>
-<pre class="r"><code>pca &lt;- prcomp(t(exprs(eset)), scale. = TRUE)
-plot(pca)</code></pre>
-<p><img src="figure/ch02.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>d &lt;- data.frame(pData(eset), pca$x)
+<pre class="r"><code># Perform PCA
+pca &lt;- prcomp(t(exprs(eset)), scale. = TRUE)
+
+# Combine the PCs with the phenotype data
+d &lt;- data.frame(pData(eset), pca$x)
+
+# Plot PC1 vs. PC2 colored by spikein
 ggplot(d, aes(x = PC1, y = PC2, color = spikein)) +
   geom_point()</code></pre>
-<p><img src="figure/ch02.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/ch02.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="limma-for-differential-expression-video" class="section level2">
 <h2>limma for differential expression (Video)</h2>
@@ -369,7 +374,23 @@ ggplot(d, aes(x = PC1, y = PC2, color = spikein)) +
 <div id="create-design-matrix-for-treatment-contrasts-parametrization" class="section level2">
 <h2>Create design matrix for treatment-contrasts parametrization</h2>
 <p>Use <code>model.matrix</code> to create a linear model with an intercept and one binary variable. Use <code>colSums</code> to reason about how this relates to the samples (e.g. the intercept represents the mean across samples because it is 1 for every sample).</p>
-<pre class="r"><code>design &lt;- model.matrix(~spikein, data = pData(eset))
+<pre class="r"><code># Create a design matrix with an intercept and a coefficient for spikein
+design &lt;- model.matrix(~spikein, data = pData(eset))
+
+design</code></pre>
+<pre><code>                  (Intercept) spikein25fmol
+spikein.25fmol.r1           1             1
+spikein.25fmol.r2           1             1
+spikein.25fmol.r3           1             1
+spikein.10fmol.r1           1             0
+spikein.10fmol.r2           1             0
+spikein.10fmol.r3           1             0
+attr(,&quot;assign&quot;)
+[1] 0 1
+attr(,&quot;contrasts&quot;)
+attr(,&quot;contrasts&quot;)$spikein
+[1] &quot;contr.treatment&quot;</code></pre>
+<pre class="r"><code># How many samples are modeled by each coefficient in the design matrix?
 colSums(design)</code></pre>
 <pre><code>  (Intercept) spikein25fmol 
             6             3 </code></pre>
@@ -377,7 +398,8 @@ colSums(design)</code></pre>
 <div id="fit-and-test-model-for-treatment-contrasts-parametrization" class="section level2">
 <h2>Fit and test model for treatment-contrasts parametrization</h2>
 <p>Use <code>limma::lmFit</code>, <code>limma::eBayes</code>, and <code>limma::decideTests</code> to fit and test the model.</p>
-<pre class="r"><code>fit &lt;- lmFit(eset, design)
+<pre class="r"><code># Fit the model coefficients
+fit &lt;- lmFit(eset, design)
 head(fit$coefficients)</code></pre>
 <pre><code>  (Intercept) spikein25fmol
 1    21.19598   0.134121520
@@ -386,8 +408,11 @@ head(fit$coefficients)</code></pre>
 4    25.25850   0.706384928
 5    29.30042  -0.009631149
 6    22.12669   1.089862564</code></pre>
-<pre class="r"><code>fit &lt;- eBayes(fit)
-results &lt;- decideTests(fit[, 2])
+<pre class="r"><code># Compute moderated t-statistics
+fit &lt;- eBayes(fit)
+
+# Count the number of differentially expressed genes
+results &lt;- decideTests(fit[, &quot;spikein25fmol&quot;])
 summary(results)</code></pre>
 <pre><code>   spikein25fmol
 -1             9
@@ -397,12 +422,27 @@ summary(results)</code></pre>
 <div id="create-design-matrix-and-contrasts-matrix-for-group-means-parametrization" class="section level2">
 <h2>Create design matrix and contrasts matrix for group-means parametrization</h2>
 <p>Use <code>model.matrix</code> to create a linear model with two binary variables (and no intercept). Use <code>colSums</code> to reason about how this relates to the samples (e.g. each of the terms represents the mean for its group of samples because it is the only term that is 1 for those samples). Use <code>limma::makeContrasts</code> to create a contrasts matrix based on this new linear model.</p>
-<pre class="r"><code>design &lt;- model.matrix(~0 + spikein, data = pData(eset))
+<pre class="r"><code># Create a design matrix with no intercept and one coefficient for each spikein
+design &lt;- model.matrix(~0 + spikein, data = pData(eset))
+design</code></pre>
+<pre><code>                  spikein10fmol spikein25fmol
+spikein.25fmol.r1             0             1
+spikein.25fmol.r2             0             1
+spikein.25fmol.r3             0             1
+spikein.10fmol.r1             1             0
+spikein.10fmol.r2             1             0
+spikein.10fmol.r3             1             0
+attr(,&quot;assign&quot;)
+[1] 1 1
+attr(,&quot;contrasts&quot;)
+attr(,&quot;contrasts&quot;)$spikein
+[1] &quot;contr.treatment&quot;</code></pre>
+<pre class="r"><code># How many samples are modeled by each coefficient in the design matrix?
 colSums(design)</code></pre>
 <pre><code>spikein10fmol spikein25fmol 
             3             3 </code></pre>
-<pre class="r"><code>cont_mat &lt;- makeContrasts(spike_effect = spikein25fmol - spikein10fmol,
-                          levels = design)
+<pre class="r"><code># Create a contrast that comapres the 25 fmol versus the 10 fmol samples
+cont_mat &lt;- makeContrasts(spike_effect = spikein25fmol - spikein10fmol, levels = design)
 cont_mat</code></pre>
 <pre><code>               Contrasts
 Levels          spike_effect
@@ -412,7 +452,8 @@ Levels          spike_effect
 <div id="fit-and-test-model-for-group-means-parametrization" class="section level2">
 <h2>Fit and test model for group-means parametrization</h2>
 <p>Use <code>limma::lmFit</code>, <code>limma::contrasts.fit</code>, <code>limma::eBayes</code>, and <code>limma::decideTests</code> to fit and test the model. Confirm that the results are identical to the more traditional linear modelling approach used previously.</p>
-<pre class="r"><code>fit &lt;- lmFit(eset, design)
+<pre class="r"><code># Fit the model coefficients
+fit &lt;- lmFit(eset, design)
 head(fit$coefficients)</code></pre>
 <pre><code>  spikein10fmol spikein25fmol
 1      21.19598      21.33010
@@ -421,7 +462,8 @@ head(fit$coefficients)</code></pre>
 4      25.25850      25.96488
 5      29.30042      29.29079
 6      22.12669      23.21656</code></pre>
-<pre class="r"><code>fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
+<pre class="r"><code># Fit the contrasts
+fit2 &lt;- contrasts.fit(fit, contrasts = cont_mat)
 head(fit2$coefficients)</code></pre>
 <pre><code>   Contrasts
     spike_effect
@@ -431,7 +473,10 @@ head(fit2$coefficients)</code></pre>
   4  0.706384928
   5 -0.009631149
   6  1.089862564</code></pre>
-<pre class="r"><code>fit2 &lt;- eBayes(fit2)
+<pre class="r"><code># Compute moderated t-statistics
+fit2 &lt;- eBayes(fit2)
+
+# Count the number of differentially expressed genes
 results &lt;- decideTests(fit2)
 summary(results)</code></pre>
 <pre><code>   spike_effect
@@ -446,30 +491,34 @@ summary(results)</code></pre>
 <div id="create-a-histogram-of-p-values" class="section level2">
 <h2>Create a histogram of p-values</h2>
 <p>Use <code>geom_histogram</code> to plot <code>P.Value</code> column from <code>limma::topTable</code>. Ask question to confirm they understand that the p-value distribution corresponds to the number of differentially expressed genes identified.</p>
-<pre class="r"><code>topTable(fit2)</code></pre>
+<pre class="r"><code># View the top 10 diffentially expressed proteins
+topTable(fit2)</code></pre>
 <pre><code>                                                                  protein
-33                           P06396upsedyp|GELS_HUMAN_upsedyp;CON__Q3SX14
-34                                       P06732upsedyp|KCRM_HUMAN_upsedyp
-29                                       P02787upsedyp|TRFE_HUMAN_upsedyp
-53                P68871upsedyp|HBB_HUMAN_upsedyp;CON__Q3SX09;CON__P02070
-30               P02788upsedyp|TRFL_HUMAN_upsedyp;CON__Q29443;CON__Q0IIK2
-39                                       P10599upsedyp|THIO_HUMAN_upsedyp
-15                                      P00709upsedyp|LALBA_HUMAN_upsedyp
-42                                       P15559upsedyp|NQO1_HUMAN_upsedyp
-11                                      O00762upsedyp|UBE2C_HUMAN_upsedyp
+32                           P06396upsedyp|GELS_HUMAN_upsedyp;CON__Q3SX14
+33                                       P06732upsedyp|KCRM_HUMAN_upsedyp
+28                                       P02787upsedyp|TRFE_HUMAN_upsedyp
+52                P68871upsedyp|HBB_HUMAN_upsedyp;CON__Q3SX09;CON__P02070
+29               P02788upsedyp|TRFL_HUMAN_upsedyp;CON__Q29443;CON__Q0IIK2
+38                                       P10599upsedyp|THIO_HUMAN_upsedyp
+14                                      P00709upsedyp|LALBA_HUMAN_upsedyp
+41                                       P15559upsedyp|NQO1_HUMAN_upsedyp
+10                                      O00762upsedyp|UBE2C_HUMAN_upsedyp
 3  P02768upsedyp|ALBU_HUMAN_upsedyp;CON__P02768-1;CON__P02769;CON__Q3SZ57
       logFC  AveExpr        t      P.Value    adj.P.Val        B
-33 1.861560 29.47426 27.52384 5.176104e-07 0.0002584916 7.311601
-34 1.534331 29.14056 27.01624 5.719561e-07 0.0002584916 7.221913
-29 1.596815 30.67280 26.77212 6.004868e-07 0.0002584916 7.177897
-53 1.485236 28.84136 25.03177 8.609292e-07 0.0002584916 6.846476
-30 1.502014 31.02911 24.79491 9.059136e-07 0.0002584916 6.798845
-39 1.473717 28.31979 24.30523 1.008053e-06 0.0002584916 6.698332
-15 1.468805 28.42487 24.18606 1.034938e-06 0.0002584916 6.673445
-42 1.541838 27.32908 23.91733 1.098739e-06 0.0002584916 6.616701
-11 1.554906 28.71986 23.25450 1.277099e-06 0.0002584916 6.472931
+32 1.861560 29.47426 27.52384 5.176104e-07 0.0002584916 7.311601
+33 1.534331 29.14056 27.01624 5.719561e-07 0.0002584916 7.221913
+28 1.596815 30.67280 26.77212 6.004868e-07 0.0002584916 7.177897
+52 1.485236 28.84136 25.03177 8.609292e-07 0.0002584916 6.846476
+29 1.502014 31.02911 24.79491 9.059136e-07 0.0002584916 6.798845
+38 1.473717 28.31979 24.30523 1.008053e-06 0.0002584916 6.698332
+14 1.468805 28.42487 24.18606 1.034938e-06 0.0002584916 6.673445
+41 1.541838 27.32908 23.91733 1.098739e-06 0.0002584916 6.616701
+10 1.554906 28.71986 23.25450 1.277099e-06 0.0002584916 6.472931
 3  1.559135 30.56581 23.07978 1.329689e-06 0.0002584916 6.434105</code></pre>
-<pre class="r"><code>stats &lt;- topTable(fit2, number = nrow(fit2), sort.by = &quot;none&quot;)
+<pre class="r"><code># Extract the results for all tested proteins
+stats &lt;- topTable(fit2, number = nrow(fit2), sort.by = &quot;none&quot;)
+
+# Plot a histogram of the p-values
 ggplot(stats, aes(x = P.Value)) +
   geom_histogram()</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
@@ -478,7 +527,10 @@ ggplot(stats, aes(x = P.Value)) +
 <div id="create-a-volcano-plot" class="section level2">
 <h2>Create a volcano plot</h2>
 <p>Use <code>geom_point()</code> to plot <code>-log10(P.Value)</code> vs. <code>logFC</code>. Mention <code>limma::volcanoPlot</code> after exercise is completed.</p>
-<pre class="r"><code>stats$significant &lt;- stats$adj.P.Val &lt; 0.05
+<pre class="r"><code># Create a variable to indicate differential expression
+stats$significant &lt;- stats$adj.P.Val &lt; 0.05
+
+# Create a volcano plot
 ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = significant)) +
   geom_point()</code></pre>
 <p><img src="figure/ch02.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -487,28 +539,38 @@ ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = significant)) +
 <h2>Session information</h2>
 <!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: OS X Yosemite 10.10.5
+<pre><code>R version 3.4.4 (2018-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 17.10
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] parallel  stats     graphics  grDevices utils     datasets  methods  
 [8] base     
 
 other attached packages:
-[1] limma_3.30.13       ggplot2_2.2.1       Biobase_2.34.0     
-[4] BiocGenerics_0.20.0
+[1] limma_3.32.2        ggplot2_2.2.1       Biobase_2.36.2     
+[4] BiocGenerics_0.22.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.14     knitr_1.18       magrittr_1.5     munsell_0.4.3   
- [5] colorspace_1.3-2 rlang_0.1.6      stringr_1.2.0    plyr_1.8.4      
- [9] tools_3.3.2      grid_3.3.2       gtable_0.2.0     git2r_0.21.0    
-[13] htmltools_0.3.6  yaml_2.1.16      lazyeval_0.2.1   rprojroot_1.3-2 
-[17] digest_0.6.13    tibble_1.3.3     evaluate_0.10.1  rmarkdown_1.8   
-[21] labeling_0.3     stringi_1.1.5    scales_0.4.1     backports_1.1.2 </code></pre>
+ [1] Rcpp_0.12.16     knitr_1.20       magrittr_1.5     munsell_0.4.3   
+ [5] colorspace_1.3-2 rlang_0.2.0.9001 stringr_1.3.0    plyr_1.8.4      
+ [9] tools_3.4.4      grid_3.4.4       gtable_0.2.0     git2r_0.21.0    
+[13] htmltools_0.3.6  yaml_2.1.18      lazyeval_0.2.1   rprojroot_1.3-2 
+[17] digest_0.6.15    tibble_1.4.2     evaluate_0.10.1  rmarkdown_1.9   
+[21] labeling_0.3     stringi_1.1.7    compiler_3.4.4   pillar_1.1.0    
+[25] scales_0.5.0     backports_1.1.2 </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
