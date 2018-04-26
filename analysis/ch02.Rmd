@@ -47,8 +47,13 @@ clearly not, and one in between). Use `pData` to select the phenotype
 variables and `exprs` to access the expression data.
 
 ```{r}
+# Plot protein #3
 boxplot(exprs(eset)[3, ] ~ pData(eset)$spikein, main = fData(eset)$protein[3])
+
+# Plot protein #5
 boxplot(exprs(eset)[5, ] ~ pData(eset)$spikein, main = fData(eset)$protein[5])
+
+# Plot protein #463
 boxplot(exprs(eset)[463, ] ~ pData(eset)$spikein, main = fData(eset)$protein[463])
 ```
 
@@ -58,7 +63,7 @@ Use `limma::plotDensities` to confirm that the distribution of gene
 expression levels is consistent across the samples.
 
 ```{r}
-plotDensities(exprs(eset), legend = FALSE)
+plotDensities(eset, group = pData(eset)$spikein,  legend = "topright")
 ```
 
 ## Create a PCA plot to assess source of variation
@@ -67,9 +72,13 @@ Use `prcomp` to compute principal components and then plot PC1 vs. PC2
 to confirm that the biological effect is the main source of variation.
 
 ```{r}
+# Perform PCA
 pca <- prcomp(t(exprs(eset)), scale. = TRUE)
-plot(pca)
+
+# Combine the PCs with the phenotype data
 d <- data.frame(pData(eset), pca$x)
+
+# Plot PC1 vs. PC2 colored by spikein
 ggplot(d, aes(x = PC1, y = PC2, color = spikein)) +
   geom_point()
 ```
@@ -88,7 +97,12 @@ samples (e.g. the intercept represents the mean across samples because
 it is 1 for every sample).
 
 ```{r}
+# Create a design matrix with an intercept and a coefficient for spikein
 design <- model.matrix(~spikein, data = pData(eset))
+
+design
+
+# How many samples are modeled by each coefficient in the design matrix?
 colSums(design)
 ```
 
@@ -98,10 +112,15 @@ Use `limma::lmFit`, `limma::eBayes`, and `limma::decideTests` to fit
 and test the model.
 
 ```{r}
+# Fit the model coefficients
 fit <- lmFit(eset, design)
 head(fit$coefficients)
+
+# Compute moderated t-statistics
 fit <- eBayes(fit)
-results <- decideTests(fit[, 2])
+
+# Count the number of differentially expressed genes
+results <- decideTests(fit[, "spikein25fmol"])
 summary(results)
 ```
 
@@ -115,10 +134,14 @@ Use `limma::makeContrasts` to create a contrasts matrix based on this
 new linear model.
 
 ```{r}
+# Create a design matrix with no intercept and one coefficient for each spikein
 design <- model.matrix(~0 + spikein, data = pData(eset))
+design
+# How many samples are modeled by each coefficient in the design matrix?
 colSums(design)
-cont_mat <- makeContrasts(spike_effect = spikein25fmol - spikein10fmol,
-                          levels = design)
+
+# Create a contrast that comapres the 25 fmol versus the 10 fmol samples
+cont_mat <- makeContrasts(spike_effect = spikein25fmol - spikein10fmol, levels = design)
 cont_mat
 ```
 
@@ -130,11 +153,18 @@ results are identical to the more traditional linear modelling
 approach used previously.
 
 ```{r}
+# Fit the model coefficients
 fit <- lmFit(eset, design)
 head(fit$coefficients)
+
+# Fit the contrasts
 fit2 <- contrasts.fit(fit, contrasts = cont_mat)
 head(fit2$coefficients)
+
+# Compute moderated t-statistics
 fit2 <- eBayes(fit2)
+
+# Count the number of differentially expressed genes
 results <- decideTests(fit2)
 summary(results)
 ```
@@ -152,8 +182,13 @@ corresponds to the number of differentially expressed genes
 identified.
 
 ```{r}
+# View the top 10 diffentially expressed proteins
 topTable(fit2)
+
+# Extract the results for all tested proteins
 stats <- topTable(fit2, number = nrow(fit2), sort.by = "none")
+
+# Plot a histogram of the p-values
 ggplot(stats, aes(x = P.Value)) +
   geom_histogram()
 ```
@@ -164,7 +199,10 @@ Use `geom_point()` to plot `-log10(P.Value)` vs. `logFC`. Mention
 `limma::volcanoPlot` after exercise is completed.
 
 ```{r}
+# Create a variable to indicate differential expression
 stats$significant <- stats$adj.P.Val < 0.05
+
+# Create a volcano plot
 ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = significant)) +
   geom_point()
 ```
