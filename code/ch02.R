@@ -41,7 +41,9 @@ pdata <- new("AnnotatedDataFrame", data = pheno, varMetadata = varmetadata)
 # Create nice feature data columns ---------------------------------------------
 
 feature <- fData(Exp1_R25_prot) %>%
-  select(protein = Protein.IDs)
+  select(protein = Protein.IDs) %>%
+  # Only keep 1 ID per protein so that it prints nicely
+  mutate(protein = str_split(protein, pattern = ";", simplify = TRUE)[, 1])
 
 rownames(feature) <- 1:nrow(feature)
 
