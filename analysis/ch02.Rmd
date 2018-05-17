@@ -193,6 +193,22 @@ ggplot(stats, aes(x = P.Value)) +
   geom_histogram()
 ```
 
+
+```{r p-val-hist-ex, include=FALSE}
+# Create some p-value histograms for slides
+stats$p_null <- runif(nrow(stats))
+library("tidyr")
+stats_long <- gather(stats, key = "type", value = "p", P.Value, p_null)
+stats_long$type <- factor(stats_long$type, levels = c("p_null", "P.Value"),
+                          labels = c("No signal", "Lots of signal"))
+p_val_hist <- ggplot(stats_long, aes(x = p)) +
+  geom_histogram(bins = 35) +
+  facet_wrap(~type) +
+  labs(x = "p-value", y = "Count")
+ggsave(p_val_hist, filename = "../figure/ch02/p-value-dists.png",
+       width = 8, height = 4)
+```
+
 ## Create a volcano plot
 
 Use `geom_point()` to plot `-log10(P.Value)` vs. `logFC`. Mention
@@ -206,6 +222,13 @@ stats$significant <- stats$adj.P.Val < 0.05
 ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = significant)) +
   geom_point()
 ```
+
+```{r volcano, include=FALSE}
+# Save plot for slides
+ggsave(last_plot(), filename = "../figure/ch02/volcano.png",
+       width = 6, height = 5)
+```
+
 
 ## Session information
 
