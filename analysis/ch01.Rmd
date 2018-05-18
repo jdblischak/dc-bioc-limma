@@ -56,8 +56,15 @@ library("ggplot2")
 
 print(single_gene)
 
+# Create boxplots of gene expression for both groups
 ggplot(single_gene, aes(x = group, y = gene)) +
   geom_boxplot()
+```
+
+```{r ch01-boxplot, include=FALSE}
+# Save this for use in slides
+ggsave(last_plot(), filename = "../figure/ch01/ch01-boxplot.png",
+       width = 5, height = 5)
 ```
 
 ## Visualize many differentially expressed genes
@@ -73,6 +80,14 @@ head(gexp)
 
 # Plot a heatmap
 heatmap(gexp)
+```
+
+```{r ch01-heatmap, include=FALSE}
+# Save this for use in slides
+png(filename = "../figure/ch01/ch01-heatmap.png", width = 5, height = 5,
+    units = "in", res = 300)
+heatmap(gexp, labRow = "", labCol = "")
+dev.off()
 ```
 
 ## What is a linear model? (Video)
@@ -312,10 +327,10 @@ hist(p)
 Use geom_point to plot effect size versus variance and color by statistical
 significance.
 
-
 ```{r}
 head(de)
 
+# Plot effect size (y-axis) vs. standard deviation (x-axis)
 ggplot(de, aes(x = std_dev, y = effect_size, color = lm)) +
   geom_point()
 ```
@@ -358,13 +373,13 @@ summary(results)
 Use geom_point to plot effect size versus variance and color by statistical
 significance.
 
-
 ```{r}
 head(de)
 
 # View the number of discrepancies
 table(de$lm, de$limma)
 
+# Plot effect size (y-axis) vs. standard deviation (x-axis)
 ggplot(de, aes(x = std_dev, y = effect_size, color = limma)) +
   geom_point()
 ```
@@ -378,6 +393,7 @@ linear model but not by limma.
 ```{r}
 head(compare)
 
+# Plot gene expression (gene; y-axis) vs. group (x-axis)
 ggplot(compare, aes(x = group, y = gene)) +
   geom_boxplot() +
   facet_wrap(~type, nrow = 1)
