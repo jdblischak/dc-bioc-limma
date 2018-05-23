@@ -26,7 +26,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -94,6 +96,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -305,6 +310,13 @@ div.section {
 }
 </style>
 
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
 <div class="fluid-row" id="header">
 
 
@@ -315,20 +327,199 @@ div.section {
 </div>
 
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-<!-- Update knitr chunk options -->
-<!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-03-09</p>
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-<p><strong>Code version:</strong> a2fc9a7</p>
+<p><strong>Last updated:</strong> 2018-05-23</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<details>
+<p><summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/cc6353a03cb2d5c5c068d9f3e25f1cc3a2adbf0b" target="_blank">cc6353a</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    figure/.DS_Store
+    Ignored:    figure/ch02/.DS_Store
+
+Untracked files:
+    Untracked:  _workflowr.yml
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/ch01.Rmd
+    Modified:   analysis/ch02.Rmd
+    Modified:   analysis/ch03.Rmd
+    Modified:   analysis/ch04.Rmd
+    Deleted:    analysis/chunks.R
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/ch04.html" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/a2fc9a7de10a2a1bd7c7aa3566c3bb7d47ba372c/analysis/ch04.Rmd" target="_blank">a2fc9a7</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+<td style="text-align:left;">
+Minor edits to ch04 solutions
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/ch04.html" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/dc823825da0b6d5f60a9af5a31a2cb47fa735a7e/analysis/ch04.Rmd" target="_blank">dc82382</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+<td style="text-align:left;">
+Minor updates to Ch 04 analysis.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/ch04.html" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/5db0175b96175b7b49c77fabff46836abc10a4a5/analysis/ch04.Rmd" target="_blank">5db0175</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+<td style="text-align:left;">
+Organize Ch 04
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+</details>
+<hr />
 <p>Analayze microarray data from Zhang et al., 2012, which measured gene expression in hearts from wild type and Top2b null mice treated with doxorubicin or a control.</p>
 <pre class="r"><code>library(&quot;Biobase&quot;)
 library(&quot;ggplot2&quot;)
-library(&quot;limma&quot;)</code></pre>
-<pre><code>Warning: package &#39;limma&#39; was built under R version 3.3.3</code></pre>
-<pre class="r"><code>eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
+library(&quot;limma&quot;)
+eset &lt;- readRDS(&quot;../data/ch04.rds&quot;)</code></pre>
 <div id="studies-with-a-2x2-factorial-design-video" class="section level2">
 <h2>Studies with a 2x2 factorial design (Video)</h2>
 <p>Describe the scientific question, the experimental design, and the data collected for the 2x2 factorial study.</p>
@@ -371,16 +562,184 @@ WT.Dox.r3  r3</code></pre>
 ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
   geom_boxplot()</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-1-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-1-1.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-1-1.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-1-1.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="visualize-gene-expression-distribution-with-boxplots" class="section level2">
 <h2>Visualize gene expression distribution with boxplots</h2>
 <p>Use boxplots as an alternative to density plots for checking the distribution of gene expression levels. Note pro (easier to see which sample belongs to each distribution) and con (hides any multimodality).</p>
 <pre class="r"><code>boxplot(exprs(eset))</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-2-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-2-1.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-2-1.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-2-1.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>boxplot(log(exprs(eset)))</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-2-2.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-2-2.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>boxplot(log(exprs(eset)), las = 2)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-2-3.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-2-3.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="perform-pca" class="section level2">
 <h2>Perform PCA</h2>
@@ -388,16 +747,228 @@ ggplot(d, aes(x = treatment, y = top2b, fill = genotype)) +
 <pre class="r"><code>pca &lt;- prcomp(t(exprs(eset)), scale. = TRUE)
 plot(pca)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-3-1.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-3-1.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-3-1.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>d &lt;- data.frame(pData(eset), pca$x)
 ggplot(d, aes(x = PC1, y = PC2, color = genotype, shape = treatment)) +
   geom_point()</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-3-2.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-3-2.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-3-2.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-3-2.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>ggplot(d, aes(x = treatment, y = PC1, fill = genotype)) +
   geom_boxplot()</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-3-3.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-3-3.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-3-3.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-3-3.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>ggplot(d, aes(x = treatment, y = PC2, fill = genotype)) +
   geom_boxplot()</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-3-4.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-3-4.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-3-4.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-3-4.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="differential-expression-for-2x2-factorial-designs-video" class="section level2">
 <h2>Differential expression for 2x2 factorial designs (Video)</h2>
@@ -460,6 +1031,59 @@ summary(results)</code></pre>
 1   1944      1         914</code></pre>
 <pre class="r"><code>vennDiagram(results)</code></pre>
 <p><img src="figure/ch04.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-6-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/67f13a45f33e0667cc2e1c435a054cca66e86757/docs/figure/ch04.Rmd/unnamed-chunk-6-1.png" target="_blank">67f13a4</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-03-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b2dc65335ad0fe8e6b398aeeaff7b85f64375925/docs/figure/ch04.Rmd/unnamed-chunk-6-1.png" target="_blank">b2dc653</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/7f4d46b066c9a493f21149f02055b400adcd1fa1/docs/figure/ch04.Rmd/unnamed-chunk-6-1.png" target="_blank">7f4d46b</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="enrichment-analysis-video" class="section level2">
 <h2>Enrichment analysis (Video)</h2>
@@ -482,38 +1106,38 @@ path:mmu04137                                     Mitophagy - animal  63
 path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
 path:mmu04022                             cGMP-PKG signaling pathway 166
 path:mmu05414                           Dilated cardiomyopathy (DCM)  88
-path:mmu04012                                 ErbB signaling pathway  85
 path:mmu04217                                            Necroptosis 158
 path:mmu04971                                 Gastric acid secretion  74
 path:mmu04144                                            Endocytosis 262
 path:mmu05410                      Hypertrophic cardiomyopathy (HCM)  83
 path:mmu05202                Transcriptional misregulation in cancer 174
-path:mmu05205                                Proteoglycans in cancer 201
+path:mmu04012                                 ErbB signaling pathway  84
 path:mmu03040                                            Spliceosome 129
 path:mmu03013                                          RNA transport 166
 path:mmu04066                                HIF-1 signaling pathway 103
 path:mmu04115                                  p53 signaling pathway  67
+path:mmu04919                      Thyroid hormone signaling pathway 115
               Up Down         P.Up       P.Down
-path:mmu05322 25    1 1.360149e-10 9.997123e-01
-path:mmu05034 29   12 2.951438e-09 5.082281e-01
-path:mmu03008 19    2 5.449275e-09 9.766541e-01
-path:mmu05203 33   11 5.774019e-09 8.954277e-01
-path:mmu05412  0   20 1.000000e+00 7.074448e-08
-path:mmu04137 15    7 3.772740e-07 1.569358e-01
-path:mmu04261  5   27 8.659872e-01 2.812002e-06
-path:mmu04022  4   29 9.723100e-01 4.593838e-06
-path:mmu05414  0   19 1.000000e+00 9.447132e-06
-path:mmu04012  5   18 4.333938e-01 2.143931e-05
-path:mmu04217 21   14 4.411142e-05 2.300946e-01
-path:mmu04971  2   16 8.958342e-01 4.674899e-05
-path:mmu04144 29   20 5.580969e-05 3.996049e-01
-path:mmu05410  0   17 1.000000e+00 5.676062e-05
-path:mmu05202 22   10 6.308956e-05 7.991679e-01
-path:mmu05205 13   30 2.199450e-01 7.398417e-05
-path:mmu03040 18   11 8.147315e-05 3.073089e-01
-path:mmu03013 21    8 9.169936e-05 9.108638e-01
-path:mmu04066  8   19 1.510066e-01 9.547073e-05
-path:mmu04115 12    2 1.160126e-04 9.564316e-01</code></pre>
+path:mmu05322 25    1 1.275512e-10 9.997136e-01
+path:mmu05034 29   12 2.754611e-09 5.089928e-01
+path:mmu03008 19    2 5.184560e-09 9.767149e-01
+path:mmu05203 33   11 5.356776e-09 8.957936e-01
+path:mmu05412  0   20 1.000000e+00 7.142217e-08
+path:mmu04137 15    7 3.628333e-07 1.572432e-01
+path:mmu04261  5   27 8.642262e-01 2.843226e-06
+path:mmu04022  4   29 9.717775e-01 4.646843e-06
+path:mmu05414  0   19 1.000000e+00 9.524657e-06
+path:mmu04217 21   14 4.219986e-05 2.306917e-01
+path:mmu04971  2   16 8.948275e-01 4.706902e-05
+path:mmu04144 29   20 5.284433e-05 4.005582e-01
+path:mmu05410  0   17 1.000000e+00 5.716438e-05
+path:mmu05202 22   10 6.030451e-05 7.996927e-01
+path:mmu04012  5   17 4.206570e-01 6.704920e-05
+path:mmu03040 18   11 7.835780e-05 3.079244e-01
+path:mmu03013 21    8 8.782808e-05 9.111483e-01
+path:mmu04066  8   19 1.491963e-01 9.619306e-05
+path:mmu04115 12    2 1.127063e-04 9.565283e-01
+path:mmu04919  7   20 3.627170e-01 1.484823e-04</code></pre>
 <pre class="r"><code>enrich_kegg_inter &lt;- kegga(fit2, coef = &quot;Interaction&quot;,
                         geneid = entrez, species = &quot;Mm&quot;)
 topKEGG(enrich_kegg_inter)</code></pre>
@@ -523,12 +1147,12 @@ path:mmu05322                           Systemic lupus erythematosus 110
 path:mmu05034                                             Alcoholism 165
 path:mmu05203                                   Viral carcinogenesis 212
 path:mmu04919                      Thyroid hormone signaling pathway 115
-path:mmu00230                                      Purine metabolism 174
+path:mmu00230                                      Purine metabolism 175
 path:mmu05414                           Dilated cardiomyopathy (DCM)  88
 path:mmu05412 Arrhythmogenic right ventricular cardiomyopathy (ARVC)  72
 path:mmu05212                                      Pancreatic cancer  75
-path:mmu05220                               Chronic myeloid leukemia  78
-path:mmu05205                                Proteoglycans in cancer 201
+path:mmu05220                               Chronic myeloid leukemia  76
+path:mmu05205                                Proteoglycans in cancer 199
 path:mmu04930                              Type II diabetes mellitus  48
 path:mmu04211                           Longevity regulating pathway  90
 path:mmu04261                 Adrenergic signaling in cardiomyocytes 145
@@ -539,26 +1163,26 @@ path:mmu04933   AGE-RAGE signaling pathway in diabetic complications 100
 path:mmu05217                                   Basal cell carcinoma  63
 path:mmu01522                                   Endocrine resistance  93
               Up Down         P.Up       P.Down
-path:mmu03008  0   10 1.0000000000 1.037456e-08
-path:mmu05322  0   10 1.0000000000 3.290826e-07
-path:mmu05034  5   11 0.5267414152 1.877653e-06
-path:mmu05203  3   12 0.9495292564 3.469990e-06
-path:mmu04919 11    2 0.0004897690 3.677806e-01
-path:mmu00230 14    3 0.0005216390 3.063599e-01
-path:mmu05414  9    0 0.0009819112 1.000000e+00
-path:mmu05412  8    0 0.0010859864 1.000000e+00
-path:mmu05212  3    5 0.3728647626 1.430468e-03
-path:mmu05220  4    5 0.1910693728 1.704663e-03
-path:mmu05205 14    5 0.0021168933 7.314734e-02
-path:mmu04930  6    1 0.0024959647 4.169037e-01
-path:mmu04211  3    5 0.4887699119 3.197753e-03
-path:mmu04261 11    1 0.0032536513 8.059738e-01
-path:mmu05222  1    5 0.9347916590 3.516638e-03
-path:mmu04210  6    6 0.1947050270 3.698151e-03
-path:mmu05213  3    4 0.2374929187 3.857974e-03
-path:mmu04933  6    5 0.0706320008 5.023456e-03
-path:mmu05217  4    4 0.1101489261 5.193414e-03
-path:mmu01522  8    3 0.0054930754 8.491627e-02</code></pre>
+path:mmu03008  0   10 1.0000000000 1.007965e-08
+path:mmu05322  0   10 1.0000000000 3.200229e-07
+path:mmu05034  5   11 0.5239903502 1.823095e-06
+path:mmu05203  3   12 0.9487940322 3.363101e-06
+path:mmu04919 11    2 0.0004774097 3.663623e-01
+path:mmu00230 14    3 0.0005362122 3.077808e-01
+path:mmu05414  9    0 0.0009610474 1.000000e+00
+path:mmu05412  8    0 0.0010648869 1.000000e+00
+path:mmu05212  3    5 0.3710324131 1.411325e-03
+path:mmu05220  4    5 0.1779928540 1.497676e-03
+path:mmu05205 14    5 0.0018741551 7.000390e-02
+path:mmu04930  6    1 0.0024581255 4.159308e-01
+path:mmu04211  3    5 0.4867180093 3.156205e-03
+path:mmu04261 11    1 0.0031788883 8.049817e-01
+path:mmu05222  1    5 0.9342324019 3.471129e-03
+path:mmu04210  6    6 0.1928783824 3.643308e-03
+path:mmu05213  3    4 0.2361147774 3.816237e-03
+path:mmu04933  6    5 0.0698159306 4.959486e-03
+path:mmu05217  4    4 0.1092379866 5.137883e-03
+path:mmu01522  8    3 0.0053948301 8.431867e-02</code></pre>
 </div>
 <div id="enrichment-of-gene-ontology-categories" class="section level2">
 <h2>Enrichment of Gene Ontology categories</h2>
@@ -656,9 +1280,8 @@ GO:0030490 1.000000e+00 2.600262e-08</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
-<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
+<pre><code>R version 3.3.3 (2017-03-06)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
 Running under: OS X Yosemite 10.10.5
 
@@ -674,17 +1297,21 @@ other attached packages:
 [4] BiocGenerics_0.20.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.14         AnnotationDbi_1.36.2 knitr_1.18          
- [4] magrittr_1.5         IRanges_2.8.2        munsell_0.4.3       
- [7] colorspace_1.3-2     rlang_0.1.6          stringr_1.2.0       
-[10] plyr_1.8.4           tools_3.3.2          grid_3.3.2          
-[13] gtable_0.2.0         DBI_0.6-1            git2r_0.21.0        
-[16] htmltools_0.3.6      yaml_2.1.16          lazyeval_0.2.1      
-[19] rprojroot_1.3-2      digest_0.6.13        tibble_1.3.4        
-[22] org.Mm.eg.db_3.4.0   S4Vectors_0.12.2     memoise_1.1.0       
-[25] RSQLite_1.1-2        evaluate_0.10.1      rmarkdown_1.8.10    
-[28] labeling_0.3         stringi_1.1.5        GO.db_3.4.0         
-[31] scales_0.4.1         backports_1.1.2      stats4_3.3.2        </code></pre>
+ [1] Rcpp_0.12.14         pillar_1.2.2         git2r_0.21.0        
+ [4] plyr_1.8.4           workflowr_1.0.1      R.methodsS3_1.7.1   
+ [7] R.utils_2.6.0        tools_3.3.3          digest_0.6.13       
+[10] bit_1.1-12           memoise_1.1.0        evaluate_0.10.1     
+[13] RSQLite_2.0          tibble_1.4.2         gtable_0.2.0        
+[16] pkgconfig_2.0.1      rlang_0.2.0          DBI_0.8             
+[19] yaml_2.1.16          org.Mm.eg.db_3.4.0   stringr_1.3.0       
+[22] knitr_1.20           IRanges_2.8.2        S4Vectors_0.12.2    
+[25] stats4_3.3.3         rprojroot_1.3-2      bit64_0.9-7         
+[28] grid_3.3.3           AnnotationDbi_1.36.2 rmarkdown_1.9.12    
+[31] GO.db_3.4.0          blob_1.1.1           magrittr_1.5        
+[34] whisker_0.3-2        backports_1.1.2      scales_0.5.0        
+[37] htmltools_0.3.6      colorspace_1.3-2     labeling_0.3        
+[40] stringi_1.1.7        lazyeval_0.2.1       munsell_0.4.3       
+[43] R.oo_1.22.0         </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -701,7 +1328,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 <hr>
 <p>
-    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+    
 </p>
 <hr>
 
@@ -723,6 +1350,25 @@ footer is added to webpages before the MathJax javascript. -->
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
 
 
 </div>

@@ -1,27 +1,11 @@
 ---
 title: "Differential expression analysis for studies with a 2x2 factorial design"
 author: "John Blischak"
-output: html_document
+output: workflowr::wflow_html
 ---
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-```{r read-chunk, include=FALSE, cache=FALSE}
-knitr::read_chunk("chunks.R")
-```
 
-<!-- Update knitr chunk options -->
-```{r knitr-opts-chunk, include=FALSE}
-```
 
-<!-- Insert the date the file was last updated -->
-```{r last-updated, echo=FALSE, results='asis'}
-```
-
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-```{r code-version, echo=FALSE, results='asis'}
-```
 
 Analayze microarray data from Zhang et al., 2012, which measured gene expression
 in hearts from wild type and Top2b null mice treated with doxorubicin or a
@@ -172,8 +156,4 @@ enrich_go_inter <- goana(fit2, coef = "Interaction",
 topGO(enrich_go_inter, ontology = "BP")
 ```
 
-## Session information
 
-<!-- Insert the session information into the document -->
-```{r session-info}
-```

@@ -26,7 +26,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -94,6 +96,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -305,6 +310,13 @@ div.section {
 }
 </style>
 
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
 <div class="fluid-row" id="header">
 
 
@@ -315,19 +327,164 @@ div.section {
 </div>
 
 
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
-<!-- Update knitr chunk options -->
-<!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-01-12</p>
-<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
- package git2r is installed -->
-<p><strong>Code version:</strong> 9a54d7c</p>
+<p><strong>Last updated:</strong> 2018-05-23</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<details>
+<p><summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/cc6353a03cb2d5c5c068d9f3e25f1cc3a2adbf0b" target="_blank">cc6353a</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    figure/.DS_Store
+    Ignored:    figure/ch02/.DS_Store
+
+Untracked files:
+    Untracked:  _workflowr.yml
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/ch01.Rmd
+    Modified:   analysis/ch02.Rmd
+    Modified:   analysis/ch03.Rmd
+    Modified:   analysis/ch04.Rmd
+    Deleted:    analysis/chunks.R
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/ch03.html" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/9a54d7c1a7281865b706d32a8bb01d917205f7cc/analysis/ch03.Rmd" target="_blank">9a54d7c</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+<td style="text-align:left;">
+Add code for Ch 03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/3bcf1680c57f2c944ef2f5e02a59facd86f4f565/docs/ch03.html" target="_blank">3bcf168</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/6395f07170f487947a75ccfd7d4bc0b8561148b3/analysis/ch03.Rmd" target="_blank">6395f07</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-11
+</td>
+<td style="text-align:left;">
+Start organizing Ch 03
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+</details>
+<hr />
 <p>Analyze RNA-seq data from Hoban et al., 2016, which measured gene expression in the prefrontal cortex of 3 groups of mice: conventional (con), germ-free (gf), and germ-free colonized with normal microbiota (exgf).</p>
 <pre class="r"><code>library(&quot;Biobase&quot;)
-library(&quot;edgeR&quot;)</code></pre>
-<pre><code>Warning: package &#39;limma&#39; was built under R version 3.3.3</code></pre>
-<pre class="r"><code>library(&quot;ggplot2&quot;)
+library(&quot;edgeR&quot;)
+library(&quot;ggplot2&quot;)
 library(&quot;limma&quot;)
 library(&quot;stringr&quot;)
 dge &lt;- readRDS(&quot;../data/ch03.rds&quot;)</code></pre>
@@ -354,6 +511,37 @@ dge_cpm &lt;- cpm(dge, log = TRUE)</code></pre>
 <p>Use <code>limma::plotDensities</code> to visualize the distribution of counts and the distribution of counts per million.</p>
 <pre class="r"><code>plotDensities(dge_cpm, legend = FALSE)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-3-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-3-1.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="filtering-genes-and-samples-video" class="section level2">
 <h2>Filtering genes and samples (Video)</h2>
@@ -367,6 +555,37 @@ dge_filt &lt;- calcNormFactors(dge_filt)
 dge_filt_cpm &lt;- cpm(dge_filt, log = TRUE)
 plotDensities(dge_filt_cpm, legend = FALSE)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-4-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-4-1.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="use-pca-to-identify-outlier-sample" class="section level2">
 <h2>Use PCA to identify outlier sample</h2>
@@ -374,12 +593,105 @@ plotDensities(dge_filt_cpm, legend = FALSE)</code></pre>
 <pre class="r"><code>pca &lt;- prcomp(t(dge_filt_cpm), scale. = TRUE)
 plot(pca)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-5-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-5-1.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>d &lt;- data.frame(dge_filt$samples, pca$x)
 ggplot(d, aes(x = PC1, y = PC2, color = group)) +
   geom_text(aes(label = id))</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-5-2.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-5-2.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>plotMDS(dge_filt)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-5-3.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-5-3.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>dge_final &lt;- dge_filt[, dge_filt$samples$id != &quot;exgf1&quot;]</code></pre>
 </div>
 <div id="differential-expression-for-rna-seq-with-voom-video" class="section level2">
@@ -415,11 +727,104 @@ Levels gf.con exgf.con exgf.gf
 <pre class="r"><code>dge_final &lt;- calcNormFactors(dge_final)
 v &lt;- voom(dge_final, design, plot = TRUE)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-8-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-8-1.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>plotDensities(v$E, legend = FALSE)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-8-2.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-8-2.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 <pre class="r"><code>dge_final_cpm &lt;- cpm(dge_final, log = TRUE)
 plot(v$E[, 1], dge_final_cpm[, 1])</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-8-3.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-8-3.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="fit-and-test-model-for-study-with-3-groups" class="section level2">
 <h2>Fit and test model for study with 3 groups</h2>
@@ -430,12 +835,42 @@ fit2 &lt;- eBayes(fit2)
 results &lt;- decideTests(fit2)
 vennDiagram(results)</code></pre>
 <p><img src="figure/ch03.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-9-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/77a43dd33fa053ff49b73d253d2e1389d4d5f808/docs/figure/ch03.Rmd/unnamed-chunk-9-1.png" target="_blank">77a43dd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-01-12
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
-<!-- Insert the session information into the document -->
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.3.2 (2016-10-31)
+<pre><code>R version 3.3.3 (2017-03-06)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
 Running under: OS X Yosemite 10.10.5
 
@@ -447,17 +882,21 @@ attached base packages:
 [8] base     
 
 other attached packages:
-[1] stringr_1.2.0       ggplot2_2.2.1       edgeR_3.16.5       
+[1] stringr_1.3.0       ggplot2_2.2.1       edgeR_3.16.5       
 [4] limma_3.30.13       Biobase_2.34.0      BiocGenerics_0.20.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.11     knitr_1.18       magrittr_1.5     munsell_0.4.3   
- [5] colorspace_1.3-2 lattice_0.20-34  rlang_0.1.6      plyr_1.8.4      
- [9] tools_3.3.2      grid_3.3.2       gtable_0.2.0     git2r_0.20.0    
-[13] htmltools_0.3.6  lazyeval_0.2.1   yaml_2.1.16      rprojroot_1.2   
-[17] digest_0.6.13    tibble_1.3.3     evaluate_0.10.1  rmarkdown_1.8   
-[21] labeling_0.3     stringi_1.1.5    scales_0.4.1     backports_1.1.0 
-[25] locfit_1.5-9.1  </code></pre>
+ [1] Rcpp_0.12.14      knitr_1.20        whisker_0.3-2    
+ [4] magrittr_1.5      workflowr_1.0.1   munsell_0.4.3    
+ [7] colorspace_1.3-2  lattice_0.20-35   rlang_0.2.0      
+[10] plyr_1.8.4        tools_3.3.3       grid_3.3.3       
+[13] gtable_0.2.0      R.oo_1.22.0       git2r_0.21.0     
+[16] htmltools_0.3.6   lazyeval_0.2.1    yaml_2.1.16      
+[19] rprojroot_1.3-2   digest_0.6.13     tibble_1.4.2     
+[22] R.utils_2.6.0     evaluate_0.10.1   rmarkdown_1.9.12 
+[25] labeling_0.3      stringi_1.1.7     pillar_1.2.2     
+[28] scales_0.5.0      backports_1.1.2   R.methodsS3_1.7.1
+[31] locfit_1.5-9.1   </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -474,7 +913,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 <hr>
 <p>
-    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+    
 </p>
 <hr>
 
@@ -496,6 +935,25 @@ footer is added to webpages before the MathJax javascript. -->
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 -->
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
 
 
 </div>
