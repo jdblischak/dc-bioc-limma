@@ -1,0 +1,111 @@
+---
+title: "DataCamp Bioconductor courses"
+---
+
+## Setup
+
+```{r}
+library("knitr")
+opts_chunk$set(eval = FALSE)
+```
+
+```{r packages, message=FALSE}
+library("git2r")
+library("magrittr")
+library("stringr")
+```
+
+
+```{r repos}
+repos <- c("courses-bioconductor-basics",
+           "courses-chip-seq-workflows-in-r",
+           "courses-differential-expression-with-limma",
+           "courses-proteomics-workflows", 
+           "courses-rna-seq-workflows-in-r",
+           "courses-single-cell-rna-seq-workflows-in-r")
+```
+
+## Extract course information
+
+```{r extract, message=FALSE, warning=TRUE}
+course_list <- list()
+for (course in repos) {
+  repo_url <- paste0("git@github.com:datacamp/", course, ".git")
+  local_path <- file.path(tempdir(), course)
+  r <- clone(repo_url, local_path)
+  chapters <- Sys.glob(file.path(local_path, "chapter[0-9].md"))
+  readme <- Sys.glob(file.path(local_path, "README.md"))
+  requirements <- Sys.glob(file.path(local_path, "requirements.R"))
+  files <- c(chapters, readme, requirements)
+  lines <- Map(readLines, files)
+  lines <- unlist(lines)
+  course_list[[course]]$pkgs <- unique(str_subset(lines, "^library(.+)")) %>%
+    str_replace("library\\((.+)\\)", "\\1") %>%
+    # Remove blanks from exercises
+    str_subset("^[^___]") %>%
+    str_replace_all("\"", "")
+  course_list[[course]]$pca <- str_subset(lines, fixed("PCA", ignore_case = TRUE))
+  course_list[[course]]$prcomp <- str_subset(lines, "prcomp")
+  course_list[[course]]$formula <- str_subset(lines, "~")
+  course_list[[course]]$model.matrix <- str_subset(lines, "model.matrix")
+}
+```
+
+## Display course information
+
+### Packages used
+
+```{r}
+for (course in names(course_list)) {
+  cat(course, sep = "\n")
+  cat("===\n")
+  cat(course_list[[course]][["pkgs"]], sep = "\n")
+  cat("\n")
+}
+```
+
+
+### Use of PCA
+
+```{r}
+for (course in names(course_list)) {
+  cat(course, sep = "\n")
+  cat("===\n")
+  cat(course_list[[course]][["pca"]], sep = "\n")
+  cat("\n")
+}
+```
+
+
+### Use of prcomp
+
+```{r}
+for (course in names(course_list)) {
+  cat(course, sep = "\n")
+  cat("===\n")
+  cat(course_list[[course]][["prcomp"]], sep = "\n")
+  cat("\n")
+}
+```
+
+### Use of formula syntax
+
+```{r}
+for (course in names(course_list)) {
+  cat(course, sep = "\n")
+  cat("===\n")
+  cat(course_list[[course]][["formula"]], sep = "\n")
+  cat("\n")
+}
+```
+
+### Use of model.matrix
+
+```{r}
+for (course in names(course_list)) {
+  cat(course, sep = "\n")
+  cat("===\n")
+  cat(course_list[[course]][["model.matrix"]], sep = "\n")
+  cat("\n")
+}
+```
