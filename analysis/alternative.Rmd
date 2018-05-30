@@ -1,0 +1,73 @@
+---
+title: "Differential Expression with limma"
+output: html_document
+---
+
+```{r include=FALSE}
+library("knitr")
+opts_chunk$set(eval = FALSE)
+```
+
+## Chapter 1: Differential Expression Testing
+
+### Lesson 1: Genomics experiments
+
+#### VideoExercise: Genomics Experiments
+
+#### MultipleChoiceExercise: Genomic Technologies
+
+#### Normal Exercise: 
+
+### Lesson 2: Managing gene expression data
+
+### Lesson 3: Linear modelling with limma
+
+#### VideoExercise: Linear modelling with limma
+
+#### NormalExercise: Specify the model
+
+#### NormalExercise: Perform the hypothesis test
+
+## Chapter 2: Flexible models for genomics studies
+
+#### Lesson 1: Using group-means parametrization
+
+#### VideoExercise: Using group-means parametrization
+
+#### NormalExercise: Specify the model
+
+#### NormalExercise: Specify the contrasts
+
+#### NormalExercise: Test the model
+
+#### Lesson 2: Using group-means parametrization
+
+#### VideoExercise: Using group-means parametrization
+
+#### NormalExercise: Specify the model
+
+#### NormalExercise: Specify the contrasts
+
+#### NormalExercise: Test the model
+
+#### Lesson 3: Using group-means parametrization
+
+#### VideoExercise: Using group-means parametrization
+
+#### NormalExercise: Specify the model
+
+#### NormalExercise: Specify the contrasts
+
+#### NormalExercise: Test the model
+
+## Chapter 3: Pre- and post-processing 
+
+## Chapter 4: Case study: 
+
+## Other data sets
+
+* [ALL](https://www.bioconductor.org/packages/release/data/experiment/html/ALL.html)
+* [yeastCC](https://bioconductor.org/packages/release/data/experiment/html/yeastCC.html)
+* [gaschYHS](https://www.bioconductor.org/packages/release/data/experiment/html/gaschYHS.html)
+* Multiple yeast mutants and multiple stress treatments - [Gasch et al., 2001](https://www.ncbi.nlm.nih.gov/pubmed/11598186) and [companion website](http://www-genome.stanford.edu/mec1/)
+* 2x2 factorial myostatin mouse - [Dilger et al., 2010](https://www.ncbi.nlm.nih.gov/pubmed/22443951) and [GEO entry](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27577)
