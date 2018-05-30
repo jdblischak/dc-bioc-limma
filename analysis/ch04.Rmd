@@ -50,6 +50,15 @@ boxplot(log(exprs(eset)))
 boxplot(log(exprs(eset)), las = 2)
 ```
 
+```{r densities}
+plotDensities(log(exprs(eset)), group = pData(eset)$genotype, legend = "topright")
+exprs(eset) <- normalizeBetweenArrays(log(exprs(eset)))
+plotDensities(exprs(eset), group = pData(eset)$genotype, legend = "topright")
+eset <- eset[rowMeans(exprs(eset)) > 0, ]
+dim(eset)
+plotDensities(exprs(eset), group = pData(eset)$genotype, legend = "topright")
+```
+
 ## Perform PCA
 
 Use `prcomp` to calculate PCs and plot PC2 vs. PC1 to confirm that the
