@@ -5,7 +5,7 @@ output: html_document
 
 ```{r include=FALSE}
 library("knitr")
-opts_chunk$set(eval = FALSE)
+opts_chunk$set(eval = TRUE)
 ```
 
 ## Chapter 1: Differential Expression Testing
@@ -60,7 +60,63 @@ opts_chunk$set(eval = FALSE)
 
 #### NormalExercise: Test the model
 
-## Chapter 3: Pre- and post-processing 
+## Chapter 3: Pre- and post-processing
+
+```{r}
+# BiocInstaller::biocLite("bladderbatch")
+library(bladderbatch)
+data(bladderdata)
+bladderEset
+eset <- bladderEset
+head(pData(eset))
+head(fData(eset))
+exprs(eset)[1:5, 1:5]
+table(pData(eset)[, c("outcome", "batch")])
+library("limma")
+eset <- eset[, pData(eset)$outcome %in% c("sTCC-CIS", "sTCC+CIS")]
+plotMDS(eset, labels = pData(eset)$batch, gene.selection = "common")
+plotMDS(eset, labels = pData(eset)$outcome, gene.selection = "common")
+exprs(eset) <- removeBatchEffect(eset, batch = pData(eset)$batch)
+plotMDS(eset, labels = pData(eset)$batch, gene.selection = "common")
+plotMDS(eset, labels = pData(eset)$outcome, gene.selection = "common")
+```
+
+Recommend reading [Leek et al., 2010](Tackling the widespread and critical impact of batch effects in high-throughput data)
+
+```{r}
+# BiocInstaller::biocLite("HarmanData")
+library(HarmanData)
+data(IMR90)
+imr90.info
+table(imr90.info)
+plotMDS(imr90.data, labels = imr90.info$Treatment, gene.selection = "common")
+plotMDS(imr90.data, labels = imr90.info$Batch, gene.selection = "common")
+imr90_clean <- removeBatchEffect(imr90.data, batch = imr90.info$Batch)
+plotMDS(imr90_clean, labels = imr90.info$Treatment)
+plotMDS(imr90_clean, labels = imr90.info$Batch)
+
+data(NPM)
+npm.info
+table(npm.info)
+plotMDS(npm.data, labels = npm.info$Treatment, gene.selection = "common")
+plotMDS(npm.data, labels = npm.info$Batch, gene.selection = "common")
+npm_clean <- removeBatchEffect(npm.data, batch = npm.info$Batch, design = model.matrix(~Treatment, data = npm.info))
+plotMDS(npm_clean, labels = npm.info$Treatment)
+plotMDS(npm_clean, labels = npm.info$Batch)
+
+data(OLF)
+olf.info
+table(olf.info)
+plotMDS(olf.data, labels = olf.info$Treatment, gene.selection = "common")
+plotMDS(olf.data, labels = olf.info$Batch, gene.selection = "common")
+olf_clean <- removeBatchEffect(olf.data, batch = olf.info$Batch, design = model.matrix(~Treatment, data = olf.info))
+olf_clean <- removeBatchEffect(olf.data, batch = olf.info$Batch)
+plotMDS(olf_clean, labels = olf.info$Treatment, gene.selection = "common", col = olf.info$Treatment)
+plotMDS(olf_clean, labels = olf.info$Batch, gene.selection = "common", col = olf.info$Batch)
+```
+
+OLF study: https://particleandfibretoxicology.biomedcentral.com/articles/10.1186/1743-8977-10-54
+OLF GEO: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE45322
 
 ## Chapter 4: Case study: 
 
@@ -70,4 +126,9 @@ opts_chunk$set(eval = FALSE)
 * [yeastCC](https://bioconductor.org/packages/release/data/experiment/html/yeastCC.html)
 * [gaschYHS](https://www.bioconductor.org/packages/release/data/experiment/html/gaschYHS.html)
 * Multiple yeast mutants and multiple stress treatments - [Gasch et al., 2001](https://www.ncbi.nlm.nih.gov/pubmed/11598186) and [companion website](http://www-genome.stanford.edu/mec1/)
-* 2x2 factorial myostatin mouse - [Dilger et al., 2010](https://www.ncbi.nlm.nih.gov/pubmed/22443951) and [GEO entry](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27577)
+* 2x2 factorial myostatin mouse - [Dilger et al., 2010](https://www.ncbi.nlm.nih.gov/pubmed/22443951) and [GEO entry](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27577) - 2 color arrays
+* 2x2 factorial protein/infection effect on fetal brain - [Starr et al., 2016 GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57115)
+* [bladderbatch](https://www.bioconductor.org/packages/release/data/experiment/html/bladderbatch.html)
+* [HarmanData](https://www.bioconductor.org/packages/release/data/experiment/html/HarmanData.html)
+* [Arabidopsis thaliana 2x2](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53990)
+* [Genotype and time of day shape the Populus drought response](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15242)
