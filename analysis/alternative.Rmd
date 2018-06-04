@@ -12,6 +12,70 @@ opts_chunk$set(eval = TRUE)
 
 ### Lesson 1: Genomics experiments
 
+```{r cll}
+library(CLL)
+data("sCLLex")
+class(sCLLex)
+dim(sCLLex)
+head(pData(sCLLex))
+head(fData(sCLLex))
+boxplot(exprs(sCLLex)[1, ] ~ pData(sCLLex)$Disease)
+x <- exprs(sCLLex)
+f <- fData(sCLLex)
+p <- pData(sCLLex)
+library(hgu95av2.db)
+columns(hgu95av2.db)
+# select(x, keys, columns, keytype, ...) Couldn't get multiVals argument to
+# work. Seems to be ignored. I tried "first", "CharacterList", and a custom
+# function to select the last possible value. None made any difference.
+hope <- select(hgu95av2.db, keys = rownames(x),
+               columns = c("SYMBOL", "ENTREZID", "MAP", "GENENAME"))
+hope <- hope[!duplicated(hope$PROBEID), ]
+stopifnot(hope$PROBEID == rownames(x))
+colnames(hope) <- c("probe", "symbol", "entrez", "chrom", "name")
+rownames(hope) <- hope$probe
+hope[["probe"]] <- NULL
+f <- hope
+boxplot(x[1, ] ~ p[, "Disease"], main = f[1, "symbol"])
+library(Biobase)
+eset <- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+save(list = c("x", "f", "p"), file = "../data/cll.RData")
+saveRDS(eset, file = "../data/cll-eset.rds")
+dim(eset)
+
+# Subset to only include the 1000th gene (row) and the first 10 samples
+eset_sub <- eset[1000, 1:10]
+
+# Check the dimensions of the subset 
+dim(eset_sub)
+
+# Create a boxplot of the first gene in eset_sub
+boxplot(exprs(eset_sub)[1, ] ~ pData(eset_sub)[, "Disease"], main = fData(eset_sub)[1, "symbol"])
+```
+
+```{r vdx}
+library(breastCancerVDX)
+data("vdx")
+class(vdx)
+dim(vdx)
+head(pData(vdx))
+head(fData(vdx))
+x <- exprs(vdx)
+f <- fData(vdx)
+p <- pData(vdx)
+png("../figure/ch01/boxplot.png")
+boxplot(x[1, ] ~ p[, "er"], main = f[1, "Gene.symbol"])
+dev.off()
+eset <- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+dim(eset)
+boxplot(exprs(eset)[1, ] ~ pData(eset)[, "er"],
+        main = fData(eset)[1, "Gene.symbol"])
+```
+
 #### VideoExercise: Genomics Experiments
 
 #### MultipleChoiceExercise: Genomic Technologies
