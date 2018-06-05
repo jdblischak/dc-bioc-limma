@@ -72,6 +72,41 @@ fit <- eBayes(fit)
 # Summarize results
 results <- decideTests(fit[, "Diseasestable"])
 summary(results)
+
+
+# group-means
+
+# Create design matrix with no intercept
+design <- model.matrix(~0 + Disease, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)
+
+# Load package
+library(limma)
+
+# Create a contrasts matrix
+cm <- makeContrasts(status = Diseaseprogres. - Diseasestable,
+                    levels = design)
+
+# View the contrasts matrix
+cm
+
+# Load package
+library(limma)
+
+# Fit the model
+fit <- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 <- eBayes(fit2)
+
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
 ```
 
 ```{r vdx}
@@ -84,6 +119,8 @@ head(fData(vdx))
 x <- exprs(vdx)
 f <- fData(vdx)
 p <- pData(vdx)
+# Recode er as 0 = negative and 1 = positive
+p[, "er"] <- ifelse(p[, "er"] == 0, "negative", "positive")
 png("../figure/ch01/boxplot.png")
 boxplot(x[1, ] ~ p[, "er"], main = f[1, "Gene.symbol"])
 dev.off()
@@ -104,7 +141,25 @@ fit <- lmFit(eset, design)
 head(fit$coefficients, 3)
 fit <- eBayes(fit)
 head(fit$t, 3)
-results <- decideTests(fit[, "er"])
+results <- decideTests(fit[, "erpositive"])
+summary(results)
+
+# group-means
+design <- model.matrix(~0 + er, data = pData(eset))
+head(design)
+colSums(design)
+
+library(limma)
+cm <- makeContrasts(status = erpositive - ernegative,
+                    levels = design)
+cm
+
+fit <- lmFit(eset, design)
+head(fit$coefficients)
+fit2 <- contrasts.fit(fit, contrasts = cm)
+head(fit2$coefficients)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
 summary(results)
 ```
 
