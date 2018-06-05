@@ -53,6 +53,25 @@ dim(eset_sub)
 
 # Create a boxplot of the first gene in eset_sub
 boxplot(exprs(eset_sub)[1, ] ~ pData(eset_sub)[, "Disease"], main = fData(eset_sub)[1, "symbol"])
+
+# Create design matrix for CLL study
+design <- model.matrix(~Disease, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)
+
+# Load package
+library(limma)
+
+# Fit the model
+fit <- lmFit(eset, design)
+
+# Calculate the t-statistics
+fit <- eBayes(fit)
+
+# Summarize results
+results <- decideTests(fit[, "Diseasestable"])
+summary(results)
 ```
 
 ```{r vdx}
@@ -74,6 +93,19 @@ eset <- ExpressionSet(assayData = x,
 dim(eset)
 boxplot(exprs(eset)[1, ] ~ pData(eset)[, "er"],
         main = fData(eset)[1, "Gene.symbol"])
+design <- model.matrix(~er, data = pData(eset))
+head(design, 3)
+colSums(design)
+table(pData(eset)[, "er"])
+
+library(limma)
+
+fit <- lmFit(eset, design)
+head(fit$coefficients, 3)
+fit <- eBayes(fit)
+head(fit$t, 3)
+results <- decideTests(fit[, "er"])
+summary(results)
 ```
 
 #### VideoExercise: Genomics Experiments
