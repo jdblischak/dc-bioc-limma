@@ -191,9 +191,98 @@ summary(results)
 
 #### NormalExercise: Test the model
 
-#### Lesson 2: Using group-means parametrization
+#### Lesson 2: Using group-means parametrization for studies with more than 2 groups
 
 #### VideoExercise: Using group-means parametrization
+
+```{r stemhypoxia}
+library(stemHypoxia)
+data(stemHypoxia)
+dim(M)
+class(M)
+M[1:5, 1:5]
+f <- M[, 1:2]
+rownames(f) <- f$Gene_ID
+rownames(M) <- f$Gene_ID
+M[, 1:2] <- NULL
+dim(design)
+class(design)
+head(design)
+rownames(design) <- colnames(M)
+
+eset <- ExpressionSet(assayData = as.matrix(M),
+                      phenoData = AnnotatedDataFrame(design),
+                      featureData = AnnotatedDataFrame(f))
+table(design$oxygen, design$time)
+# Subset to only incldue the 5 days timepoint
+eset <- eset[, pData(eset)$time == 5]
+dim(eset)
+# Clean up names
+library(stringr)
+pData(eset)[, "oxygen"] <- sprintf("ox%02d", pData(eset)[, "oxygen"])
+pData(eset)[, "rep"] <- sprintf("r%d",
+                                as.integer(str_sub(pData(eset)[, "samplename"], -1, -1)))
+pData(eset)[, c("time", "samplename")] <- NULL
+colnames(eset) <- paste(pData(eset)[, "oxygen"], pData(eset)[, "rep"], sep = "_")
+head(pData(eset))
+
+dim(eset)
+table(pData(eset)[, "oxygen"])
+```
+
+```{r leukemiasEset}
+library(leukemiasEset)
+data("leukemiasEset")
+?leukemiasEset
+eset <- leukemiasEset
+dim(eset)
+head(fData(eset))
+featureData(eset) <- AnnotatedDataFrame(data.frame(ensembl = rownames(exprs(eset)),
+                                                   stringsAsFactors = FALSE))
+head(fData(eset))
+exprs(eset)[1:5, 1:5]
+head(pData(eset))
+table(pData(eset)[, "LeukemiaType"])
+# Subset to only include ALL, AML, and CML
+eset <- eset[, pData(eset)[, "LeukemiaType"] %in% c("ALL","AML", "CML")]
+dim(eset)
+# Clean up names
+phenoData(eset) <- AnnotatedDataFrame(data.frame(type = as.character(pData(eset)[, "LeukemiaType"]),
+                                                   stringsAsFactors = FALSE))
+head(pData(eset))
+exprs(eset)[1:5, 1:5]
+colnames(eset) <- sprintf("sample_%02d", 1:ncol(eset))
+exprs(eset)[1:5, 1:5]
+dim(eset)
+head(pData(eset), 3)
+table(pData(eset)[, "type"])
+
+design <- model.matrix(~0 + type, data = pData(eset))
+head(design, 3)
+colSums(design)
+
+library(limma)
+# * Tests:
+#     * AML v. ALL: $\beta_2 - \beta_1 = 0$
+#     * CML v. ALL: $\beta_3 - \beta_1 = 0$
+#     * CML v. AML: $\beta_3 - \beta_2 = 0$
+cm <- makeContrasts(AMLvALL = typeAML - typeALL,
+                    CMLvALL = typeCML - typeALL,
+                    CMLvAML = typeCML - typeAML,
+                    levels = design)
+cm
+
+library(limma)
+# Fit coefficients
+fit <- lmFit(eset, design)
+# Fit contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+# Calculate t-statistics
+fit2 <- eBayes(fit2)
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
+```
 
 #### NormalExercise: Specify the model
 
