@@ -1,0 +1,92 @@
+# Arabidopsis thaliana 2x2
+# https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53990
+
+library(Biobase)
+library(GEOquery)
+library(limma)
+library(stringr)
+
+gset <- getGEO("GSE53990", GSEMatrix = TRUE, getGPL = FALSE)
+if (length(gset) > 1) idx <- grep("GPL198", attr(gset, "names")) else idx <- 1
+gset <- gset[[idx]]
+
+# Preprocessing ----------------------------------------------------------------
+
+eset <- gset
+
+dim(eset)
+plotDensities(eset, legend = FALSE)
+
+# RMA normalization already applied
+#
+# > Raw chip data were analyzed with R/Bioconductor. Only perfect match (PM)
+# > intensities were used. RMA function as implemented in the affy package was
+# > used for background adjustment, normalization and summarization.
+
+sum(rowMeans(exprs(eset)) > 5)
+plotDensities(eset[rowMeans(exprs(eset)) > 5, ], legend = FALSE)
+eset <- eset[rowMeans(exprs(eset)) > 5, ]
+
+pData(eset) <- pData(eset)[, c("title", "genotype:ch1", "lt treatment time:ch1")]
+colnames(pData(eset)) <- c("title", "type", "temp")
+
+# Remove 48h sample. More noticeable effect at 120h (authors note that 48 hour
+# timepoint is more interesting to them since it is more likely to give insight
+# into mechanism since by 120h lots of downstream singaling has started.
+# However, the effect is much more minimal, and thus not as useful for my
+# pedagological needs)
+eset <- eset[, pData(eset)[, "temp"] != "48h"]
+
+# Clean up names
+pData(eset)[, "type"] <- tolower(pData(eset)[, "type"])
+pData(eset)[, "temp"] <- ifelse(pData(eset)[, "temp"] == "0h", "normal", "low")
+pData(eset)[, "rep"] <- sprintf("r%d",
+                                as.integer(str_sub(pData(eset)[, "title"], -1, -1)))
+pData(eset)[, "title"] <- NULL
+colnames(eset) <- paste(pData(eset)[, "type"],
+                        pData(eset)[, "temp"],
+                        pData(eset)[, "rep"], sep = "_")
+head(pData(eset))
+
+saveRDS(eset, file = "../data/arabidopsis-eset.rds")
+
+# Create single variable
+group <- with(pData(eset), paste(type, temp, sep = "."))
+group <- factor(group)
+
+# Create design matrix with no intercept
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+
+# Count the number of samples modeled by each coefficient
+colSums(design)
+
+# Load package
+library(limma)
+
+# Create a contrasts matrix
+cm <- makeContrasts(type_normal = vte2.normal - col.normal,
+                    type_low = vte2.low - col.low,
+                    temp_vte2 = vte2.low - vte2.normal,
+                    temp_col = col.low - col.normal,
+                    interaction = (vte2.low - vte2.normal) - (col.low - col.normal),
+                    levels = design)
+
+# View the contrasts matrix
+cm
+
+# Load package
+library(limma)
+
+# Fit the model
+fit <- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 <- eBayes(fit2)
+
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
