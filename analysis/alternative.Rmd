@@ -210,12 +210,27 @@ class(design)
 head(design)
 rownames(design) <- colnames(M)
 
+library(Biobase)
 eset <- ExpressionSet(assayData = as.matrix(M),
                       phenoData = AnnotatedDataFrame(design),
                       featureData = AnnotatedDataFrame(f))
+# The samples are nicely balanced on days 0.5, 1, and 5
 table(design$oxygen, design$time)
-# Subset to only incldue the 5 days timepoint
-eset <- eset[, pData(eset)$time == 5]
+# time 0.5 has separation between the 21% samples versus the 1% & 5% on
+# dimension 1. Dimension 2 splits 1% and 5%.
+library(limma)
+plotMDS(eset[, pData(eset)[, "time"] == 0.5], cex = 0.6, main = "time 0.5",
+        gene.selection = "common")
+# time 1 has the nicest separation by the 3 oxygen levels on the first dimension
+plotMDS(eset[, pData(eset)[, "time"] == 1], cex = 0.6, main = "time 1",
+        gene.selection = "common")
+# time 5 has outlier samples that I don't want to deal with. Dimension 1 is
+# driven by 5_2 and dimension 2 is driven by 21_1
+plotMDS(eset[, pData(eset)[, "time"] == 5], cex = 0.6, main = "time 5",
+        gene.selection = "common")
+
+# Subset to only incldue the 1 day timepoint
+eset <- eset[, pData(eset)$time == 1]
 dim(eset)
 # Clean up names
 library(stringr)
@@ -228,6 +243,75 @@ head(pData(eset))
 
 dim(eset)
 table(pData(eset)[, "oxygen"])
+
+# Has way too many probes. Needs to be filtered. According to the GEO entry,
+# they have already been quantile normalzied with limma, so I don't need to
+# re-do that:
+#
+# https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM927288
+#
+# > Data preprocessing was done using R 2.5.1. limma-Bioconductor package was
+# used to normalize data: the normexp option was used to perform background
+# correction and the quantile method was used for the between array
+# normalization.
+#
+# Also note that there are some negative values, which should be removed by the
+# filtering
+sum(exprs(eset) < 0)
+negative <- function(x) any(x < 0)
+sum(apply(exprs(eset), 1, negative))
+
+plotDensities(eset, legend = "topright")
+plotDensities(eset[rowMeans(exprs(eset)) > 9, ], legend = "topright")
+sum(rowMeans(exprs(eset)) > 9)
+
+eset <- eset[rowMeans(exprs(eset)) > 9, ]
+dim(eset)
+
+plotMDS(eset, cex = 0.6, gene.selection = "common")
+
+# And there are no more negative measurements
+sum(apply(exprs(eset), 1, negative))
+
+saveRDS(eset, file = "../data/stem-eset.rds")
+
+
+# Create design matrix with no intercept
+design <- model.matrix(~0 + oxygen, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)
+
+
+
+# Load package
+library(limma)
+
+# Create a contrasts matrix
+cm <- makeContrasts(ox05vox01 = oxygenox05 - oxygenox01,
+                    ox21vox01 = oxygenox21 - oxygenox01,
+                    ox21vox05 = oxygenox21 - oxygenox05,
+                    levels = design)
+
+# View the contrasts matrix
+cm
+
+
+# Load package
+library(limma)
+
+# Fit the model
+fit <- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 <- eBayes(fit2)
+
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
 ```
 
 ```{r leukemiasEset}
