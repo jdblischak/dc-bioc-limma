@@ -1,11 +1,17 @@
-library("Biobase")
 library("dplyr")
 library("edgeR")
 library("limma")
+library("Biobase")
 
 # Post batch correction --------------------------------------------------------
 
-x_raw <- read.delim("https://bitbucket.org/jdblischak/tb-data/raw/bc0f64292eb8c42a372b3a2d50e3d871c70c202e/table-s1.txt")
+x_raw_file <- "table-s1.txt"
+if (!file.exists(x_raw_file)) {
+  download.file(url = "https://bitbucket.org/jdblischak/tb-data/raw/bc0f64292eb8c42a372b3a2d50e3d871c70c202e/table-s1.txt",
+                destfile = x_raw_file)
+}
+x_raw <- read.delim(x_raw_file, stringsAsFactors = FALSE)
+
 dim(x_raw)
 x <- x_raw %>% select(starts_with("M"))
 dim(x)
@@ -35,8 +41,12 @@ plotMDS(eset, labels = pData(eset)[, "extr"], gene.selection = "common")
 # Pre batch correction ---------------------------------------------------------
 
 # Code adapted from https://bitbucket.org/jdblischak/tb/src/da33186481188c173f4d96fe8f4286cc3bbc1b9a/batch-correction-comparison.Rmd?at=master&fileviewer=file-view-default#batch-correction-comparison.Rmd-51
-full <- read.delim("https://bitbucket.org/jdblischak/tb-data/raw/bc0f64292eb8c42a372b3a2d50e3d871c70c202e/counts_per_sample.txt",
-                   stringsAsFactors = FALSE)
+full_file <- "counts_per_sample.txt"
+if (!file.exists(full_file)) {
+  download.file(url = "https://bitbucket.org/jdblischak/tb-data/raw/bc0f64292eb8c42a372b3a2d50e3d871c70c202e/counts_per_sample.txt",
+                destfile = full_file)
+}
+full <- read.delim(full_file, stringsAsFactors = FALSE)
 dim(full)
 full <- full[order(full$dir), ]
 rownames(full) <- paste(full$ind, full$bact, full$time, sep = ".")
@@ -64,3 +74,14 @@ pca <- prcomp(t(exprs(eset)), scale. = TRUE)
 plot(pca$x[, 1], pca$x[, 2], col = as.factor(pData(eset)[, "bact"]))
 plot(pca$x[, 1], pca$x[, 2], col = pData(eset)[, "time"])
 plot(pca$x[, 1], pca$x[, 2], col = pData(eset)[, "extr"])
+
+library("ggplot2")
+theme_set(theme_classic())
+d <- cbind(pca$x, pData(eset))
+d$infection <- ifelse(d$bact == "none", "control", "infection")
+d$infection <- factor(d$infection, levels = c("infection", "control"))
+p <- ggplot(d, aes(x = PC1, y = PC2, color = as.factor(time), size = infection)) +
+  geom_point()
+p
+p + facet_wrap(~time)
+p %+% d[d$time == 18, ]
