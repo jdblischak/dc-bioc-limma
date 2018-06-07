@@ -50,6 +50,15 @@ head(pData(eset))
 
 saveRDS(eset, file = "../data/arabidopsis-eset.rds")
 
+# Analysis ---------------------------------------------------------------------
+
+if (!exists("eset")) {
+  eset <- readRDS("../data/arabidopsis-eset.rds")
+}
+
+dim(eset)
+table(pData(eset)[, c("type", "temp")])
+
 # Create single variable
 group <- with(pData(eset), paste(type, temp, sep = "."))
 group <- factor(group)
@@ -57,6 +66,7 @@ group <- factor(group)
 # Create design matrix with no intercept
 design <- model.matrix(~0 + group)
 colnames(design) <- levels(group)
+head(design, 3)
 
 # Count the number of samples modeled by each coefficient
 colSums(design)

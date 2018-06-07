@@ -43,6 +43,15 @@ head(pData(eset))
 
 saveRDS(eset, file = "../data/populus-eset.rds")
 
+# Analysis ---------------------------------------------------------------------
+
+if (!exists("eset")) {
+  eset <- readRDS("../data/populus-eset.rds")
+}
+
+dim(eset)
+table(pData(eset)[, c("type", "water")])
+
 # Create single variable
 group <- with(pData(eset), paste(type, water, sep = "."))
 group <- factor(group)
