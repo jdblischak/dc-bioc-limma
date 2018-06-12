@@ -39,14 +39,12 @@ if (!file.exists(rds)) {
                    pmcorrect.method = "pmonly",
                    summary.method = "avgdiff")
 
-  # Get the phenotype data from the processed data
-  eset_processed <- readRDS("../data/arabidopsis-eset.rds")
-  pData(eset) <- pData(eset_processed)
-
   saveRDS(eset, file = rds)
 } else {
   eset <- readRDS(rds)
 }
+
+png("../figure/ch03/arabidopsis-densities-%03d.png")
 
 # Load package
 library(limma)
@@ -77,6 +75,8 @@ sum(keep)
 eset <- eset[keep, ]
 plotDensities(eset, legend = FALSE)
 
+dev.off()
+
 # Populus ----------------------------------------------------------------------
 
 # The Populus data provides raw CEL files generated from the platform:
@@ -103,11 +103,6 @@ if (!file.exists(rds)) {
                    normalize = FALSE,
                    pmcorrect.method = "pmonly",
                    summary.method = "avgdiff")
-
-  # Get the phenotype data from the processed data
-  eset_processed <- readRDS("../data/populus-eset.rds")
-  pData(eset) <- pData(eset_processed)
-
 
   saveRDS(eset, file = rds)
 } else {
