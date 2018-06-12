@@ -22,40 +22,44 @@ library(limma)
 #
 # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53990
 
-download <- getGEOSuppFiles(GEO = "GSE53990", baseDir = tempdir())
-tarfile <- rownames(download)
-untar(tarfile, exdir = dirname(tarfile))
+rds <- "../data/arabidopsis-eset-raw.rds"
+if (!file.exists(rds)) {
+  download <- getGEOSuppFiles(GEO = "GSE53990", baseDir = tempdir())
+  tarfile <- rownames(download)
+  untar(tarfile, exdir = dirname(tarfile))
 
-affybatch <- ReadAffy(filenames = Sys.glob(file.path(dirname(tarfile), "*CEL.gz")),
-                      compress = TRUE)
+  affybatch <- ReadAffy(filenames = Sys.glob(file.path(dirname(tarfile), "*CEL.gz")),
+                        compress = TRUE)
 
-# Take the average of all the probes for a given gene. Do not do any other
-# pre-processing.
-eset <- expresso(affybatch,
-                 bg.correct = FALSE,
-                 normalize = FALSE,
-                 pmcorrect.method = "pmonly",
-                 summary.method = "avgdiff")
+  # Take the average of all the probes for a given gene. Do not do any other
+  # pre-processing.
+  eset <- expresso(affybatch,
+                   bg.correct = FALSE,
+                   normalize = FALSE,
+                   pmcorrect.method = "pmonly",
+                   summary.method = "avgdiff")
+  saveRDS(eset, file = rds)
+} else {
+  eset <- readRDS(rds)
+}
 
-x <- exprs(eset)
+dim(eset)
 
-dim(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+exprs(eset) <- log(exprs(eset))
 
-x <- log(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
 
-x <- normalizeBetweenArrays(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+eset <- eset[rowMeans(exprs(eset)) > 5, ]
 
-x <- x[rowMeans(x) > 5, ]
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
-
-dim(x)
+dim(eset)
 
 # Populus ----------------------------------------------------------------------
 
@@ -67,37 +71,40 @@ dim(x)
 #
 # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15242
 
-download <- getGEOSuppFiles(GEO = "GSE15242", baseDir = tempdir())
-tarfile <- rownames(download)
-untar(tarfile, exdir = dirname(tarfile))
+rds <- "../data/populus-eset-raw.rds"
+if (!file.exists(rds)) {
+  download <- getGEOSuppFiles(GEO = "GSE15242", baseDir = tempdir())
+  tarfile <- rownames(download)
+  untar(tarfile, exdir = dirname(tarfile))
 
-affybatch <- ReadAffy(filenames = Sys.glob(file.path(dirname(tarfile), "*CEL.gz")),
-                      compress = TRUE)
+  affybatch <- ReadAffy(filenames = Sys.glob(file.path(dirname(tarfile), "*CEL.gz")),
+                        compress = TRUE)
 
-# Take the average of all the probes for a given gene. Do not do any other
-# pre-processing.
-eset <- expresso(affybatch,
-                 bg.correct = FALSE,
-                 normalize = FALSE,
-                 pmcorrect.method = "pmonly",
-                 summary.method = "avgdiff")
+  # Take the average of all the probes for a given gene. Do not do any other
+  # pre-processing.
+  eset <- expresso(affybatch,
+                   bg.correct = FALSE,
+                   normalize = FALSE,
+                   pmcorrect.method = "pmonly",
+                   summary.method = "avgdiff")
+} else {
+  eset <- readRDS(rds)
+}
 
-x <- exprs(eset)
+dim(eset)
 
-dim(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+exprs(eset) <- log(exprs(eset))
 
-x <- log(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
 
-x <- normalizeBetweenArrays(x)
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
+eset <- eset[rowMeans(exprs(eset)) > 5, ]
 
-x <- x[rowMeans(x) > 5, ]
+plotDensities(eset, legend = FALSE)
 
-plotDensities(x, legend = FALSE)
-
-dim(x)
+dim(eset)
