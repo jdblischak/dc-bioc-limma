@@ -104,6 +104,12 @@ if (!file.exists(rds)) {
                    pmcorrect.method = "pmonly",
                    summary.method = "avgdiff")
 
+  # Raw data is too big (> 26 MB). Subset to only include 12 samples (not
+  # necessarily the same 12 as in ../data/populus-eset.rds) and ~60% of the
+  # probes.
+  set.seed(12345)
+  eset <- eset[sample(1:nrow(eset), size = floor(nrow(eset) * .6)), 1:12]
+
   saveRDS(eset, file = rds)
 } else {
   eset <- readRDS(rds)
