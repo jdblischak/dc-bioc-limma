@@ -38,28 +38,44 @@ if (!file.exists(rds)) {
                    normalize = FALSE,
                    pmcorrect.method = "pmonly",
                    summary.method = "avgdiff")
+
+  # Get the phenotype data from the processed data
+  eset_processed <- readRDS("../data/arabidopsis-eset.rds")
+  pData(eset) <- pData(eset_processed)
+
   saveRDS(eset, file = rds)
 } else {
   eset <- readRDS(rds)
 }
 
-dim(eset)
+# Load package
+library(limma)
 
+# View the distribution of the raw data
 plotDensities(eset, legend = FALSE)
 
+# Log tranform
 exprs(eset) <- log(exprs(eset))
-
 plotDensities(eset, legend = FALSE)
 
+# Quantile normalize
 exprs(eset) <- normalizeBetweenArrays(exprs(eset))
-
 plotDensities(eset, legend = FALSE)
 
-eset <- eset[rowMeans(exprs(eset)) > 5, ]
+# Load package
+library(limma)
 
+# View the normalized gene expression levels
 plotDensities(eset, legend = FALSE)
+abline(v = 5)
 
-dim(eset)
+# Determine the genes with mean expression level greater than 5
+keep <- rowMeans(exprs(eset)) > 5
+sum(keep)
+
+# Filter the genes
+eset <- eset[keep, ]
+plotDensities(eset, legend = FALSE)
 
 # Populus ----------------------------------------------------------------------
 
@@ -87,24 +103,49 @@ if (!file.exists(rds)) {
                    normalize = FALSE,
                    pmcorrect.method = "pmonly",
                    summary.method = "avgdiff")
+
+  # Get the phenotype data from the processed data
+  eset_processed <- readRDS("../data/populus-eset.rds")
+  pData(eset) <- pData(eset_processed)
+
+
+  saveRDS(eset, file = rds)
 } else {
   eset <- readRDS(rds)
 }
 
-dim(eset)
+# Load package
+library(limma)
 
+# View the distribution of the raw data
 plotDensities(eset, legend = FALSE)
 
+# Log tranform
 exprs(eset) <- log(exprs(eset))
-
 plotDensities(eset, legend = FALSE)
 
+# Quantile normalize
 exprs(eset) <- normalizeBetweenArrays(exprs(eset))
-
 plotDensities(eset, legend = FALSE)
 
-eset <- eset[rowMeans(exprs(eset)) > 5, ]
+# Load package
+library(limma)
 
+# View the normalized gene expression levels
+plotDensities(eset, legend = FALSE)
+abline(v = 5)
+
+# Determine the genes with mean expression level greater than 5
+keep <- rowMeans(exprs(eset)) > 5
+sum(keep)
+
+# Filter the genes
+eset <- eset[keep, ]
 plotDensities(eset, legend = FALSE)
 
-dim(eset)
+# Misc -------------------------------------------------------------------------
+
+100 - 1
+log(100) - log(1)
+.1 - .001
+log(.1) - log(.001)
