@@ -14,6 +14,12 @@ olf.info$batch <- paste0("b", olf.info$batch)
 eset <- ExpressionSet(assayData = as.matrix(olf.data),
                       phenoData = AnnotatedDataFrame(olf.info))
 
+plotDensities(eset, legend = FALSE)
+abline(v = 5)
+keep <- rowMeans(exprs(eset)) > 5
+sum(keep)
+eset <- eset[keep, ]
+
 saveRDS(eset, "../data/olf.rds")
 
 dim(eset)
