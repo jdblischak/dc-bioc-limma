@@ -19,10 +19,27 @@ saveRDS(eset, "../data/olf.rds")
 dim(eset)
 table(pData(eset))
 
+# Ex 1 -------------------------------------------------------------------------
+
+# Load package
+library(limma)
+
+# Plot principal components labeled by treatment
 plotMDS(eset, labels = pData(eset)[, "treatment"], gene.selection = "common")
+
+# Plot principal components labeled by batch
 plotMDS(eset, labels = pData(eset)[, "batch"], gene.selection = "common")
 
+# Ex 1 -------------------------------------------------------------------------
+
+# Load package
+library(limma)
+
+# Remove the batch effect
 exprs(eset) <- removeBatchEffect(eset, batch = pData(eset)[, "batch"])
 
+# Plot principal components labeled by treatment
 plotMDS(eset, labels = pData(eset)[, "treatment"], gene.selection = "common")
+
+# Plot principal components labeled by batch
 plotMDS(eset, labels = pData(eset)[, "batch"], gene.selection = "common")
