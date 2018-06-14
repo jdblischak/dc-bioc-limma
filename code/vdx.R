@@ -85,9 +85,18 @@ dev.off()
 
 # Enrichment -------------------------------------------------------------------
 
-entrez <- fit2$genes$entrez
+topTable(fit2, number = 3)
+
+fisher.test(matrix(c(10, 10, 40, 40), nrow = 2))
+
+fisher.test(matrix(c(30, 10, 20, 40), nrow = 2))
+
+head(fit2$genes, 3)
+entrez <- fit2$genes[, "entrez"]
+
+
 enrich_kegg <- kegga(fit2, geneid = entrez, species = "Hs")
-topKEGG(enrich_kegg)
+topKEGG(enrich_kegg, number = 4)
 
 enrich_go <- goana(fit2, geneid = entrez, species = "Hs")
-topGO(enrich_go, ontology = "BP")
+topGO(enrich_go, ontology = "BP", number = 3)

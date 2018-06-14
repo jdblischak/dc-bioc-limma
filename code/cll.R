@@ -116,9 +116,20 @@ volcanoplot(fit2, highlight = 5, names = fit2$genes[, "symbol"])
 
 # Enrichment -------------------------------------------------------------------
 
-entrez <- fit2$genes$entrez
-enrich_kegg <- kegga(fit2, geneid = entrez, species = "Hs")
-topKEGG(enrich_kegg)
+# Extract the entrez gene IDs
+entrez <- fit2$genes[, "entrez"]
 
+# Test for enriched GO categories
 enrich_go <- goana(fit2, geneid = entrez, species = "Hs")
+
+# View the top 20 enriched GO Biological Processes
 topGO(enrich_go, ontology = "BP")
+
+# Extract the entrez gene IDs
+entrez <- fit2$genes[, "entrez"]
+
+# Test for enriched KEGG Pathways
+enrich_kegg <- kegga(fit2, geneid = entrez, species = "Hs")
+
+# View the top 20 enriched KEGG pathways
+topKEGG(enrich_kegg)
