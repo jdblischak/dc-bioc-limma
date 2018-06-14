@@ -66,12 +66,22 @@ fit2 <- eBayes(fit2)
 results <- decideTests(fit2)
 summary(results)
 
+topTable(fit2)
+
 # Visualize results  -----------------------------------------------------------
 
 stats <- topTable(fit2, number = nrow(fit2), sort.by = "none")
+dim(stats)
+
+png("../figure/ch03/vis-slides-%03d.png")
+
+hist(runif(10000))
+
 hist(stats[, "P.Value"])
 
-volcanoplot(fit2, highlight = 5, names = fit2$genes$symbol)
+volcanoplot(fit2, highlight = 5, names = fit2$genes[, "symbol"])
+
+dev.off()
 
 # Enrichment -------------------------------------------------------------------
 

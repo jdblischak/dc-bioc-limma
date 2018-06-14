@@ -101,12 +101,18 @@ fit2 <- eBayes(fit2)
 results <- decideTests(fit2)
 summary(results)
 
+saveRDS(fit2, file = "../data/cll-fit2.rds")
+
 # Visualize results ------------------------------------------------------------
 
+# Obtain the summary statistics for every gene
 stats <- topTable(fit2, number = nrow(fit2), sort.by = "none")
+
+# Plot a histogram of the p-values
 hist(stats[, "P.Value"])
 
-volcanoplot(fit2, highlight = 4, names = fit2$genes$symbol)
+# Create a volcano plot. Highlight the top 5 genes
+volcanoplot(fit2, highlight = 5, names = fit2$genes[, "symbol"])
 
 # Enrichment -------------------------------------------------------------------
 
