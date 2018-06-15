@@ -1,0 +1,281 @@
+# Differential expression analysis for doxorubicin study
+
+# Analayze microarray data from Zhang et al., 2012, which measured gene
+# expression in hearts from wild type and Top2b null mice treated with
+# doxorubicin or a control.
+
+# Process features -------------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+
+# Video
+
+# View the distribution of the raw data
+plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
+
+# Exercise
+
+# Log tranform
+exprs(eset) <- log(exprs(eset))
+plotDensities(eset,  group = pData(eset)[, "genotype"], legend = "topright")
+
+# Quantile normalize
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+plotDensities(eset,  group = pData(eset)[, "genotype"], legend = "topright")
+
+# Determine the genes with mean expression level greater than 0
+keep <- rowMeans(exprs(eset)) > 0
+sum(keep)
+
+# Filter the genes
+eset <- eset[keep, ]
+plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
+
+# Boxplot of Top2b -------------------------------------------------------------
+
+# Create a boxplot of the expression level of Top2b to confirm the null mice
+# have lower levels of Top2b expression.
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+
+# Exercise
+
+# Find the row which contains Top2b expression data
+top2b <- which(fData(eset)[, "symbol"] == "Top2b")
+
+# Plot Top2b expression versus genotype
+boxplot(exprs(eset)[top2b, ] ~ pData(eset)[, "genotype"],
+        main = fData(eset)[top2b, ])
+
+# Check sources of variation ---------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+
+# Exercise
+
+# Plot principal components labeled by genotype
+plotMDS(eset, labels = pData(eset)[, "genotype"], gene.selection = "common")
+
+# Plot principal components labeled by treatment
+plotMDS(eset, labels = pData(eset)[, "treatment"], gene.selection = "common")
+
+# Design matrix ----------------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+
+# Exercise
+
+# Create single variable
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+
+# Create design matrix with no intercept
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+
+# Count the number of samples modeled by each coefficient
+colSums(design)
+
+# Contrasts matrix -------------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+
+# Exercise
+
+# Create a contrasts matrix
+cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
+                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
+                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+                    levels = design)
+
+# View the contrasts matrix
+cm
+
+
+# Test for differential expression ---------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
+                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
+                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+                    levels = design)
+
+# Exercise
+
+# Fit the model
+fit <- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 <- eBayes(fit2)
+
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
+
+# Create a Venn diagram
+vennDiagram(results)
+
+
+# Histogram of p-values --------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
+                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
+                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+                    levels = design)
+fit <- lmFit(eset, design)
+fit2 <- contrasts.fit(fit, contrasts = cm)
+fit2 <- eBayes(fit2)
+
+# Exercise
+
+# Obtain the summary statistics for the contrast dox_wt
+stats_dox_wt <- topTable(fit2,coef = "dox_wt", number = nrow(fit2),
+                         sort.by = "none")
+# Obtain the summary statistics for the contrast dox_top2b
+stats_dox_top2b <- topTable(fit2,coef = "dox_top2b", number = nrow(fit2),
+                            sort.by = "none")
+# Obtain the summary statistics for the contrast dox_top2b
+stats_interaction <- topTable(fit2,coef = "interaction", number = nrow(fit2),
+                              sort.by = "none")
+
+# Create histograms of the p-values for each contrast
+hist(stats_dox_wt[, "P.Value"])
+hist(stats_dox_top2b[, "P.Value"])
+hist(stats_interaction[, "P.Value"])
+
+
+# Volcano plot -----------------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
+                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
+                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+                    levels = design)
+fit <- lmFit(eset, design)
+fit2 <- contrasts.fit(fit, contrasts = cm)
+fit2 <- eBayes(fit2)
+
+# Exercise
+
+# Extract the gene symbols
+gene_symbols <- fit2$genes[, "symbol"]
+
+# Create a volcano plot for the contrast dox_wt
+volcanoplot(fit2, coef = "dox_wt", highlight = 5, names = gene_symbols)
+
+# Create a volcano plot for the contrast dox_top2b
+volcanoplot(fit2, coef = "dox_top2b", highlight = 5, names = gene_symbols)
+
+# Create a volcano plot for the contrast interaction
+volcanoplot(fit2, coef = "interaction", highlight = 5, names = gene_symbols)
+
+# Pathway enrichment -----------------------------------------------------------
+
+# Pre
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+exprs(eset) <- log(exprs(eset))
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+group <- with(pData(eset), paste(genotype, treatment, sep = "."))
+group <- factor(group)
+design <- model.matrix(~0 + group)
+colnames(design) <- levels(group)
+cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
+                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
+                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+                    levels = design)
+fit <- lmFit(eset, design)
+fit2 <- contrasts.fit(fit, contrasts = cm)
+fit2 <- eBayes(fit2)
+
+# Exercise
+
+# Extract the entrez gene IDs
+entrez <- fit2$genes[, "entrez"]
+
+# Test for enriched KEGG Pathways for contrast dox_wt
+enrich_dox_wt <- kegga(fit2, coef = "dox_wt", geneid = entrez, species = "Mm")
+
+# View the top 5 enriched KEGG pathways
+topKEGG(enrich_dox_wt, number = 5)
+
+# Test for enriched KEGG Pathways for contrast interaction
+enrich_interaction <- kegga(fit2, coef = "interaction", geneid = entrez, species = "Mm")
+
+# View the top 5 enriched KEGG pathways
+topKEGG(enrich_interaction, number = 5)
