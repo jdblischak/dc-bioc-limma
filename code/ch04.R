@@ -3,11 +3,18 @@
 # Download GSE40289
 # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40289
 
-library("Biobase")
 library("dplyr")
+# Need to load Biobase after dplyr b/c it exports rlang::exprs, which masks
+# Biobase::exprs
+library("Biobase")
 library("GEOquery")
-options('download.file.method.GEOquery' = 'wget')
 library("stringr")
+
+# Download data ----------------------------------------------------------------
+
+if (.Platform$OS.type != "windows") {
+  options('download.file.method.GEOquery' = 'wget')
+}
 
 geo <- getGEO("GSE40289", GSEMatrix = TRUE, getGPL = TRUE)[[1]]
 
@@ -43,12 +50,12 @@ pdata <- new("AnnotatedDataFrame", data = pheno, varMetadata = varmetadata)
 # Create nice feature data columns ---------------------------------------------
 
 feature <- fData(geo) %>%
-  mutate(chr = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 1],
+  mutate(chrom = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 1],
          pos = str_split_fixed(CHROMOSOMAL_LOCATION, ":", 2)[, 2],
          start = as.numeric(str_split_fixed(pos, "-", 2)[, 1]),
          end = as.numeric(str_split_fixed(pos, "-", 2)[, 2])) %>%
   select(probe = NAME,
-         chr,
+         chrom,
          start,
          end,
          symbol = GENE_SYMBOL,
@@ -77,7 +84,7 @@ assay <- exprs(geo)
 rownames(assay) <- 1:nrow(assay)
 colnames(assay) <- samples
 
-# Export ExpressionSet ---------------------------------------------------------
+# Create ExpressionSet ---------------------------------------------------------
 
 eset <- ExpressionSet(assayData = assay, phenoData = pdata, featureData = fdata)
 # Remove 72hr timepoint
@@ -85,3 +92,27 @@ eset <- eset[, eset$timepoint == "16hr"]
 colnames(eset) <- str_replace(colnames(eset), "\\.16hr", "")
 pData(eset)$timepoint <- NULL
 saveRDS(eset, file = "../data/ch04.rds")
+
+# Filter ExpressionSet ---------------------------------------------------------
+
+eset <- eset
+# The ExpressionSet RDS is over DataCamp's 5 MB limit
+
+# Remove any probes without an entrez ID
+eset <- eset[!is.na(fData(eset)[, "entrez"]), ]
+
+# Remove duplicated probes. How is this even possible?!!
+duplicate_probes <- duplicated(fData(eset)[, "probe"])
+sum(duplicate_probes)
+eset <- eset[!duplicate_probes, ]
+
+# Use probes as rownames now that they are unique
+rownames(eset) <- fData(eset)[, "probe"]
+
+# Minimize feature data
+fData(eset) <- fData(eset)[, c("symbol", "entrez", "chrom")]
+
+# Minimize phenotype data
+pData(eset)[, "title"] <- NULL
+
+saveRDS(eset, file = "../data/dox.rds")
