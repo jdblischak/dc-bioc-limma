@@ -102,10 +102,10 @@ Use `limma::makeContrasts` to test the main effects and the
 interaction between genotype and treatment.
 
 ```{r}
-cont_mat <- makeContrasts(DoxWT = WT.Dox - WT.PBS,
-                          DoxTop = Tob2b.Dox - Tob2b.PBS,
-                          Interaction = (Tob2b.Dox - Tob2b.PBS) -
-                                        (WT.Dox - WT.PBS),
+cont_mat <- makeContrasts(DoxWT = wt.dox - wt.pbs,
+                          DoxTop = top2b.dox - top2b.pbs,
+                          Interaction = (top2b.dox - top2b.pbs) -
+                                        (wt.dox - wt.pbs),
                           levels = design)
 cont_mat
 ```
@@ -164,5 +164,3 @@ enrich_go_inter <- goana(fit2, coef = "Interaction",
                          geneid = entrez, species = "Mm")
 topGO(enrich_go_inter, ontology = "BP")
 ```
-
-

@@ -26,8 +26,8 @@ nrow(fData(geo)) == length(unique(fData(geo)$NAME))
 
 pheno <- pData(geo) %>%
   select(title) %>%
-  mutate(genotype = ifelse(grepl("WT", title), "WT", "Tob2b"),
-         treatment = ifelse(grepl("PBS", title), "PBS", "Dox"),
+  mutate(genotype = ifelse(grepl("WT", title), "wt", "top2b"),
+         treatment = ifelse(grepl("PBS", title), "pbs", "dox"),
          timepoint = ifelse(grepl("16hr", title), "16hr", "72hr"),
          rep = str_extract(title, "\\d$"),
          rep = paste0("r", rep))
@@ -95,7 +95,6 @@ saveRDS(eset, file = "../data/ch04.rds")
 
 # Filter ExpressionSet ---------------------------------------------------------
 
-eset <- eset
 # The ExpressionSet RDS is over DataCamp's 5 MB limit
 
 # Remove any probes without an entrez ID

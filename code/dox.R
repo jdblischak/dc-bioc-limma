@@ -118,9 +118,9 @@ colnames(design) <- levels(group)
 # Exercise
 
 # Create a contrasts matrix
-cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
-                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
-                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
+                    dox_top2b = top2b.dox - top2b.pbs,
+                    interaction = (top2b.dox - top2b.pbs) - (wt.dox - wt.pbs),
                     levels = design)
 
 # View the contrasts matrix
@@ -141,9 +141,9 @@ group <- with(pData(eset), paste(genotype, treatment, sep = "."))
 group <- factor(group)
 design <- model.matrix(~0 + group)
 colnames(design) <- levels(group)
-cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
-                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
-                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
+                    dox_top2b = top2b.dox - top2b.pbs,
+                    interaction = (top2b.dox - top2b.pbs) - (wt.dox - wt.pbs),
                     levels = design)
 
 # Exercise
@@ -179,9 +179,9 @@ group <- with(pData(eset), paste(genotype, treatment, sep = "."))
 group <- factor(group)
 design <- model.matrix(~0 + group)
 colnames(design) <- levels(group)
-cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
-                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
-                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
+                    dox_top2b = top2b.dox - top2b.pbs,
+                    interaction = (top2b.dox - top2b.pbs) - (wt.dox - wt.pbs),
                     levels = design)
 fit <- lmFit(eset, design)
 fit2 <- contrasts.fit(fit, contrasts = cm)
@@ -219,9 +219,9 @@ group <- with(pData(eset), paste(genotype, treatment, sep = "."))
 group <- factor(group)
 design <- model.matrix(~0 + group)
 colnames(design) <- levels(group)
-cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
-                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
-                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
+                    dox_top2b = top2b.dox - top2b.pbs,
+                    interaction = (top2b.dox - top2b.pbs) - (wt.dox - wt.pbs),
                     levels = design)
 fit <- lmFit(eset, design)
 fit2 <- contrasts.fit(fit, contrasts = cm)
@@ -255,9 +255,9 @@ group <- with(pData(eset), paste(genotype, treatment, sep = "."))
 group <- factor(group)
 design <- model.matrix(~0 + group)
 colnames(design) <- levels(group)
-cm <- makeContrasts(dox_wt = WT.Dox - WT.PBS,
-                    dox_top2b = Tob2b.Dox - Tob2b.PBS,
-                    interaction = (Tob2b.Dox - Tob2b.PBS) - (WT.Dox - WT.PBS),
+cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
+                    dox_top2b = top2b.dox - top2b.pbs,
+                    interaction = (top2b.dox - top2b.pbs) - (wt.dox - wt.pbs),
                     levels = design)
 fit <- lmFit(eset, design)
 fit2 <- contrasts.fit(fit, contrasts = cm)
