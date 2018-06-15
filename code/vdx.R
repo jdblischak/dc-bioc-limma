@@ -87,9 +87,11 @@ dev.off()
 
 topTable(fit2, number = 3)
 
-fisher.test(matrix(c(10, 10, 40, 40), nrow = 2))
+# 1000 genes (10% in gene set), 100 are DE (10% in gene set)
+fisher.test(matrix(c(10, 100, 90, 900), nrow = 2))
 
-fisher.test(matrix(c(30, 10, 20, 40), nrow = 2))
+# 1000 genes (10% in gene set), 100 are DE (30% in gene set)
+fisher.test(matrix(c(30, 100, 70, 900), nrow = 2))
 
 head(fit2$genes, 3)
 entrez <- fit2$genes[, "entrez"]
