@@ -126,7 +126,6 @@ cm <- makeContrasts(dox_wt = wt.dox - wt.pbs,
 # View the contrasts matrix
 cm
 
-
 # Test for differential expression ---------------------------------------------
 
 # Pre
@@ -164,7 +163,6 @@ summary(results)
 # Create a Venn diagram
 vennDiagram(results)
 
-
 # Histogram of p-values --------------------------------------------------------
 
 # Pre
@@ -195,7 +193,7 @@ stats_dox_wt <- topTable(fit2,coef = "dox_wt", number = nrow(fit2),
 # Obtain the summary statistics for the contrast dox_top2b
 stats_dox_top2b <- topTable(fit2,coef = "dox_top2b", number = nrow(fit2),
                             sort.by = "none")
-# Obtain the summary statistics for the contrast dox_top2b
+# Obtain the summary statistics for the contrast interaction
 stats_interaction <- topTable(fit2,coef = "interaction", number = nrow(fit2),
                               sort.by = "none")
 
@@ -203,7 +201,6 @@ stats_interaction <- topTable(fit2,coef = "interaction", number = nrow(fit2),
 hist(stats_dox_wt[, "P.Value"])
 hist(stats_dox_top2b[, "P.Value"])
 hist(stats_interaction[, "P.Value"])
-
 
 # Volcano plot -----------------------------------------------------------------
 
