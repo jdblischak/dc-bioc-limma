@@ -13,8 +13,12 @@ library(limma)
 
 # Video
 
+png("../figure/ch04/dox-densities.png")
+
 # View the distribution of the raw data
 plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
+
+dev.off()
 
 # Exercise
 
@@ -163,6 +167,12 @@ summary(results)
 # Create a Venn diagram
 vennDiagram(results)
 
+# Video
+
+png("../figure/ch04/dox-venn.png")
+vennDiagram(results)
+dev.off()
+
 # Histogram of p-values --------------------------------------------------------
 
 # Pre
@@ -188,13 +198,13 @@ fit2 <- eBayes(fit2)
 # Exercise
 
 # Obtain the summary statistics for the contrast dox_wt
-stats_dox_wt <- topTable(fit2,coef = "dox_wt", number = nrow(fit2),
+stats_dox_wt <- topTable(fit2, coef = "dox_wt", number = nrow(fit2),
                          sort.by = "none")
 # Obtain the summary statistics for the contrast dox_top2b
-stats_dox_top2b <- topTable(fit2,coef = "dox_top2b", number = nrow(fit2),
+stats_dox_top2b <- topTable(fit2, coef = "dox_top2b", number = nrow(fit2),
                             sort.by = "none")
 # Obtain the summary statistics for the contrast interaction
-stats_interaction <- topTable(fit2,coef = "interaction", number = nrow(fit2),
+stats_interaction <- topTable(fit2, coef = "interaction", number = nrow(fit2),
                               sort.by = "none")
 
 # Create histograms of the p-values for each contrast
@@ -276,3 +286,64 @@ enrich_interaction <- kegga(fit2, coef = "interaction", geneid = entrez, species
 
 # View the top 5 enriched KEGG pathways
 topKEGG(enrich_interaction, number = 5)
+
+# Conclusion -------------------------------------------------------------------
+
+library(Biobase)
+eset <- readRDS("../data/dox.rds")
+library(limma)
+
+png("../figure/ch04/dox-densities-all.png", width = 480 * 4)
+par(mfrow = c(1, 4))
+plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
+exprs(eset) <- log(exprs(eset))
+plotDensities(eset,  group = pData(eset)[, "genotype"], legend = "topright")
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+plotDensities(eset,  group = pData(eset)[, "genotype"], legend = "topright")
+keep <- rowMeans(exprs(eset)) > 0
+eset <- eset[keep, ]
+plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
+dev.off()
+
+png("../figure/ch04/boxplot-top2b.png")
+top2b <- which(fData(eset)[, "symbol"] == "Top2b")
+boxplot(exprs(eset)[top2b, ] ~ pData(eset)[, "genotype"],
+        main = fData(eset)[top2b, ])
+dev.off()
+
+png("../figure/ch04/dox-mds.png", width = 480 * 2)
+par(mfrow = c(1, 2))
+# Plot principal components labeled by genotype
+plotMDS(eset, labels = pData(eset)[, "genotype"], gene.selection = "common")
+
+# Plot principal components labeled by treatment
+plotMDS(eset, labels = pData(eset)[, "treatment"], gene.selection = "common")
+dev.off()
+
+png("../figure/ch04/dox-hist.png", width = 480 * 3)
+par(mfrow = c(1, 3))
+stats_dox_wt <- topTable(fit2, coef = "dox_wt", number = nrow(fit2),
+                         sort.by = "none")
+stats_dox_top2b <- topTable(fit2, coef = "dox_top2b", number = nrow(fit2),
+                            sort.by = "none")
+stats_interaction <- topTable(fit2, coef = "interaction", number = nrow(fit2),
+                              sort.by = "none")
+hist(stats_dox_wt[, "P.Value"], main = "dox_wt")
+hist(stats_dox_top2b[, "P.Value"], main = "dox_top2b")
+hist(stats_interaction[, "P.Value"], main = "interaction")
+dev.off()
+
+png("../figure/ch04/dox-volcano.png", width = 480 * 3)
+par(mfrow = c(1, 3), cex = 1.25)
+# Extract the gene symbols
+gene_symbols <- fit2$genes[, "symbol"]
+
+# Create a volcano plot for the contrast dox_wt
+volcanoplot(fit2, coef = "dox_wt", highlight = 5, names = gene_symbols)
+
+# Create a volcano plot for the contrast dox_top2b
+volcanoplot(fit2, coef = "dox_top2b", highlight = 5, names = gene_symbols)
+
+# Create a volcano plot for the contrast interaction
+volcanoplot(fit2, coef = "interaction", highlight = 5, names = gene_symbols)
+dev.off()
