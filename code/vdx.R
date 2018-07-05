@@ -21,7 +21,8 @@ p <- p[, c("id", "age", "er")]
 
 # Explore data -----------------------------------------------------------------
 
-png("../figure/ch01/boxplot.png")
+png("../figure/ch01/boxplot.png",
+    width = 480, height = 480 * 0.75, units = "px")
 boxplot(x[1, ] ~ p[, "er"], main = f[1, "symbol"])
 dev.off()
 eset <- ExpressionSet(assayData = x,
@@ -34,7 +35,7 @@ boxplot(exprs(eset)[1, ] ~ pData(eset)[, "er"],
 # limma pipeline ---------------------------------------------------------------
 
 design <- model.matrix(~er, data = pData(eset))
-head(design, 3)
+head(design, 2)
 colSums(design)
 table(pData(eset)[, "er"])
 
