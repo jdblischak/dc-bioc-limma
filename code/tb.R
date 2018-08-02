@@ -2,10 +2,11 @@
 #
 # https://bitbucket.org/jdblischak/tb/src
 
-library(Biobase)
 library(dplyr)
 library(limma)
 library(edgeR)
+# Have to load Biobase after dplyr so that exprs function works
+library(Biobase)
 
 # Download data ----------------------------------------------------------------
 
@@ -55,7 +56,13 @@ table(pData(eset)[, c("time", "batch")])
 
 plotDensities(eset, legend = FALSE)
 
+# Ch3 L2 plotMDS/removeBatchEffect
 png("../figure/ch03/tb-pca-%03d.png")
+
+par(cex = 1.25, # make the text larger
+    cex.lab = 1.2, # make the axis titles larger (1.2 * 1.25 = 1.5)
+    mar = c(4, 4, 1, 1) + 0.1 # Decrease the bottom and top margins
+)
 
 plotMDS(eset, labels = pData(eset)[, "time"], gene.selection = "common")
 
