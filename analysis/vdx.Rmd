@@ -1,0 +1,152 @@
+---
+title: "Analysis of breast cancer VDX data for videos"
+author: "John Blischak"
+date: "2018-08-02"
+output: workflowr::wflow_html
+---
+
+Study of breast cancer:
+
+* Bioconductor package [breastCancerVDX][]
+* Published in Wang et al., 2005 and Minn et al., 2007
+* 344 patients: 209 ER+, 135 ER-
+
+[breastCancerVDX]: https://www.bioconductor.org/packages/release/data/experiment/html/breastCancerVDX.html
+
+## Prepare data
+
+```{r packages, message=FALSE}
+library(Biobase)
+library(breastCancerVDX)
+```
+
+```{r prepare-data}
+data("vdx")
+class(vdx)
+dim(vdx)
+pData(vdx)[1:3, ]
+fData(vdx)[1:3, 1:5]
+x <- exprs(vdx)
+f <- fData(vdx)
+p <- pData(vdx)
+
+f <- f[, c("Gene.symbol", "EntrezGene.ID", "Chromosome.location")]
+colnames(f) <- c("symbol", "entrez", "chrom")
+
+# Recode er as 0 = negative and 1 = positive
+p[, "er"] <- ifelse(p[, "er"] == 0, "negative", "positive")
+p <- p[, c("id", "age", "er")]
+```
+
+## Explore data
+
+```{r explore-data}
+png("../figure/ch01/boxplot.png",
+    width = 480, height = 480 * 0.75, units = "px")
+boxplot(x[1, ] ~ p[, "er"], main = f[1, "symbol"])
+dev.off()
+eset <- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+dim(eset)
+boxplot(exprs(eset)[1, ] ~ pData(eset)[, "er"],
+        main = fData(eset)[1, "symbol"])
+```
+
+## limma pipeline
+
+```{r limma-pipeline}
+design <- model.matrix(~er, data = pData(eset))
+head(design, 2)
+colSums(design)
+table(pData(eset)[, "er"])
+
+library(limma)
+
+fit <- lmFit(eset, design)
+head(fit$coefficients, 3)
+fit <- eBayes(fit)
+head(fit$t, 3)
+results <- decideTests(fit[, "erpositive"])
+summary(results)
+```
+
+
+## group-means
+
+```{r group-means}
+design <- model.matrix(~0 + er, data = pData(eset))
+head(design)
+colSums(design)
+
+library(limma)
+cm <- makeContrasts(status = erpositive - ernegative,
+                    levels = design)
+cm
+
+fit <- lmFit(eset, design)
+head(fit$coefficients)
+fit2 <- contrasts.fit(fit, contrasts = cm)
+head(fit2$coefficients)
+fit2 <- eBayes(fit2)
+results <- decideTests(fit2)
+summary(results)
+
+topTable(fit2)
+```
+
+## Visualize results
+
+For Ch3 L2 plotMDS/removeBatchEffect
+
+```{r visualize-results}
+stats <- topTable(fit2, number = nrow(fit2), sort.by = "none")
+dim(stats)
+
+hist(runif(10000))
+
+hist(stats[, "P.Value"])
+
+volcanoplot(fit2, highlight = 5, names = fit2$genes[, "symbol"])
+```
+
+```{r visualize-results-save, include=FALSE}
+png("../figure/ch03/vis-slides-%03d.png")
+
+par(cex = 1.5,
+    mar = c(4, 4, 2, 1) + 0.1 # Decrease the bottom and top margins
+    )
+
+hist(runif(10000))
+
+hist(stats[, "P.Value"])
+
+par(mar = c(4, 4, 1, 1) + 0.1 # Decrease the bottom and top margins
+    )
+
+volcanoplot(fit2, highlight = 5, names = fit2$genes[, "symbol"])
+
+dev.off()
+```
+
+## Enrichment
+
+```{r enrichment}
+topTable(fit2, number = 3)
+
+# 1000 genes (10% in gene set), 100 are DE (10% in gene set)
+fisher.test(matrix(c(10, 100, 90, 900), nrow = 2))
+
+# 1000 genes (10% in gene set), 100 are DE (30% in gene set)
+fisher.test(matrix(c(30, 100, 70, 900), nrow = 2))
+
+head(fit2$genes, 3)
+entrez <- fit2$genes[, "entrez"]
+
+
+enrich_kegg <- kegga(fit2, geneid = entrez, species = "Hs")
+topKEGG(enrich_kegg, number = 4)
+
+enrich_go <- goana(fit2, geneid = entrez, species = "Hs")
+topGO(enrich_go, ontology = "BP", number = 3)
+```
