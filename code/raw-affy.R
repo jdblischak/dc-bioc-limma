@@ -44,7 +44,13 @@ if (!file.exists(rds)) {
   eset <- readRDS(rds)
 }
 
+# Ch3 L1 Visualization
 png("../figure/ch03/arabidopsis-densities-%03d.png")
+
+par(cex = 1.5, # make the text larger
+    mar = c(5, 4, 1, 1) + 0.1, # Make the top margin smaller since no title
+    tcl = -0.75 # make the tick marks longer (default = - 0.5)
+    )
 
 # Load package
 library(limma)
