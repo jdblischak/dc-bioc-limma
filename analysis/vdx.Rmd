@@ -41,16 +41,26 @@ p <- p[, c("id", "age", "er")]
 ## Explore data
 
 ```{r explore-data}
-png("../figure/ch01/boxplot.png",
-    width = 480, height = 480 * 0.75, units = "px")
 boxplot(x[1, ] ~ p[, "er"], main = f[1, "symbol"])
-dev.off()
 eset <- ExpressionSet(assayData = x,
                       phenoData = AnnotatedDataFrame(p),
                       featureData = AnnotatedDataFrame(f))
 dim(eset)
 boxplot(exprs(eset)[1, ] ~ pData(eset)[, "er"],
         main = fData(eset)[1, "symbol"])
+```
+
+```{r explore-data-save, include=FALSE}
+# Ch1 L2 Visualize gene expression with a boxplot
+png("../figure/ch01/boxplot.png",
+    width = 480, height = 480 * 0.75, units = "px")
+
+par(cex = 1.5, # make the text larger
+    mar = c(4, 4, 1, 1) + 0.1 # Decrease the bottom and top margins
+)
+
+boxplot(x[1, ] ~ p[, "er"], main = f[1, "symbol"])
+dev.off()
 ```
 
 ## limma pipeline
