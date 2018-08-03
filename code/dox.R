@@ -13,7 +13,13 @@ library(limma)
 
 # Video
 
+# Ch4 L1 Inspect the features
 png("../figure/ch04/dox-densities.png")
+
+par(cex = 1.5, # make the text larger
+    mar = c(5, 4, 1, 1) + 0.1, # Make the top margin smaller since no title
+    tcl = -0.75 # make the tick marks longer (default = - 0.5)
+)
 
 # View the distribution of the raw data
 plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
@@ -170,7 +176,7 @@ vennDiagram(results)
 # Video
 
 png("../figure/ch04/dox-venn.png")
-vennDiagram(results)
+vennDiagram(results, mar = rep(0, 4))
 dev.off()
 
 # Histogram of p-values --------------------------------------------------------
@@ -294,7 +300,10 @@ eset <- readRDS("../data/dox.rds")
 library(limma)
 
 png("../figure/ch04/dox-densities-all.png", width = 480 * 4)
-par(mfrow = c(1, 4))
+par(mfrow = c(1, 4),
+    cex = 2,
+    mar = c(5, 4, 1, 0) + 0.1,
+    tcl = -0.75)
 plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
 exprs(eset) <- log(exprs(eset))
 plotDensities(eset,  group = pData(eset)[, "genotype"], legend = "topright")
@@ -306,13 +315,19 @@ plotDensities(eset, group = pData(eset)[, "genotype"], legend = "topright")
 dev.off()
 
 png("../figure/ch04/boxplot-top2b.png")
+par(cex = 1.5,
+    mar = c(3, 4, 3, 1) + 0.1)
 top2b <- which(fData(eset)[, "symbol"] == "Top2b")
 boxplot(exprs(eset)[top2b, ] ~ pData(eset)[, "genotype"],
         main = fData(eset)[top2b, ])
 dev.off()
 
 png("../figure/ch04/dox-mds.png", width = 480 * 2)
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2),
+    cex = 1.5, # make the text larger
+    mar = c(4, 4, 1, 1) + 0.1 # Decrease the bottom and top margins
+)
+# par(mfrow = c(1, 2))
 # Plot principal components labeled by genotype
 plotMDS(eset, labels = pData(eset)[, "genotype"], gene.selection = "common")
 
@@ -321,7 +336,9 @@ plotMDS(eset, labels = pData(eset)[, "treatment"], gene.selection = "common")
 dev.off()
 
 png("../figure/ch04/dox-hist.png", width = 480 * 3)
-par(mfrow = c(1, 3))
+par(mfrow = c(1, 3),
+    cex = 1.5,
+    mar = c(4, 4, 1, 0) + 0.1)
 stats_dox_wt <- topTable(fit2, coef = "dox_wt", number = nrow(fit2),
                          sort.by = "none")
 stats_dox_top2b <- topTable(fit2, coef = "dox_top2b", number = nrow(fit2),
@@ -334,7 +351,9 @@ hist(stats_interaction[, "P.Value"], main = "interaction")
 dev.off()
 
 png("../figure/ch04/dox-volcano.png", width = 480 * 3)
-par(mfrow = c(1, 3), cex = 1.25)
+par(mfrow = c(1, 3),
+    cex = 1.5,
+    mar = c(4, 4, 2, 0) + 0.1)
 # Extract the gene symbols
 gene_symbols <- fit2$genes[, "symbol"]
 
