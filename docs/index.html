@@ -22,9 +22,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -92,9 +90,6 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -221,34 +216,42 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-05-23</p>
+<p><strong>Last updated:</strong> 2018-08-02</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </details>
 </li>
 <li>
-<details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/53fc8451ba7a46be4063b006e31471b27cf58a90" target="_blank">53fc845</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/50e19496f5d55c16627c8fee0717a6c1672f88cd" target="_blank">50e1949</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    figure/.DS_Store
-    Ignored:    figure/ch02/.DS_Store
+
+Untracked files:
+    Untracked:  analysis/table-s1.txt
+    Untracked:  analysis/table-s2.txt
+    Untracked:  code/tb-scratch.R
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  docs/figure/vdx.Rmd/
+    Untracked:  docs/table-s1.txt
+    Untracked:  docs/table-s2.txt
+    Untracked:  factorial-dox.rds
+
+Unstaged changes:
+    Modified:   data/cll-eset.rds
+    Modified:   data/cll-fit2.rds
+    Modified:   data/cll.RData
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
-</details>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
 </li>
 </ul>
-<details>
-<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
 <ul>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
@@ -271,6 +274,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/010a04c84a39603405b544c84e3faf05580931e1/analysis/index.Rmd" target="_blank">010a04c</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Convert vdx analysis to Rmd and increase font size in figs.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/9b58c2521a3c4a74cb302637d4ac089ad8573273/docs/index.html" target="_blank">9b58c25</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-05-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -443,23 +480,6 @@ Start organizing Ch 03
 </tr>
 <tr>
 <td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/17de7de555ee8b1aa6ded38e5184293bc4b8c996/docs/index.html" target="_blank">17de7de</a>
-</td>
-<td style="text-align:left;">
-John Blischak
-</td>
-<td style="text-align:left;">
-2018-01-11
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 Rmd
 </td>
 <td style="text-align:left;">
@@ -478,14 +498,16 @@ Apply workflowr infrastructure. Committed files manually.
 </tbody>
 </table>
 </ul>
-</details>
+<p></details></p>
 <hr />
 <p>Lesson material for differential expression analysis with <a href="https://bioconductor.org/packages/release/bioc/html/limma.html">limma</a>.</p>
+<p>Case studies:</p>
 <ul>
+<li><p><a href="vdx.html">Breast Cancer VDX</a></p></li>
 <li><a href="ch01.html">Chapter 1</a></li>
 <li><a href="ch02.html">Chapter 2</a></li>
 <li><a href="ch03.html">Chapter 3</a></li>
-<li><a href="ch04.html">Chapter 4</a></li>
+<li><p><a href="ch04.html">Chapter 4</a></p></li>
 </ul>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -504,7 +526,7 @@ footer is added to webpages before the MathJax javascript. -->
 <p>
   This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
   analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
 </p>
 <hr>
 

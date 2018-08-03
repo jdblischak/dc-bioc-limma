@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Blischak" />
+
+<meta name="date" content="2018-08-02" />
+
+<title>Analysis of breast cancer VDX data for videos</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DE analysis with limma</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/dc-bioc-limma">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Analysis of breast cancer VDX data for videos</h1>
+<h4 class="author"><em>John Blischak</em></h4>
+<h4 class="date"><em>2018-08-02</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-08-02</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/50e19496f5d55c16627c8fee0717a6c1672f88cd" target="_blank">50e1949</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/table-s1.txt
+    Untracked:  analysis/table-s2.txt
+    Untracked:  code/tb-scratch.R
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  docs/table-s1.txt
+    Untracked:  docs/table-s2.txt
+    Untracked:  factorial-dox.rds
+
+Unstaged changes:
+    Modified:   data/cll-eset.rds
+    Modified:   data/cll-fit2.rds
+    Modified:   data/cll.RData
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/50e19496f5d55c16627c8fee0717a6c1672f88cd/analysis/vdx.Rmd" target="_blank">50e1949</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Increase text size of boxplots.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/010a04c84a39603405b544c84e3faf05580931e1/analysis/vdx.Rmd" target="_blank">010a04c</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Convert vdx analysis to Rmd and increase font size in figs.
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>Study of breast cancer:</p>
+<ul>
+<li>Bioconductor package <a href="https://www.bioconductor.org/packages/release/data/experiment/html/breastCancerVDX.html">breastCancerVDX</a></li>
+<li>Published in Wang et al., 2005 and Minn et al., 2007</li>
+<li>344 patients: 209 ER+, 135 ER-</li>
+</ul>
+<div id="prepare-data" class="section level2">
+<h2>Prepare data</h2>
+<pre class="r"><code>library(Biobase)
+library(breastCancerVDX)</code></pre>
+<pre class="r"><code>data(&quot;vdx&quot;)
+class(vdx)</code></pre>
+<pre><code>[1] &quot;ExpressionSet&quot;
+attr(,&quot;package&quot;)
+[1] &quot;Biobase&quot;</code></pre>
+<pre class="r"><code>dim(vdx)</code></pre>
+<pre><code>Features  Samples 
+   22283      344 </code></pre>
+<pre class="r"><code>pData(vdx)[1:3, ]</code></pre>
+<pre><code>      samplename dataset series id        filename size age er grade pgr
+VDX_3      VDX_3     VDX    VDX  3 GSM36793.CEL.gz   NA  36  0    NA  NA
+VDX_5      VDX_5     VDX    VDX  5 GSM36796.CEL.gz   NA  47  1     3  NA
+VDX_6      VDX_6     VDX    VDX  6 GSM36797.CEL.gz   NA  44  0     3  NA
+      her2 brca.mutation e.dmfs t.dmfs node t.rfs e.rfs treatment tissue
+VDX_3   NA            NA      0   3072    0    NA    NA         0      1
+VDX_5   NA            NA      0   3589    0    NA    NA         0      1
+VDX_6   NA            NA      1    274    0    NA    NA         0      1
+      t.os e.os
+VDX_3   NA   NA
+VDX_5   NA   NA
+VDX_6   NA   NA</code></pre>
+<pre class="r"><code>fData(vdx)[1:3, 1:5]</code></pre>
+<pre><code>              probe                                  Gene.title
+1007_s_at 1007_s_at discoidin domain receptor tyrosine kinase 1
+1053_at     1053_at replication factor C (activator 1) 2, 40kDa
+117_at       117_at        heat shock 70kDa protein 6 (HSP70B&#39;)
+          Gene.symbol Gene.ID EntrezGene.ID
+1007_s_at        DDR1     780           780
+1053_at          RFC2    5982          5982
+117_at          HSPA6    3310          3310</code></pre>
+<pre class="r"><code>x &lt;- exprs(vdx)
+f &lt;- fData(vdx)
+p &lt;- pData(vdx)
+
+f &lt;- f[, c(&quot;Gene.symbol&quot;, &quot;EntrezGene.ID&quot;, &quot;Chromosome.location&quot;)]
+colnames(f) &lt;- c(&quot;symbol&quot;, &quot;entrez&quot;, &quot;chrom&quot;)
+
+# Recode er as 0 = negative and 1 = positive
+p[, &quot;er&quot;] &lt;- ifelse(p[, &quot;er&quot;] == 0, &quot;negative&quot;, &quot;positive&quot;)
+p &lt;- p[, c(&quot;id&quot;, &quot;age&quot;, &quot;er&quot;)]</code></pre>
+</div>
+<div id="explore-data" class="section level2">
+<h2>Explore data</h2>
+<pre class="r"><code>boxplot(x[1, ] ~ p[, &quot;er&quot;], main = f[1, &quot;symbol&quot;])
+eset &lt;- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   22283      344 </code></pre>
+<pre class="r"><code>boxplot(exprs(eset)[1, ] ~ pData(eset)[, &quot;er&quot;],
+        main = fData(eset)[1, &quot;symbol&quot;])</code></pre>
+<p><img src="figure/vdx.Rmd/explore-data-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="limma-pipeline" class="section level2">
+<h2>limma pipeline</h2>
+<pre class="r"><code>design &lt;- model.matrix(~er, data = pData(eset))
+head(design, 2)</code></pre>
+<pre><code>      (Intercept) erpositive
+VDX_3           1          0
+VDX_5           1          1</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>(Intercept)  erpositive 
+        344         209 </code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;er&quot;])</code></pre>
+<pre><code>
+negative positive 
+     135      209 </code></pre>
+<pre class="r"><code>library(limma)</code></pre>
+<pre><code>
+Attaching package: &#39;limma&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    plotMA</code></pre>
+<pre class="r"><code>fit &lt;- lmFit(eset, design)
+head(fit$coefficients, 3)</code></pre>
+<pre><code>          (Intercept)  erpositive
+1007_s_at   11.725148  0.09878782
+1053_at      8.126934 -0.54673000
+117_at       7.972049 -0.17342654</code></pre>
+<pre class="r"><code>fit &lt;- eBayes(fit)
+head(fit$t, 3)</code></pre>
+<pre><code>          (Intercept) erpositive
+1007_s_at    276.8043   1.817824
+1053_at      122.5899  -6.428278
+117_at       164.0240  -2.781294</code></pre>
+<pre class="r"><code>results &lt;- decideTests(fit[, &quot;erpositive&quot;])
+summary(results)</code></pre>
+<pre><code>   erpositive
+-1       6276
+0       11003
+1        5004</code></pre>
+</div>
+<div id="group-means" class="section level2">
+<h2>group-means</h2>
+<pre class="r"><code>design &lt;- model.matrix(~0 + er, data = pData(eset))
+head(design)</code></pre>
+<pre><code>      ernegative erpositive
+VDX_3          1          0
+VDX_5          0          1
+VDX_6          1          0
+VDX_7          1          0
+VDX_8          1          0
+VDX_9          0          1</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>ernegative erpositive 
+       135        209 </code></pre>
+<pre class="r"><code>library(limma)
+cm &lt;- makeContrasts(status = erpositive - ernegative,
+                    levels = design)
+cm</code></pre>
+<pre><code>            Contrasts
+Levels       status
+  ernegative     -1
+  erpositive      1</code></pre>
+<pre class="r"><code>fit &lt;- lmFit(eset, design)
+head(fit$coefficients)</code></pre>
+<pre><code>          ernegative erpositive
+1007_s_at  11.725148  11.823936
+1053_at     8.126934   7.580204
+117_at      7.972049   7.798623
+121_at     10.168975  10.086393
+1255_g_at   5.903189   5.729195
+1294_at     9.166436   9.390949</code></pre>
+<pre class="r"><code>fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+head(fit2$coefficients)</code></pre>
+<pre><code>           Contrasts
+                 status
+  1007_s_at  0.09878782
+  1053_at   -0.54673000
+  117_at    -0.17342654
+  121_at    -0.08258267
+  1255_g_at -0.17399402
+  1294_at    0.22451339</code></pre>
+<pre class="r"><code>fit2 &lt;- eBayes(fit2)
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   status
+-1   6276
+0   11003
+1    5004</code></pre>
+<pre class="r"><code>topTable(fit2)</code></pre>
+<pre><code>              symbol entrez   chrom    logFC   AveExpr        t
+205225_at       ESR1   2099  6q25.1 3.762901 11.377735 22.68392
+209603_at      GATA3   2625   10p15 3.052348  9.941990 18.98154
+209604_s_at    GATA3   2625   10p15 2.431309 13.185334 17.59968
+212956_at     TBC1D9  23158 4q31.21 2.157435 11.702942 17.48711
+202088_at    SLC39A6  25800 18q12.2 1.719680 13.119496 17.30104
+212496_s_at    KDM4B  23030 19p13.3 1.459843 10.703942 16.85070
+215867_x_at     CA12    771   15q22 2.246120 11.450485 16.79123
+209602_s_at    GATA3   2625   10p15 2.921505  9.547850 16.43202
+212195_at      IL6ST   3572    5q11 1.381778 11.737839 16.31864
+218195_at   C6orf211  79624  6q25.1 1.738740  9.479901 16.27378
+                 P.Value    adj.P.Val         B
+205225_at   2.001001e-70 4.458832e-66 149.19866
+209603_at   1.486522e-55 1.656209e-51 115.46414
+209604_s_at 5.839050e-50 4.337052e-46 102.75707
+212956_at   1.665700e-49 9.279201e-46 101.72268
+202088_at   9.412084e-49 4.194589e-45 100.01376
+212496_s_at 6.188671e-47 2.298369e-43  95.88265
+215867_x_at 1.074845e-46 3.421537e-43  95.33780
+209602_s_at 3.004184e-45 8.367780e-42  92.05058
+212195_at   8.581176e-45 2.124604e-41  91.01458
+218195_at   1.299472e-44 2.895613e-41  90.60496</code></pre>
+</div>
+<div id="visualize-results" class="section level2">
+<h2>Visualize results</h2>
+<p>For Ch3 L2 plotMDS/removeBatchEffect</p>
+<pre class="r"><code>stats &lt;- topTable(fit2, number = nrow(fit2), sort.by = &quot;none&quot;)
+dim(stats)</code></pre>
+<pre><code>[1] 22283     9</code></pre>
+<pre class="r"><code>hist(runif(10000))</code></pre>
+<p><img src="figure/vdx.Rmd/visualize-results-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>hist(stats[, &quot;P.Value&quot;])</code></pre>
+<p><img src="figure/vdx.Rmd/visualize-results-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>volcanoplot(fit2, highlight = 5, names = fit2$genes[, &quot;symbol&quot;])</code></pre>
+<p><img src="figure/vdx.Rmd/visualize-results-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="enrichment" class="section level2">
+<h2>Enrichment</h2>
+<pre class="r"><code>topTable(fit2, number = 3)</code></pre>
+<pre><code>            symbol entrez  chrom    logFC  AveExpr        t      P.Value
+205225_at     ESR1   2099 6q25.1 3.762901 11.37774 22.68392 2.001001e-70
+209603_at    GATA3   2625  10p15 3.052348  9.94199 18.98154 1.486522e-55
+209604_s_at  GATA3   2625  10p15 2.431309 13.18533 17.59968 5.839050e-50
+               adj.P.Val        B
+205225_at   4.458832e-66 149.1987
+209603_at   1.656209e-51 115.4641
+209604_s_at 4.337052e-46 102.7571</code></pre>
+<pre class="r"><code># 1000 genes (10% in gene set), 100 are DE (10% in gene set)
+fisher.test(matrix(c(10, 100, 90, 900), nrow = 2))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  matrix(c(10, 100, 90, 900), nrow = 2)
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.4490765 2.0076377
+sample estimates:
+odds ratio 
+         1 </code></pre>
+<pre class="r"><code># 1000 genes (10% in gene set), 100 are DE (30% in gene set)
+fisher.test(matrix(c(30, 100, 70, 900), nrow = 2))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  matrix(c(30, 100, 70, 900), nrow = 2)
+p-value = 1.88e-07
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 2.306911 6.320992
+sample estimates:
+odds ratio 
+  3.850476 </code></pre>
+<pre class="r"><code>head(fit2$genes, 3)</code></pre>
+<pre><code>          symbol entrez   chrom
+1007_s_at   DDR1    780  6p21.3
+1053_at     RFC2   5982 7q11.23
+117_at     HSPA6   3310    1q23</code></pre>
+<pre class="r"><code>entrez &lt;- fit2$genes[, &quot;entrez&quot;]
+
+
+enrich_kegg &lt;- kegga(fit2, geneid = entrez, species = &quot;Hs&quot;)
+topKEGG(enrich_kegg, number = 4)</code></pre>
+<pre><code>                          Pathway    N  Up Down         P.Up       P.Down
+path:hsa04110          Cell cycle  115  30   82 6.188398e-01 5.027045e-12
+path:hsa05166    HTLV-I infection  233  55  135 8.956123e-01 9.165684e-09
+path:hsa01100  Metabolic pathways 1033 350  373 3.109042e-08 9.969222e-01
+path:hsa04218 Cellular senescence  145  32   88 9.269545e-01 2.249635e-07</code></pre>
+<pre class="r"><code>enrich_go &lt;- goana(fit2, geneid = entrez, species = &quot;Hs&quot;)
+topGO(enrich_go, ontology = &quot;BP&quot;, number = 3)</code></pre>
+<pre><code>                             Term Ont    N  Up Down P.Up       P.Down
+GO:0002376  immune system process  BP 2235 509 1055    1 8.273520e-38
+GO:0006955        immune response  BP 1562 316  772    1 9.287064e-35
+GO:0045087 innate immune response  BP  673 114  361    1 1.197071e-23</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.4 (2018-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.1 LTS
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] limma_3.32.2           breastCancerVDX_1.14.0 Biobase_2.36.2        
+[4] BiocGenerics_0.22.1   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.17         AnnotationDbi_1.38.2 knitr_1.20          
+ [4] whisker_0.3-2        magrittr_1.5         workflowr_1.1.1.9000
+ [7] IRanges_2.10.5       bit_1.1-12           org.Hs.eg.db_3.4.1  
+[10] blob_1.1.1           stringr_1.3.0        tools_3.4.4         
+[13] R.oo_1.22.0          DBI_1.0.0            git2r_0.21.0        
+[16] htmltools_0.3.6      bit64_0.9-7          yaml_2.1.19         
+[19] rprojroot_1.3-2      digest_0.6.15        S4Vectors_0.14.7    
+[22] R.utils_2.6.0        memoise_1.1.0        RSQLite_2.1.0       
+[25] evaluate_0.10.1      rmarkdown_1.9        stringi_1.2.2       
+[28] compiler_3.4.4       GO.db_3.4.1          backports_1.1.2-9000
+[31] R.methodsS3_1.7.1    stats4_3.4.4         pkgconfig_2.0.1     </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
