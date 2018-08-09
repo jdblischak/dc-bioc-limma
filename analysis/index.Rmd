@@ -10,8 +10,8 @@ Lesson material for differential expression analysis with [limma][].
 
 Case studies:
 
-* [Breast Cancer VDX](vdx.html)
-
+* 2 groups: [Breast Cancer VDX](vdx.html)
+* 3 groups: [leukemiasEset: ALL v. AML v. CML](leukemiasEset.html)
 
 * [Chapter 1](ch01.html)
 * [Chapter 2](ch02.html)

@@ -1,0 +1,85 @@
+---
+title: "3 groups: leukemiasEset"
+author: "John Blischak"
+date: "2018-08-08"
+output: workflowr::wflow_html
+---
+
+3 different types of leukemias: ALL, AML, CML
+
+* Bioconductor package: [leukemiasEset][]
+* Kohlmann et al. 2008, Haferlach et al. 2010
+
+[leukemiasEset]: https://www.bioconductor.org/packages/release/data/experiment/html/leukemiasEset.html
+
+## Setup
+
+```{r packages, message=FALSE}
+library(Biobase)
+library(leukemiasEset)
+library(limma)
+```
+
+```{r prepare-data}
+data("leukemiasEset")
+eset <- leukemiasEset
+dim(eset)
+head(fData(eset))
+featureData(eset) <- AnnotatedDataFrame(data.frame(ensembl = rownames(exprs(eset)),
+                                                   stringsAsFactors = FALSE))
+head(fData(eset))
+exprs(eset)[1:5, 1:5]
+head(pData(eset))
+table(pData(eset)[, "LeukemiaType"])
+# Subset to only include ALL, AML, and CML
+eset <- eset[, pData(eset)[, "LeukemiaType"] %in% c("ALL","AML", "CML")]
+dim(eset)
+# Clean up names
+phenoData(eset) <- AnnotatedDataFrame(data.frame(type = as.character(pData(eset)[, "LeukemiaType"]),
+                                                 stringsAsFactors = FALSE))
+head(pData(eset))
+exprs(eset)[1:5, 1:5]
+colnames(eset) <- sprintf("sample_%02d", 1:ncol(eset))
+exprs(eset)[1:5, 1:5]
+dim(eset)
+head(pData(eset), 3)
+table(pData(eset)[, "type"])
+```
+
+## Design matrix
+
+```{r design-matrix}
+design <- model.matrix(~0 + type, data = pData(eset))
+head(design, 3)
+colSums(design)
+```
+
+## Contrasts matrix
+
+Tests:
+
+* AML v. ALL: $\beta_2 - \beta_1 = 0$
+* CML v. ALL: $\beta_3 - \beta_1 = 0$
+* CML v. AML: $\beta_3 - \beta_2 = 0$
+
+```{r contrasts-matrix}
+cm <- makeContrasts(AMLvALL = typeAML - typeALL,
+                    CMLvALL = typeCML - typeALL,
+                    CMLvAML = typeCML - typeAML,
+                    levels = design)
+cm
+```
+
+## Differential expression
+
+```{r de}
+# Fit coefficients
+fit <- lmFit(eset, design)
+# Fit contrasts
+fit2 <- contrasts.fit(fit, contrasts = cm)
+# Calculate t-statistics
+fit2 <- eBayes(fit2)
+# Summarize results
+results <- decideTests(fit2)
+summary(results)
+```
