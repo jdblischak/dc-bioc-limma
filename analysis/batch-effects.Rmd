@@ -1,0 +1,99 @@
+---
+title: "Accounting for technical batch effects: Response to infection with _Mycobacterium tuberculosis_"
+author: "John Blischak"
+date: "2018-08-09"
+output: workflowr::wflow_html
+---
+
+An example of diagnosing and correcting batch effects from one of my own studies
+on the response to infection with _Mycobacterium tuberculosis_
+([paper](https://www.nature.com/articles/srep16882),
+[code](https://bitbucket.org/jdblischak/tb/src),
+[data](https://bitbucket.org/jdblischak/tb-data/src)).
+
+## Setup
+
+```{r packages, message=FALSE}
+library(dplyr)
+library(limma)
+library(edgeR)
+# Have to load Biobase after dplyr so that exprs function works
+library(Biobase)
+```
+
+Download data.
+
+```{r data, cache=FALSE}
+file_url <- "https://bitbucket.org/jdblischak/tb-data/raw/bc0f64292eb8c42a372b3a2d50e3d871c70c202e/counts_per_sample.txt"
+full <- read.delim(file_url, stringsAsFactors = FALSE)
+```
+
+Convert to ExpressionSet.
+
+```{r eset}
+dim(full)
+full <- full[order(full$dir), ]
+rownames(full) <- paste(full$ind, full$bact, full$time, sep = ".")
+
+x <- t(full[, grep("ENSG", colnames(full))])
+p <- full %>% select(ind, bact, time, extr, rin)
+stopifnot(colnames(x) == rownames(p))
+
+eset <- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p))
+```
+
+Filter lowly expressed genes.
+
+```{r filter}
+keep <- rowSums(cpm(exprs(eset)) > 1) > 6
+sum(keep)
+eset <- eset[keep, ]
+dim(eset)
+```
+
+Normalize with TMM.
+
+```{r normalize}
+norm_factors <- calcNormFactors(exprs(eset))
+exprs(eset) <- cpm(exprs(eset), lib.size = colSums(exprs(eset)) * norm_factors,
+                   log = TRUE)
+plotDensities(eset, legend = FALSE)
+```
+
+Clean up phenotype data frame to focus on early versus late timepoint for this
+example.
+
+```{r phenotype}
+pData(eset)[, "infection"] <- ifelse(pData(eset)[, "bact"] == "none",
+                                     "con", "inf")
+
+pData(eset)[, "time"] <- ifelse(pData(eset)[, "time"] == 4,
+                                "early", "late")
+
+pData(eset)[, "batch"] <- sprintf("b%02d", pData(eset)[, "extr"])
+
+table(pData(eset)[, c("time", "batch")])
+```
+
+## Remove batch effect
+
+Visualize principal components 1 and 2 for the original data.
+
+```{r pre}
+plotMDS(eset, labels = pData(eset)[, "time"], gene.selection = "common")
+```
+
+Remove the effect of the technical variables: batch (discrete) and RIN
+(continuous; a measure of RNA quality).
+
+```{r removeBatchEffect}
+exprs(eset) <- removeBatchEffect(eset, batch = pData(eset)[, "batch"],
+                                 covariates = pData(eset)[, "rin"])
+```
+
+Visualize principal components 1 and 2 for the corrected data.
+
+```{r post}
+plotMDS(eset, labels = pData(eset)[, "time"], gene.selection = "common")
+```
