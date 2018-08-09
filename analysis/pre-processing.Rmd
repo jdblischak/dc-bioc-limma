@@ -1,0 +1,55 @@
+---
+title: "Pre-processing features (genes): Raw Arabidopsis data"
+author: "John Blischak"
+date: "2018-08-09"
+output: workflowr::wflow_html
+---
+
+## Setup
+
+```{r packages, message=FALSE}
+library(Biobase)
+library(limma)
+```
+
+```{r data}
+rds <- "../data/arabidopsis-eset-raw.rds"
+eset <- readRDS(rds)
+```
+
+## Visualize
+
+```{r visualize}
+plotDensities(eset, legend = FALSE)
+```
+
+## Log transform
+
+```{r log}
+exprs(eset) <- log(exprs(eset))
+plotDensities(eset, legend = FALSE)
+```
+
+## Quantile normalize
+
+```{r normalize}
+exprs(eset) <- normalizeBetweenArrays(exprs(eset))
+plotDensities(eset, legend = FALSE)
+```
+
+## Filter
+
+```{r filter}
+# View the normalized gene expression levels
+plotDensities(eset, legend = FALSE)
+abline(v = 5)
+
+# Determine the genes with mean expression level greater than 5
+keep <- rowMeans(exprs(eset)) > 5
+sum(keep)
+
+# Filter the genes
+eset <- eset[keep, ]
+plotDensities(eset, legend = FALSE)
+```
+
