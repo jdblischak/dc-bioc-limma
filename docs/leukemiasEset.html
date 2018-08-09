@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Blischak" />
+
+<meta name="date" content="2018-08-08" />
+
+<title>3 groups: leukemiasEset</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DE analysis with limma</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/dc-bioc-limma">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">3 groups: leukemiasEset</h1>
+<h4 class="author"><em>John Blischak</em></h4>
+<h4 class="date"><em>2018-08-08</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-08-08</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/d2c5c34407d50887e618ce898b26f23147890fda" target="_blank">d2c5c34</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/table-s1.txt
+    Untracked:  analysis/table-s2.txt
+    Untracked:  code/tb-scratch.R
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  docs/table-s1.txt
+    Untracked:  docs/table-s2.txt
+    Untracked:  factorial-dox.rds
+
+Unstaged changes:
+    Modified:   data/cll-eset.rds
+    Modified:   data/cll-fit2.rds
+    Modified:   data/cll.RData
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<hr />
+<p>3 different types of leukemias: ALL, AML, CML</p>
+<ul>
+<li>Bioconductor package: <a href="https://www.bioconductor.org/packages/release/data/experiment/html/leukemiasEset.html">leukemiasEset</a></li>
+<li>Kohlmann et al. 2008, Haferlach et al. 2010</li>
+</ul>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<pre class="r"><code>library(Biobase)
+library(leukemiasEset)
+library(limma)</code></pre>
+<pre class="r"><code>data(&quot;leukemiasEset&quot;)
+eset &lt;- leukemiasEset
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       60 </code></pre>
+<pre class="r"><code>head(fData(eset))</code></pre>
+<pre><code>data frame with 0 columns and 6 rows</code></pre>
+<pre class="r"><code>featureData(eset) &lt;- AnnotatedDataFrame(data.frame(ensembl = rownames(exprs(eset)),
+                                                   stringsAsFactors = FALSE))
+head(fData(eset))</code></pre>
+<pre><code>          ensembl
+1 ENSG00000000003
+2 ENSG00000000005
+3 ENSG00000000419
+4 ENSG00000000457
+5 ENSG00000000460
+6 ENSG00000000938</code></pre>
+<pre class="r"><code>exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                GSM330151.CEL GSM330153.CEL GSM330154.CEL GSM330157.CEL
+ENSG00000000003      3.386743      3.687029      3.360517      3.459388
+ENSG00000000005      3.539030      3.836208      3.246327      3.063286
+ENSG00000000419      9.822758      7.969170      9.457491      9.591018
+ENSG00000000457      4.747283      4.866344      4.981642      5.982854
+ENSG00000000460      3.307188      4.046402      5.529369      4.619444
+                GSM330171.CEL
+ENSG00000000003      3.598589
+ENSG00000000005      3.307543
+ENSG00000000419      9.863687
+ENSG00000000457      5.779449
+ENSG00000000460      3.352696</code></pre>
+<pre class="r"><code>head(pData(eset))</code></pre>
+<pre><code>              Project     Tissue LeukemiaType         LeukemiaTypeFullName
+GSM330151.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330153.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330154.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330157.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330171.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330174.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+                                      Subtype
+GSM330151.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330153.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330154.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330157.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330171.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330174.CEL c_ALL/Pre_B_ALL without t(9 22)</code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;LeukemiaType&quot;])</code></pre>
+<pre><code>
+ALL AML CLL CML NoL 
+ 12  12  12  12  12 </code></pre>
+<pre class="r"><code># Subset to only include ALL, AML, and CML
+eset &lt;- eset[, pData(eset)[, &quot;LeukemiaType&quot;] %in% c(&quot;ALL&quot;,&quot;AML&quot;, &quot;CML&quot;)]
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       36 </code></pre>
+<pre class="r"><code># Clean up names
+phenoData(eset) &lt;- AnnotatedDataFrame(data.frame(type = as.character(pData(eset)[, &quot;LeukemiaType&quot;]),
+                                                 stringsAsFactors = FALSE))
+head(pData(eset))</code></pre>
+<pre><code>  type
+1  ALL
+2  ALL
+3  ALL
+4  ALL
+5  ALL
+6  ALL</code></pre>
+<pre class="r"><code>exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                GSM330151.CEL GSM330153.CEL GSM330154.CEL GSM330157.CEL
+ENSG00000000003      3.386743      3.687029      3.360517      3.459388
+ENSG00000000005      3.539030      3.836208      3.246327      3.063286
+ENSG00000000419      9.822758      7.969170      9.457491      9.591018
+ENSG00000000457      4.747283      4.866344      4.981642      5.982854
+ENSG00000000460      3.307188      4.046402      5.529369      4.619444
+                GSM330171.CEL
+ENSG00000000003      3.598589
+ENSG00000000005      3.307543
+ENSG00000000419      9.863687
+ENSG00000000457      5.779449
+ENSG00000000460      3.352696</code></pre>
+<pre class="r"><code>colnames(eset) &lt;- sprintf(&quot;sample_%02d&quot;, 1:ncol(eset))
+exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                sample_01 sample_02 sample_03 sample_04 sample_05
+ENSG00000000003  3.386743  3.687029  3.360517  3.459388  3.598589
+ENSG00000000005  3.539030  3.836208  3.246327  3.063286  3.307543
+ENSG00000000419  9.822758  7.969170  9.457491  9.591018  9.863687
+ENSG00000000457  4.747283  4.866344  4.981642  5.982854  5.779449
+ENSG00000000460  3.307188  4.046402  5.529369  4.619444  3.352696</code></pre>
+<pre class="r"><code>dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       36 </code></pre>
+<pre class="r"><code>head(pData(eset), 3)</code></pre>
+<pre><code>          type
+sample_01  ALL
+sample_02  ALL
+sample_03  ALL</code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;type&quot;])</code></pre>
+<pre><code>
+ALL AML CML 
+ 12  12  12 </code></pre>
+</div>
+<div id="design-matrix" class="section level2">
+<h2>Design matrix</h2>
+<pre class="r"><code>design &lt;- model.matrix(~0 + type, data = pData(eset))
+head(design, 3)</code></pre>
+<pre><code>          typeALL typeAML typeCML
+sample_01       1       0       0
+sample_02       1       0       0
+sample_03       1       0       0</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>typeALL typeAML typeCML 
+     12      12      12 </code></pre>
+</div>
+<div id="contrasts-matrix" class="section level2">
+<h2>Contrasts matrix</h2>
+<p>Tests:</p>
+<ul>
+<li>AML v. ALL: <span class="math inline">\(\beta_2 - \beta_1 = 0\)</span></li>
+<li>CML v. ALL: <span class="math inline">\(\beta_3 - \beta_1 = 0\)</span></li>
+<li>CML v. AML: <span class="math inline">\(\beta_3 - \beta_2 = 0\)</span></li>
+</ul>
+<pre class="r"><code>cm &lt;- makeContrasts(AMLvALL = typeAML - typeALL,
+                    CMLvALL = typeCML - typeALL,
+                    CMLvAML = typeCML - typeAML,
+                    levels = design)
+cm</code></pre>
+<pre><code>         Contrasts
+Levels    AMLvALL CMLvALL CMLvAML
+  typeALL      -1      -1       0
+  typeAML       1       0      -1
+  typeCML       0       1       1</code></pre>
+</div>
+<div id="differential-expression" class="section level2">
+<h2>Differential expression</h2>
+<pre class="r"><code># Fit coefficients
+fit &lt;- lmFit(eset, design)
+# Fit contrasts
+fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+# Calculate t-statistics
+fit2 &lt;- eBayes(fit2)
+# Summarize results
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   AMLvALL CMLvALL CMLvAML
+-1     898    3401    1890
+0    18323   13194   16408
+1      951    3577    1874</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.4 (2018-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.1 LTS
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] limma_3.32.2         leukemiasEset_1.12.0 Biobase_2.36.2      
+[4] BiocGenerics_0.22.1 
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.1.1.9000 Rcpp_0.12.18         digest_0.6.15       
+ [4] rprojroot_1.3-2      R.methodsS3_1.7.1    backports_1.1.2-9000
+ [7] git2r_0.23.0         magrittr_1.5         evaluate_0.11       
+[10] stringi_1.2.4        whisker_0.3-2        R.oo_1.22.0         
+[13] R.utils_2.6.0        rmarkdown_1.10       tools_3.4.4         
+[16] stringr_1.3.1        yaml_2.2.0           compiler_3.4.4      
+[19] htmltools_0.3.6      knitr_1.20          </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

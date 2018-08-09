@@ -22,7 +22,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -90,6 +92,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -216,7 +221,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-02</p>
+<p><strong>Last updated:</strong> 2018-08-08</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -225,7 +230,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/50e19496f5d55c16627c8fee0717a6c1672f88cd" target="_blank">50e1949</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/d2c5c34407d50887e618ce898b26f23147890fda" target="_blank">d2c5c34</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -237,7 +242,6 @@ Untracked files:
     Untracked:  analysis/table-s2.txt
     Untracked:  code/tb-scratch.R
     Untracked:  data/counts_per_sample.txt
-    Untracked:  docs/figure/vdx.Rmd/
     Untracked:  docs/table-s1.txt
     Untracked:  docs/table-s2.txt
     Untracked:  factorial-dox.rds
@@ -274,6 +278,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/d2c5c34407d50887e618ce898b26f23147890fda/analysis/index.Rmd" target="_blank">d2c5c34</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-08
+</td>
+<td style="text-align:left;">
+Organize analysis of leukemiasEset used in slides to demo study with 3 groups.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/index.html" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -503,7 +541,8 @@ Apply workflowr infrastructure. Committed files manually.
 <p>Lesson material for differential expression analysis with <a href="https://bioconductor.org/packages/release/bioc/html/limma.html">limma</a>.</p>
 <p>Case studies:</p>
 <ul>
-<li><p><a href="vdx.html">Breast Cancer VDX</a></p></li>
+<li>2 groups: <a href="vdx.html">Breast Cancer VDX</a></li>
+<li><p>3 groups: <a href="leukemiasEset.html">leukemiasEset: ALL v. AML v. CML</a></p></li>
 <li><a href="ch01.html">Chapter 1</a></li>
 <li><a href="ch02.html">Chapter 2</a></li>
 <li><a href="ch03.html">Chapter 3</a></li>
