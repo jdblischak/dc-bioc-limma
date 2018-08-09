@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Differential Expression with limma</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DE analysis with limma</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/dc-bioc-limma">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Differential Expression with limma</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-08-09</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/f2c019838de274f56a90856daa58f966bd9ac7a4" target="_blank">f2c0198</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/table-s1.txt
+    Untracked:  analysis/table-s2.txt
+    Untracked:  code/tb-scratch.R
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  docs/table-s1.txt
+    Untracked:  docs/table-s2.txt
+    Untracked:  factorial-dox.rds
+
+Unstaged changes:
+    Modified:   data/cll-eset.rds
+    Modified:   data/cll-fit2.rds
+    Modified:   data/cll.RData
+    Modified:   data/stem-eset.rds
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/dc664d13fd92d3fced228c3b247e255cb46345c4/analysis/alternative.Rmd" target="_blank">dc664d1</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-06
+</td>
+<td style="text-align:left;">
+stem hypoxia data set
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/dbf36e8d4d06a993e6a5eefef428e3a8a52a152b/analysis/alternative.Rmd" target="_blank">dbf36e8</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-05
+</td>
+<td style="text-align:left;">
+Start analyzing 3-groups data sets.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/d79aadf1dfe9393cdf45b9c8ffa0ff2f1f99915a/analysis/alternative.Rmd" target="_blank">d79aadf</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-05
+</td>
+<td style="text-align:left;">
+group-means for 2 groups
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/9cf8fc37c2945a163be7706979b05037422e4049/analysis/alternative.Rmd" target="_blank">9cf8fc3</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+<td style="text-align:left;">
+More code for reorganized chapter 01.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/d35a897a0b87daa56596479aeb284e6c27fc84db/analysis/alternative.Rmd" target="_blank">d35a897</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-04
+</td>
+<td style="text-align:left;">
+Work on new ch01.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/c8332cd058f5869ccae21287aba23e1fe72feace/analysis/alternative.Rmd" target="_blank">c8332cd</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-06-01
+</td>
+<td style="text-align:left;">
+Explore more potential data sets.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/b6e15182903a2dfe16af11a034b2ba18a98ff5f2/analysis/alternative.Rmd" target="_blank">b6e1518</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-05-30
+</td>
+<td style="text-align:left;">
+Brainstorming an alternative outline.
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<div id="chapter-1-differential-expression-testing" class="section level2">
+<h2>Chapter 1: Differential Expression Testing</h2>
+<div id="lesson-1-genomics-experiments" class="section level3">
+<h3>Lesson 1: Genomics experiments</h3>
+<pre class="r"><code>library(CLL)</code></pre>
+<pre><code>Loading required package: affy</code></pre>
+<pre><code>Loading required package: BiocGenerics</code></pre>
+<pre><code>Loading required package: parallel</code></pre>
+<pre><code>
+Attaching package: &#39;BiocGenerics&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:parallel&#39;:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    IQR, mad, sd, var, xtabs</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    anyDuplicated, append, as.data.frame, cbind, colMeans,
+    colnames, colSums, do.call, duplicated, eval, evalq, Filter,
+    Find, get, grep, grepl, intersect, is.unsorted, lapply,
+    lengths, Map, mapply, match, mget, order, paste, pmax,
+    pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce,
+    rowMeans, rownames, rowSums, sapply, setdiff, sort, table,
+    tapply, union, unique, unsplit, which, which.max, which.min</code></pre>
+<pre><code>Loading required package: Biobase</code></pre>
+<pre><code>Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    &#39;browseVignettes()&#39;. To cite Bioconductor, see
+    &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
+<pre class="r"><code>data(&quot;sCLLex&quot;)
+class(sCLLex)</code></pre>
+<pre><code>[1] &quot;ExpressionSet&quot;
+attr(,&quot;package&quot;)
+[1] &quot;Biobase&quot;</code></pre>
+<pre class="r"><code>dim(sCLLex)</code></pre>
+<pre><code>Features  Samples 
+   12625       22 </code></pre>
+<pre class="r"><code>head(pData(sCLLex))</code></pre>
+<pre><code>          SampleID  Disease
+CLL11.CEL    CLL11 progres.
+CLL12.CEL    CLL12   stable
+CLL13.CEL    CLL13 progres.
+CLL14.CEL    CLL14 progres.
+CLL15.CEL    CLL15 progres.
+CLL16.CEL    CLL16 progres.</code></pre>
+<pre class="r"><code>head(fData(sCLLex))</code></pre>
+<pre><code>data frame with 0 columns and 6 rows</code></pre>
+<pre class="r"><code>boxplot(exprs(sCLLex)[1, ] ~ pData(sCLLex)$Disease)</code></pre>
+<p><img src="figure/alternative.Rmd/cll-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>x &lt;- exprs(sCLLex)
+f &lt;- fData(sCLLex)
+p &lt;- pData(sCLLex)
+library(hgu95av2.db)</code></pre>
+<pre><code>Loading required package: AnnotationDbi</code></pre>
+<pre><code>Loading required package: stats4</code></pre>
+<pre><code>Loading required package: IRanges</code></pre>
+<pre><code>Loading required package: S4Vectors</code></pre>
+<pre><code>
+Attaching package: &#39;S4Vectors&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:base&#39;:
+
+    expand.grid</code></pre>
+<pre><code>Loading required package: org.Hs.eg.db</code></pre>
+<pre><code></code></pre>
+<pre><code></code></pre>
+<pre class="r"><code>columns(hgu95av2.db)</code></pre>
+<pre><code> [1] &quot;ACCNUM&quot;       &quot;ALIAS&quot;        &quot;ENSEMBL&quot;      &quot;ENSEMBLPROT&quot; 
+ [5] &quot;ENSEMBLTRANS&quot; &quot;ENTREZID&quot;     &quot;ENZYME&quot;       &quot;EVIDENCE&quot;    
+ [9] &quot;EVIDENCEALL&quot;  &quot;GENENAME&quot;     &quot;GO&quot;           &quot;GOALL&quot;       
+[13] &quot;IPI&quot;          &quot;MAP&quot;          &quot;OMIM&quot;         &quot;ONTOLOGY&quot;    
+[17] &quot;ONTOLOGYALL&quot;  &quot;PATH&quot;         &quot;PFAM&quot;         &quot;PMID&quot;        
+[21] &quot;PROBEID&quot;      &quot;PROSITE&quot;      &quot;REFSEQ&quot;       &quot;SYMBOL&quot;      
+[25] &quot;UCSCKG&quot;       &quot;UNIGENE&quot;      &quot;UNIPROT&quot;     </code></pre>
+<pre class="r"><code># select(x, keys, columns, keytype, ...) Couldn&#39;t get multiVals argument to
+# work. Seems to be ignored. I tried &quot;first&quot;, &quot;CharacterList&quot;, and a custom
+# function to select the last possible value. None made any difference.
+hope &lt;- select(hgu95av2.db, keys = rownames(x),
+               columns = c(&quot;SYMBOL&quot;, &quot;ENTREZID&quot;, &quot;MAP&quot;, &quot;GENENAME&quot;))</code></pre>
+<pre><code>&#39;select()&#39; returned 1:many mapping between keys and columns</code></pre>
+<pre class="r"><code>hope &lt;- hope[!duplicated(hope$PROBEID), ]
+stopifnot(hope$PROBEID == rownames(x))
+colnames(hope) &lt;- c(&quot;probe&quot;, &quot;symbol&quot;, &quot;entrez&quot;, &quot;chrom&quot;, &quot;name&quot;)
+rownames(hope) &lt;- hope$probe
+hope[[&quot;probe&quot;]] &lt;- NULL
+f &lt;- hope
+boxplot(x[1, ] ~ p[, &quot;Disease&quot;], main = f[1, &quot;symbol&quot;])</code></pre>
+<p><img src="figure/alternative.Rmd/cll-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(Biobase)
+eset &lt;- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+save(list = c(&quot;x&quot;, &quot;f&quot;, &quot;p&quot;), file = &quot;../data/cll.RData&quot;)
+saveRDS(eset, file = &quot;../data/cll-eset.rds&quot;)
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   12625       22 </code></pre>
+<pre class="r"><code># Subset to only include the 1000th gene (row) and the first 10 samples
+eset_sub &lt;- eset[1000, 1:10]
+
+# Check the dimensions of the subset 
+dim(eset_sub)</code></pre>
+<pre><code>Features  Samples 
+       1       10 </code></pre>
+<pre class="r"><code># Create a boxplot of the first gene in eset_sub
+boxplot(exprs(eset_sub)[1, ] ~ pData(eset_sub)[, &quot;Disease&quot;], main = fData(eset_sub)[1, &quot;symbol&quot;])</code></pre>
+<p><img src="figure/alternative.Rmd/cll-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Create design matrix for CLL study
+design &lt;- model.matrix(~Disease, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)</code></pre>
+<pre><code>  (Intercept) Diseasestable 
+           22             8 </code></pre>
+<pre class="r"><code># Load package
+library(limma)</code></pre>
+<pre><code>
+Attaching package: &#39;limma&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    plotMA</code></pre>
+<pre class="r"><code># Fit the model
+fit &lt;- lmFit(eset, design)
+
+# Calculate the t-statistics
+fit &lt;- eBayes(fit)
+
+# Summarize results
+results &lt;- decideTests(fit[, &quot;Diseasestable&quot;])
+summary(results)</code></pre>
+<pre><code>   Diseasestable
+-1             2
+0          12621
+1              2</code></pre>
+<pre class="r"><code># group-means
+
+# Create design matrix with no intercept
+design &lt;- model.matrix(~0 + Disease, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)</code></pre>
+<pre><code>Diseaseprogres.   Diseasestable 
+             14               8 </code></pre>
+<pre class="r"><code># Load package
+library(limma)
+
+# Create a contrasts matrix
+cm &lt;- makeContrasts(status = Diseaseprogres. - Diseasestable,
+                    levels = design)
+
+# View the contrasts matrix
+cm</code></pre>
+<pre><code>                 Contrasts
+Levels            status
+  Diseaseprogres.      1
+  Diseasestable       -1</code></pre>
+<pre class="r"><code># Load package
+library(limma)
+
+# Fit the model
+fit &lt;- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 &lt;- eBayes(fit2)
+
+# Summarize results
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   status
+-1      2
+0   12621
+1       2</code></pre>
+<pre class="r"><code>library(breastCancerVDX)
+data(&quot;vdx&quot;)
+class(vdx)</code></pre>
+<pre><code>[1] &quot;ExpressionSet&quot;
+attr(,&quot;package&quot;)
+[1] &quot;Biobase&quot;</code></pre>
+<pre class="r"><code>dim(vdx)</code></pre>
+<pre><code>Features  Samples 
+   22283      344 </code></pre>
+<pre class="r"><code>head(pData(vdx))</code></pre>
+<pre><code>      samplename dataset series id        filename size age er grade pgr
+VDX_3      VDX_3     VDX    VDX  3 GSM36793.CEL.gz   NA  36  0    NA  NA
+VDX_5      VDX_5     VDX    VDX  5 GSM36796.CEL.gz   NA  47  1     3  NA
+VDX_6      VDX_6     VDX    VDX  6 GSM36797.CEL.gz   NA  44  0     3  NA
+VDX_7      VDX_7     VDX    VDX  7 GSM36798.CEL.gz   NA  41  0     3  NA
+VDX_8      VDX_8     VDX    VDX  8 GSM36800.CEL.gz   NA  70  0    NA  NA
+VDX_9      VDX_9     VDX    VDX  9 GSM36801.CEL.gz   NA  62  1     3  NA
+      her2 brca.mutation e.dmfs t.dmfs node t.rfs e.rfs treatment tissue
+VDX_3   NA            NA      0   3072    0    NA    NA         0      1
+VDX_5   NA            NA      0   3589    0    NA    NA         0      1
+VDX_6   NA            NA      1    274    0    NA    NA         0      1
+VDX_7   NA            NA      0   3224    0    NA    NA         0      1
+VDX_8   NA            NA      1   1125    0    NA    NA         0      1
+VDX_9   NA            NA      0   3802    0    NA    NA         0      1
+      t.os e.os
+VDX_3   NA   NA
+VDX_5   NA   NA
+VDX_6   NA   NA
+VDX_7   NA   NA
+VDX_8   NA   NA
+VDX_9   NA   NA</code></pre>
+<pre class="r"><code>head(fData(vdx))</code></pre>
+<pre><code>              probe                                  Gene.title
+1007_s_at 1007_s_at discoidin domain receptor tyrosine kinase 1
+1053_at     1053_at replication factor C (activator 1) 2, 40kDa
+117_at       117_at        heat shock 70kDa protein 6 (HSP70B&#39;)
+121_at       121_at                                paired box 8
+1255_g_at 1255_g_at     guanylate cyclase activator 1A (retina)
+1294_at     1294_at ubiquitin-like modifier activating enzyme 7
+          Gene.symbol Gene.ID EntrezGene.ID UniGene.title UniGene.symbol
+1007_s_at        DDR1     780           780          &lt;NA&gt;           &lt;NA&gt;
+1053_at          RFC2    5982          5982          &lt;NA&gt;           &lt;NA&gt;
+117_at          HSPA6    3310          3310          &lt;NA&gt;           &lt;NA&gt;
+121_at           PAX8    7849          7849          &lt;NA&gt;           &lt;NA&gt;
+1255_g_at      GUCA1A    2978          2978          &lt;NA&gt;           &lt;NA&gt;
+1294_at          UBA7    7318          7318          &lt;NA&gt;           &lt;NA&gt;
+          UniGene.ID
+1007_s_at       &lt;NA&gt;
+1053_at         &lt;NA&gt;
+117_at          &lt;NA&gt;
+121_at          &lt;NA&gt;
+1255_g_at       &lt;NA&gt;
+1294_at         &lt;NA&gt;
+                                                                               Nucleotide.Title
+1007_s_at                                 Human receptor tyrosine kinase DDR gene, complete cds
+1053_at                      Human replication factor C, 40-kDa subunit (A1) mRNA, complete cds
+117_at                                                    Human heat-shock protein HSP70B&#39; gene
+121_at                                                                      H.sapiens Pax8 mRNA
+1255_g_at Homo sapiens guanylate cyclase activating protein (GCAP) gene exons 1-4, complete cds
+1294_at          Homo sapiens ubiquitin-activating enzyme E1 related protein mRNA, complete cds
+               GI GenBank.Accession Platform_CLONEID Platform_ORF
+1007_s_at 1753221            U48705               NA           NA
+1053_at   1590810            M87338               NA           NA
+117_at      35221            X51757               NA           NA
+121_at      38425            X69699               NA           NA
+1255_g_at  623404            L36861               NA           NA
+1294_at    520832            L13852               NA           NA
+          Platform_SPOTID Chromosome.location
+1007_s_at            &lt;NA&gt;              6p21.3
+1053_at              &lt;NA&gt;             7q11.23
+117_at               &lt;NA&gt;                1q23
+121_at               &lt;NA&gt;            2q12-q14
+1255_g_at            &lt;NA&gt;              6p21.1
+1294_at              &lt;NA&gt;                3p21
+                                                  Chromosome.annotation
+1007_s_at               Chromosome 6, NC_000006.11 (30851861..30867933)
+1053_at     Chromosome 7, NC_000007.13 (73645832..73668738, complement)
+117_at                Chromosome 1, NC_000001.10 (161494036..161496687)
+121_at    Chromosome 2, NC_000002.11 (113973574..114036498, complement)
+1255_g_at               Chromosome 6, NC_000006.11 (42123144..42147794)
+1294_at     Chromosome 3, NC_000003.11 (49842638..49851391, complement)
+                                                                                                                                                                                                                  GO.Function
+1007_s_at                                                             ATP binding///nucleotide binding///protein binding///receptor activity///transferase activity///transmembrane receptor protein tyrosine kinase activity
+1053_at                                                                                                   ATP binding///DNA clamp loader activity///nucleoside-triphosphatase activity///nucleotide binding///protein binding
+117_at                                                                                                                                                                                       ATP binding///nucleotide binding
+121_at    DNA binding///protein binding///sequence-specific DNA binding///thyroid-stimulating hormone receptor activity///transcription activator activity///transcription activator activity///transcription factor activity
+1255_g_at                                                                                                                                        calcium ion binding///calcium sensitive guanylate cyclase activator activity
+1294_at                                                                                                                                 ATP binding///ISG15 activating enzyme activity///ligase activity///nucleotide binding
+                                                                                                                                                                                                                                                                                                                                         GO.Process
+1007_s_at                                                                                                                                                                                                                     cell adhesion///protein amino acid phosphorylation///transmembrane receptor protein tyrosine kinase signaling pathway
+1053_at                                                                                                                                                                                                                                                                               DNA replication///nucleotide-excision repair, DNA gap filling
+117_at                                                                                                                                                                                                                                                                                                                 response to unfolded protein
+121_at    anatomical structure morphogenesis///cell differentiation///metanephros development///multicellular organismal development///positive regulation of transcription from RNA polymerase II promoter///positive regulation of transcription, DNA-dependent///positive regulation of transcription, DNA-dependent///thyroid gland development
+1255_g_at                                                                                                                                                                                                                                                                            response to stimulus///signal transduction///visual perception
+1294_at                                                                                                                                                                                                             ISG15-protein conjugation///metabolic process///modification-dependent protein catabolic process///protein modification process
+                                                           GO.Component
+1007_s_at extracellular region///integral to plasma membrane///membrane
+1053_at        DNA replication factor C complex///nucleoplasm///nucleus
+117_at                                                             &lt;NA&gt;
+121_at                                            nucleoplasm///nucleus
+1255_g_at                                                      membrane
+1294_at                                                            &lt;NA&gt;
+                                                                                     GO.Function.1
+1007_s_at              GO:0005524///GO:0000166///GO:0005515///GO:0004872///GO:0016740///GO:0004714
+1053_at                             GO:0005524///GO:0003689///GO:0017111///GO:0000166///GO:0005515
+117_at                                                                     GO:0005524///GO:0000166
+121_at    GO:0003677///GO:0005515///GO:0043565///GO:0004996///GO:0016563///GO:0016563///GO:0003700
+1255_g_at                                                                  GO:0005509///GO:0008048
+1294_at                                          GO:0005524///GO:0019782///GO:0016874///GO:0000166
+                                                                                                   GO.Process.1
+1007_s_at                                                                  GO:0007155///GO:0006468///GO:0007169
+1053_at                                                                                 GO:0006260///GO:0006297
+117_at                                                                                               GO:0006986
+121_at    GO:0009653///GO:0030154///GO:0001656///GO:0007275///GO:0045944///GO:0045893///GO:0045893///GO:0030878
+1255_g_at                                                                  GO:0050896///GO:0007165///GO:0007601
+1294_at                                                       GO:0032020///GO:0008152///GO:0019941///GO:0006464
+                                GO.Component.1
+1007_s_at GO:0005576///GO:0005887///GO:0016020
+1053_at   GO:0005663///GO:0005654///GO:0005634
+117_at                                    &lt;NA&gt;
+121_at                 GO:0005654///GO:0005634
+1255_g_at                           GO:0016020
+1294_at                                   &lt;NA&gt;</code></pre>
+<pre class="r"><code>x &lt;- exprs(vdx)
+f &lt;- fData(vdx)
+p &lt;- pData(vdx)
+# Recode er as 0 = negative and 1 = positive
+p[, &quot;er&quot;] &lt;- ifelse(p[, &quot;er&quot;] == 0, &quot;negative&quot;, &quot;positive&quot;)
+png(&quot;../figure/ch01/boxplot.png&quot;)
+boxplot(x[1, ] ~ p[, &quot;er&quot;], main = f[1, &quot;Gene.symbol&quot;])
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>eset &lt;- ExpressionSet(assayData = x,
+                      phenoData = AnnotatedDataFrame(p),
+                      featureData = AnnotatedDataFrame(f))
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   22283      344 </code></pre>
+<pre class="r"><code>boxplot(exprs(eset)[1, ] ~ pData(eset)[, &quot;er&quot;],
+        main = fData(eset)[1, &quot;Gene.symbol&quot;])</code></pre>
+<p><img src="figure/alternative.Rmd/vdx-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>design &lt;- model.matrix(~er, data = pData(eset))
+head(design, 3)</code></pre>
+<pre><code>      (Intercept) erpositive
+VDX_3           1          0
+VDX_5           1          1
+VDX_6           1          0</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>(Intercept)  erpositive 
+        344         209 </code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;er&quot;])</code></pre>
+<pre><code>
+negative positive 
+     135      209 </code></pre>
+<pre class="r"><code>library(limma)
+
+fit &lt;- lmFit(eset, design)
+head(fit$coefficients, 3)</code></pre>
+<pre><code>          (Intercept)  erpositive
+1007_s_at   11.725148  0.09878782
+1053_at      8.126934 -0.54673000
+117_at       7.972049 -0.17342654</code></pre>
+<pre class="r"><code>fit &lt;- eBayes(fit)
+head(fit$t, 3)</code></pre>
+<pre><code>          (Intercept) erpositive
+1007_s_at    276.8043   1.817824
+1053_at      122.5899  -6.428278
+117_at       164.0240  -2.781294</code></pre>
+<pre class="r"><code>results &lt;- decideTests(fit[, &quot;erpositive&quot;])
+summary(results)</code></pre>
+<pre><code>   erpositive
+-1       6276
+0       11003
+1        5004</code></pre>
+<pre class="r"><code># group-means
+design &lt;- model.matrix(~0 + er, data = pData(eset))
+head(design)</code></pre>
+<pre><code>      ernegative erpositive
+VDX_3          1          0
+VDX_5          0          1
+VDX_6          1          0
+VDX_7          1          0
+VDX_8          1          0
+VDX_9          0          1</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>ernegative erpositive 
+       135        209 </code></pre>
+<pre class="r"><code>library(limma)
+cm &lt;- makeContrasts(status = erpositive - ernegative,
+                    levels = design)
+cm</code></pre>
+<pre><code>            Contrasts
+Levels       status
+  ernegative     -1
+  erpositive      1</code></pre>
+<pre class="r"><code>fit &lt;- lmFit(eset, design)
+head(fit$coefficients)</code></pre>
+<pre><code>          ernegative erpositive
+1007_s_at  11.725148  11.823936
+1053_at     8.126934   7.580204
+117_at      7.972049   7.798623
+121_at     10.168975  10.086393
+1255_g_at   5.903189   5.729195
+1294_at     9.166436   9.390949</code></pre>
+<pre class="r"><code>fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+head(fit2$coefficients)</code></pre>
+<pre><code>           Contrasts
+                 status
+  1007_s_at  0.09878782
+  1053_at   -0.54673000
+  117_at    -0.17342654
+  121_at    -0.08258267
+  1255_g_at -0.17399402
+  1294_at    0.22451339</code></pre>
+<pre class="r"><code>fit2 &lt;- eBayes(fit2)
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   status
+-1   6276
+0   11003
+1    5004</code></pre>
+<div id="videoexercise-genomics-experiments" class="section level4">
+<h4>VideoExercise: Genomics Experiments</h4>
+</div>
+<div id="multiplechoiceexercise-genomic-technologies" class="section level4">
+<h4>MultipleChoiceExercise: Genomic Technologies</h4>
+</div>
+<div id="normal-exercise" class="section level4">
+<h4>Normal Exercise:</h4>
+</div>
+</div>
+<div id="lesson-2-managing-gene-expression-data" class="section level3">
+<h3>Lesson 2: Managing gene expression data</h3>
+</div>
+<div id="lesson-3-linear-modelling-with-limma" class="section level3">
+<h3>Lesson 3: Linear modelling with limma</h3>
+<div id="videoexercise-linear-modelling-with-limma" class="section level4">
+<h4>VideoExercise: Linear modelling with limma</h4>
+</div>
+<div id="normalexercise-specify-the-model" class="section level4">
+<h4>NormalExercise: Specify the model</h4>
+</div>
+<div id="normalexercise-perform-the-hypothesis-test" class="section level4">
+<h4>NormalExercise: Perform the hypothesis test</h4>
+</div>
+</div>
+</div>
+<div id="chapter-2-flexible-models-for-genomics-studies" class="section level2">
+<h2>Chapter 2: Flexible models for genomics studies</h2>
+<div id="lesson-1-using-group-means-parametrization" class="section level4">
+<h4>Lesson 1: Using group-means parametrization</h4>
+</div>
+<div id="videoexercise-using-group-means-parametrization" class="section level4">
+<h4>VideoExercise: Using group-means parametrization</h4>
+</div>
+<div id="normalexercise-specify-the-model-1" class="section level4">
+<h4>NormalExercise: Specify the model</h4>
+</div>
+<div id="normalexercise-specify-the-contrasts" class="section level4">
+<h4>NormalExercise: Specify the contrasts</h4>
+</div>
+<div id="normalexercise-test-the-model" class="section level4">
+<h4>NormalExercise: Test the model</h4>
+</div>
+<div id="lesson-2-using-group-means-parametrization-for-studies-with-more-than-2-groups" class="section level4">
+<h4>Lesson 2: Using group-means parametrization for studies with more than 2 groups</h4>
+</div>
+<div id="videoexercise-using-group-means-parametrization-1" class="section level4">
+<h4>VideoExercise: Using group-means parametrization</h4>
+<pre class="r"><code>library(stemHypoxia)
+data(stemHypoxia)
+dim(M)</code></pre>
+<pre><code>[1] 40736    30</code></pre>
+<pre class="r"><code>class(M)</code></pre>
+<pre><code>[1] &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>M[1:5, 1:5]</code></pre>
+<pre><code>       Gene_ID GeneName  Control1  Control2   12h_1_1
+1  A_24_P66027 APOBEC3B  7.818692  8.080370  7.182159
+2  A_32_P77178 AA085955  5.808502  6.222695  6.385337
+3 A_23_P212522   ATP11B  8.585325  8.795533  9.562124
+4 A_24_P934473 AK092846  6.479106  5.850065  6.287920
+5   A_24_P9671   DNAJA1 13.877248 14.174031 12.007126</code></pre>
+<pre class="r"><code>f &lt;- M[, 1:2]
+rownames(f) &lt;- f$Gene_ID
+rownames(M) &lt;- f$Gene_ID
+M[, 1:2] &lt;- NULL
+dim(design)</code></pre>
+<pre><code>[1] 28  3</code></pre>
+<pre class="r"><code>class(design)</code></pre>
+<pre><code>[1] &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>head(design)</code></pre>
+<pre><code>  time oxygen samplename
+1  0.0     21   Control1
+2  0.0     21   Control2
+3  0.5      1    12h_1_1
+4  0.5      1    12h_1_2
+5  0.5      5    12h_5_1
+6  0.5      5    12h_5_2</code></pre>
+<pre class="r"><code>rownames(design) &lt;- colnames(M)
+
+library(Biobase)
+eset &lt;- ExpressionSet(assayData = as.matrix(M),
+                      phenoData = AnnotatedDataFrame(design),
+                      featureData = AnnotatedDataFrame(f))
+# The samples are nicely balanced on days 0.5, 1, and 5
+table(design$oxygen, design$time)</code></pre>
+<pre><code>    
+     0 0.5 1 5 10 15
+  1  0   2 2 2  1  0
+  5  0   2 2 2  2  2
+  21 2   2 2 2  1  2</code></pre>
+<pre class="r"><code># time 0.5 has separation between the 21% samples versus the 1% &amp; 5% on
+# dimension 1. Dimension 2 splits 1% and 5%.
+library(limma)
+plotMDS(eset[, pData(eset)[, &quot;time&quot;] == 0.5], cex = 0.6, main = &quot;time 0.5&quot;,
+        gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># time 1 has the nicest separation by the 3 oxygen levels on the first dimension
+plotMDS(eset[, pData(eset)[, &quot;time&quot;] == 1], cex = 0.6, main = &quot;time 1&quot;,
+        gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># time 5 has outlier samples that I don&#39;t want to deal with. Dimension 1 is
+# driven by 5_2 and dimension 2 is driven by 21_1
+plotMDS(eset[, pData(eset)[, &quot;time&quot;] == 5], cex = 0.6, main = &quot;time 5&quot;,
+        gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Subset to only incldue the 1 day timepoint
+eset &lt;- eset[, pData(eset)$time == 1]
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   40736        6 </code></pre>
+<pre class="r"><code># Clean up names
+library(stringr)
+pData(eset)[, &quot;oxygen&quot;] &lt;- sprintf(&quot;ox%02d&quot;, pData(eset)[, &quot;oxygen&quot;])
+pData(eset)[, &quot;rep&quot;] &lt;- sprintf(&quot;r%d&quot;,
+                                as.integer(str_sub(pData(eset)[, &quot;samplename&quot;], -1, -1)))
+pData(eset)[, c(&quot;time&quot;, &quot;samplename&quot;)] &lt;- NULL
+colnames(eset) &lt;- paste(pData(eset)[, &quot;oxygen&quot;], pData(eset)[, &quot;rep&quot;], sep = &quot;_&quot;)
+head(pData(eset))</code></pre>
+<pre><code>        oxygen rep
+ox01_r1   ox01  r1
+ox01_r2   ox01  r2
+ox05_r1   ox05  r1
+ox05_r2   ox05  r2
+ox21_r1   ox21  r1
+ox21_r2   ox21  r2</code></pre>
+<pre class="r"><code>dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   40736        6 </code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;oxygen&quot;])</code></pre>
+<pre><code>
+ox01 ox05 ox21 
+   2    2    2 </code></pre>
+<pre class="r"><code># Has way too many probes. Needs to be filtered. According to the GEO entry,
+# they have already been quantile normalzied with limma, so I don&#39;t need to
+# re-do that:
+#
+# https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM927288
+#
+# &gt; Data preprocessing was done using R 2.5.1. limma-Bioconductor package was
+# used to normalize data: the normexp option was used to perform background
+# correction and the quantile method was used for the between array
+# normalization.
+#
+# Also note that there are some negative values, which should be removed by the
+# filtering
+sum(exprs(eset) &lt; 0)</code></pre>
+<pre><code>[1] 13</code></pre>
+<pre class="r"><code>negative &lt;- function(x) any(x &lt; 0)
+sum(apply(exprs(eset), 1, negative))</code></pre>
+<pre><code>[1] 13</code></pre>
+<pre class="r"><code>plotDensities(eset, legend = &quot;topright&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotDensities(eset[rowMeans(exprs(eset)) &gt; 9, ], legend = &quot;topright&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sum(rowMeans(exprs(eset)) &gt; 9)</code></pre>
+<pre><code>[1] 15325</code></pre>
+<pre class="r"><code>eset &lt;- eset[rowMeans(exprs(eset)) &gt; 9, ]
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   15325        6 </code></pre>
+<pre class="r"><code>plotMDS(eset, cex = 0.6, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/stemhypoxia-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># And there are no more negative measurements
+sum(apply(exprs(eset), 1, negative))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>saveRDS(eset, file = &quot;../data/stem-eset.rds&quot;)
+
+
+# Create design matrix with no intercept
+design &lt;- model.matrix(~0 + oxygen, data = pData(eset))
+
+# Count the number of samples modeled by each coefficient
+colSums(design)</code></pre>
+<pre><code>oxygenox01 oxygenox05 oxygenox21 
+         2          2          2 </code></pre>
+<pre class="r"><code># Load package
+library(limma)
+
+# Create a contrasts matrix
+cm &lt;- makeContrasts(ox05vox01 = oxygenox05 - oxygenox01,
+                    ox21vox01 = oxygenox21 - oxygenox01,
+                    ox21vox05 = oxygenox21 - oxygenox05,
+                    levels = design)
+
+# View the contrasts matrix
+cm</code></pre>
+<pre><code>            Contrasts
+Levels       ox05vox01 ox21vox01 ox21vox05
+  oxygenox01        -1        -1         0
+  oxygenox05         1         0        -1
+  oxygenox21         0         1         1</code></pre>
+<pre class="r"><code># Load package
+library(limma)
+
+# Fit the model
+fit &lt;- lmFit(eset, design)
+
+# Fit the contrasts
+fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+
+# Calculate the t-statistics for the contrasts
+fit2 &lt;- eBayes(fit2)
+
+# Summarize results
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   ox05vox01 ox21vox01 ox21vox05
+-1       888      1854       214
+0      12671     10843     14972
+1       1766      2628       139</code></pre>
+<pre class="r"><code>library(leukemiasEset)
+data(&quot;leukemiasEset&quot;)
+?leukemiasEset
+eset &lt;- leukemiasEset
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       60 </code></pre>
+<pre class="r"><code>head(fData(eset))</code></pre>
+<pre><code>data frame with 0 columns and 6 rows</code></pre>
+<pre class="r"><code>featureData(eset) &lt;- AnnotatedDataFrame(data.frame(ensembl = rownames(exprs(eset)),
+                                                   stringsAsFactors = FALSE))
+head(fData(eset))</code></pre>
+<pre><code>          ensembl
+1 ENSG00000000003
+2 ENSG00000000005
+3 ENSG00000000419
+4 ENSG00000000457
+5 ENSG00000000460
+6 ENSG00000000938</code></pre>
+<pre class="r"><code>exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                GSM330151.CEL GSM330153.CEL GSM330154.CEL GSM330157.CEL
+ENSG00000000003      3.386743      3.687029      3.360517      3.459388
+ENSG00000000005      3.539030      3.836208      3.246327      3.063286
+ENSG00000000419      9.822758      7.969170      9.457491      9.591018
+ENSG00000000457      4.747283      4.866344      4.981642      5.982854
+ENSG00000000460      3.307188      4.046402      5.529369      4.619444
+                GSM330171.CEL
+ENSG00000000003      3.598589
+ENSG00000000005      3.307543
+ENSG00000000419      9.863687
+ENSG00000000457      5.779449
+ENSG00000000460      3.352696</code></pre>
+<pre class="r"><code>head(pData(eset))</code></pre>
+<pre><code>              Project     Tissue LeukemiaType         LeukemiaTypeFullName
+GSM330151.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330153.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330154.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330157.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330171.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+GSM330174.CEL   Mile1 BoneMarrow          ALL Acute Lymphoblastic Leukemia
+                                      Subtype
+GSM330151.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330153.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330154.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330157.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330171.CEL c_ALL/Pre_B_ALL without t(9 22)
+GSM330174.CEL c_ALL/Pre_B_ALL without t(9 22)</code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;LeukemiaType&quot;])</code></pre>
+<pre><code>
+ALL AML CLL CML NoL 
+ 12  12  12  12  12 </code></pre>
+<pre class="r"><code># Subset to only include ALL, AML, and CML
+eset &lt;- eset[, pData(eset)[, &quot;LeukemiaType&quot;] %in% c(&quot;ALL&quot;,&quot;AML&quot;, &quot;CML&quot;)]
+dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       36 </code></pre>
+<pre class="r"><code># Clean up names
+phenoData(eset) &lt;- AnnotatedDataFrame(data.frame(type = as.character(pData(eset)[, &quot;LeukemiaType&quot;]),
+                                                   stringsAsFactors = FALSE))
+head(pData(eset))</code></pre>
+<pre><code>  type
+1  ALL
+2  ALL
+3  ALL
+4  ALL
+5  ALL
+6  ALL</code></pre>
+<pre class="r"><code>exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                GSM330151.CEL GSM330153.CEL GSM330154.CEL GSM330157.CEL
+ENSG00000000003      3.386743      3.687029      3.360517      3.459388
+ENSG00000000005      3.539030      3.836208      3.246327      3.063286
+ENSG00000000419      9.822758      7.969170      9.457491      9.591018
+ENSG00000000457      4.747283      4.866344      4.981642      5.982854
+ENSG00000000460      3.307188      4.046402      5.529369      4.619444
+                GSM330171.CEL
+ENSG00000000003      3.598589
+ENSG00000000005      3.307543
+ENSG00000000419      9.863687
+ENSG00000000457      5.779449
+ENSG00000000460      3.352696</code></pre>
+<pre class="r"><code>colnames(eset) &lt;- sprintf(&quot;sample_%02d&quot;, 1:ncol(eset))
+exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>                sample_01 sample_02 sample_03 sample_04 sample_05
+ENSG00000000003  3.386743  3.687029  3.360517  3.459388  3.598589
+ENSG00000000005  3.539030  3.836208  3.246327  3.063286  3.307543
+ENSG00000000419  9.822758  7.969170  9.457491  9.591018  9.863687
+ENSG00000000457  4.747283  4.866344  4.981642  5.982854  5.779449
+ENSG00000000460  3.307188  4.046402  5.529369  4.619444  3.352696</code></pre>
+<pre class="r"><code>dim(eset)</code></pre>
+<pre><code>Features  Samples 
+   20172       36 </code></pre>
+<pre class="r"><code>head(pData(eset), 3)</code></pre>
+<pre><code>          type
+sample_01  ALL
+sample_02  ALL
+sample_03  ALL</code></pre>
+<pre class="r"><code>table(pData(eset)[, &quot;type&quot;])</code></pre>
+<pre><code>
+ALL AML CML 
+ 12  12  12 </code></pre>
+<pre class="r"><code>design &lt;- model.matrix(~0 + type, data = pData(eset))
+head(design, 3)</code></pre>
+<pre><code>          typeALL typeAML typeCML
+sample_01       1       0       0
+sample_02       1       0       0
+sample_03       1       0       0</code></pre>
+<pre class="r"><code>colSums(design)</code></pre>
+<pre><code>typeALL typeAML typeCML 
+     12      12      12 </code></pre>
+<pre class="r"><code>library(limma)
+# * Tests:
+#     * AML v. ALL: $\beta_2 - \beta_1 = 0$
+#     * CML v. ALL: $\beta_3 - \beta_1 = 0$
+#     * CML v. AML: $\beta_3 - \beta_2 = 0$
+cm &lt;- makeContrasts(AMLvALL = typeAML - typeALL,
+                    CMLvALL = typeCML - typeALL,
+                    CMLvAML = typeCML - typeAML,
+                    levels = design)
+cm</code></pre>
+<pre><code>         Contrasts
+Levels    AMLvALL CMLvALL CMLvAML
+  typeALL      -1      -1       0
+  typeAML       1       0      -1
+  typeCML       0       1       1</code></pre>
+<pre class="r"><code>library(limma)
+# Fit coefficients
+fit &lt;- lmFit(eset, design)
+# Fit contrasts
+fit2 &lt;- contrasts.fit(fit, contrasts = cm)
+# Calculate t-statistics
+fit2 &lt;- eBayes(fit2)
+# Summarize results
+results &lt;- decideTests(fit2)
+summary(results)</code></pre>
+<pre><code>   AMLvALL CMLvALL CMLvAML
+-1     898    3401    1890
+0    18323   13194   16408
+1      951    3577    1874</code></pre>
+</div>
+<div id="normalexercise-specify-the-model-2" class="section level4">
+<h4>NormalExercise: Specify the model</h4>
+</div>
+<div id="normalexercise-specify-the-contrasts-1" class="section level4">
+<h4>NormalExercise: Specify the contrasts</h4>
+</div>
+<div id="normalexercise-test-the-model-1" class="section level4">
+<h4>NormalExercise: Test the model</h4>
+</div>
+<div id="lesson-3-using-group-means-parametrization" class="section level4">
+<h4>Lesson 3: Using group-means parametrization</h4>
+</div>
+<div id="videoexercise-using-group-means-parametrization-2" class="section level4">
+<h4>VideoExercise: Using group-means parametrization</h4>
+</div>
+<div id="normalexercise-specify-the-model-3" class="section level4">
+<h4>NormalExercise: Specify the model</h4>
+</div>
+<div id="normalexercise-specify-the-contrasts-2" class="section level4">
+<h4>NormalExercise: Specify the contrasts</h4>
+</div>
+<div id="normalexercise-test-the-model-2" class="section level4">
+<h4>NormalExercise: Test the model</h4>
+</div>
+</div>
+<div id="chapter-3-pre--and-post-processing" class="section level2">
+<h2>Chapter 3: Pre- and post-processing</h2>
+<pre class="r"><code># BiocInstaller::biocLite(&quot;bladderbatch&quot;)
+library(bladderbatch)
+data(bladderdata)
+bladderEset</code></pre>
+<pre><code>ExpressionSet (storageMode: lockedEnvironment)
+assayData: 22283 features, 57 samples 
+  element names: exprs, se.exprs 
+protocolData: none
+phenoData
+  sampleNames: GSM71019.CEL GSM71020.CEL ... GSM71077.CEL (57
+    total)
+  varLabels: sample outcome batch cancer
+  varMetadata: labelDescription
+featureData: none
+experimentData: use &#39;experimentData(object)&#39;
+Annotation: hgu133a </code></pre>
+<pre class="r"><code>eset &lt;- bladderEset
+head(pData(eset))</code></pre>
+<pre><code>             sample outcome batch cancer
+GSM71019.CEL      1  Normal     3 Normal
+GSM71020.CEL      2  Normal     2 Normal
+GSM71021.CEL      3  Normal     2 Normal
+GSM71022.CEL      4  Normal     3 Normal
+GSM71023.CEL      5  Normal     3 Normal
+GSM71024.CEL      6  Normal     3 Normal</code></pre>
+<pre class="r"><code>head(fData(eset))</code></pre>
+<pre><code>data frame with 0 columns and 6 rows</code></pre>
+<pre class="r"><code>exprs(eset)[1:5, 1:5]</code></pre>
+<pre><code>          GSM71019.CEL GSM71020.CEL GSM71021.CEL GSM71022.CEL GSM71023.CEL
+1007_s_at    10.115170     8.628044     8.779235     9.248569    10.256841
+1053_at       5.345168     5.063598     5.113116     5.179410     5.181383
+117_at        6.348024     6.663625     6.465892     6.116422     5.980457
+121_at        8.901739     9.439977     9.540738     9.254368     8.798086
+1255_g_at     3.967672     4.466027     4.144885     4.189338     4.078509</code></pre>
+<pre class="r"><code>table(pData(eset)[, c(&quot;outcome&quot;, &quot;batch&quot;)])</code></pre>
+<pre><code>          batch
+outcome     1  2  3  4  5
+  Biopsy    0  0  0  5  4
+  mTCC     11  1  0  0  0
+  Normal    0  4  4  0  0
+  sTCC-CIS  0 13  0  0  3
+  sTCC+CIS  0  0  0  0 12</code></pre>
+<pre class="r"><code>library(&quot;limma&quot;)
+eset &lt;- eset[, pData(eset)$outcome %in% c(&quot;sTCC-CIS&quot;, &quot;sTCC+CIS&quot;)]
+plotMDS(eset, labels = pData(eset)$batch, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(eset, labels = pData(eset)$outcome, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>exprs(eset) &lt;- removeBatchEffect(eset, batch = pData(eset)$batch)
+plotMDS(eset, labels = pData(eset)$batch, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(eset, labels = pData(eset)$outcome, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-2-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Recommend reading <a href="Tackling%20the%20widespread%20and%20critical%20impact%20of%20batch%20effects%20in%20high-throughput%20data">Leek et al., 2010</a></p>
+<pre class="r"><code># BiocInstaller::biocLite(&quot;HarmanData&quot;)
+library(HarmanData)
+data(IMR90)
+imr90.info</code></pre>
+<pre><code>             Treatment Batch
+_23_1CON             1     1
+_23_2CON             2     1
+_23_3NO0             3     1
+_23_4NO7             4     1
+_26_1CON             1     2
+_26_2CON             2     2
+_26_3NO0             3     2
+_26_4NO7             4     2
+CONTROLZ             1     3
+CONTROL7             2     3
+NO_ZERO              3     3
+NO_7_5               4     3</code></pre>
+<pre class="r"><code>table(imr90.info)</code></pre>
+<pre><code>         Batch
+Treatment 1 2 3
+        1 1 1 1
+        2 1 1 1
+        3 1 1 1
+        4 1 1 1</code></pre>
+<pre class="r"><code>plotMDS(imr90.data, labels = imr90.info$Treatment, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(imr90.data, labels = imr90.info$Batch, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>imr90_clean &lt;- removeBatchEffect(imr90.data, batch = imr90.info$Batch)
+plotMDS(imr90_clean, labels = imr90.info$Treatment)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(imr90_clean, labels = imr90.info$Batch)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>data(NPM)
+npm.info</code></pre>
+<pre><code>    Treatment Batch
+c1          1     1
+c2          1     1
+c3          2     1
+c4          2     1
+c5          3     1
+c6          3     1
+c7          4     1
+c8          4     1
+c9          1     2
+c10         1     2
+c11         2     2
+c12         2     2
+c13         3     2
+c14         3     2
+c15         4     2
+c16         4     2
+c17         1     3
+c18         1     3
+c19         2     3
+c20         2     3
+c21         3     3
+c22         3     3
+c23         4     3
+c24         4     3</code></pre>
+<pre class="r"><code>table(npm.info)</code></pre>
+<pre><code>         Batch
+Treatment 1 2 3
+        1 2 2 2
+        2 2 2 2
+        3 2 2 2
+        4 2 2 2</code></pre>
+<pre class="r"><code>plotMDS(npm.data, labels = npm.info$Treatment, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(npm.data, labels = npm.info$Batch, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>npm_clean &lt;- removeBatchEffect(npm.data, batch = npm.info$Batch, design = model.matrix(~Treatment, data = npm.info))
+plotMDS(npm_clean, labels = npm.info$Treatment)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(npm_clean, labels = npm.info$Batch)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>data(OLF)
+olf.info</code></pre>
+<pre><code>    Treatment Batch
+c1          1     1
+c2          2     1
+c3          3     1
+c4          4     1
+c5          5     1
+c6          6     1
+c7          7     1
+c8          1     2
+c9          2     2
+c10         3     2
+c11         4     2
+c12         5     2
+c13         6     2
+c14         7     2
+c15         1     3
+c16         2     3
+c17         3     3
+c18         4     3
+c19         5     3
+c20         6     3
+c21         7     3
+c22         1     4
+c23         2     4
+c24         3     4
+c25         4     4
+c26         5     4
+c27         6     4
+c28         7     4</code></pre>
+<pre class="r"><code>table(olf.info)</code></pre>
+<pre><code>         Batch
+Treatment 1 2 3 4
+        1 1 1 1 1
+        2 1 1 1 1
+        3 1 1 1 1
+        4 1 1 1 1
+        5 1 1 1 1
+        6 1 1 1 1
+        7 1 1 1 1</code></pre>
+<pre class="r"><code>plotMDS(olf.data, labels = olf.info$Treatment, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(olf.data, labels = olf.info$Batch, gene.selection = &quot;common&quot;)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>olf_clean &lt;- removeBatchEffect(olf.data, batch = olf.info$Batch, design = model.matrix(~Treatment, data = olf.info))
+olf_clean &lt;- removeBatchEffect(olf.data, batch = olf.info$Batch)
+plotMDS(olf_clean, labels = olf.info$Treatment, gene.selection = &quot;common&quot;, col = olf.info$Treatment)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMDS(olf_clean, labels = olf.info$Batch, gene.selection = &quot;common&quot;, col = olf.info$Batch)</code></pre>
+<p><img src="figure/alternative.Rmd/unnamed-chunk-3-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>OLF study: <a href="https://particleandfibretoxicology.biomedcentral.com/articles/10.1186/1743-8977-10-54" class="uri">https://particleandfibretoxicology.biomedcentral.com/articles/10.1186/1743-8977-10-54</a> OLF GEO: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE45322" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE45322</a></p>
+</div>
+<div id="chapter-4-case-study" class="section level2">
+<h2>Chapter 4: Case study:</h2>
+</div>
+<div id="other-data-sets" class="section level2">
+<h2>Other data sets</h2>
+<ul>
+<li><a href="https://www.bioconductor.org/packages/release/data/experiment/html/ALL.html">ALL</a></li>
+<li><a href="https://bioconductor.org/packages/release/data/experiment/html/yeastCC.html">yeastCC</a></li>
+<li><a href="https://www.bioconductor.org/packages/release/data/experiment/html/gaschYHS.html">gaschYHS</a></li>
+<li>Multiple yeast mutants and multiple stress treatments - <a href="https://www.ncbi.nlm.nih.gov/pubmed/11598186">Gasch et al., 2001</a> and <a href="http://www-genome.stanford.edu/mec1/">companion website</a></li>
+<li>2x2 factorial myostatin mouse - <a href="https://www.ncbi.nlm.nih.gov/pubmed/22443951">Dilger et al., 2010</a> and <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE27577">GEO entry</a> - 2 color arrays</li>
+<li>2x2 factorial protein/infection effect on fetal brain - <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57115">Starr et al., 2016 GEO</a></li>
+<li><a href="https://www.bioconductor.org/packages/release/data/experiment/html/bladderbatch.html">bladderbatch</a></li>
+<li><a href="https://www.bioconductor.org/packages/release/data/experiment/html/HarmanData.html">HarmanData</a></li>
+<li><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53990">Arabidopsis thaliana 2x2</a></li>
+<li><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15242">Genotype and time of day shape the Populus drought response</a></li>
+</ul>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.4 (2018-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.1 LTS
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] HarmanData_1.4.0       bladderbatch_1.14.0    leukemiasEset_1.12.0  
+ [4] stringr_1.3.1          stemHypoxia_1.12.0     breastCancerVDX_1.14.0
+ [7] limma_3.32.2           hgu95av2.db_3.2.3      org.Hs.eg.db_3.4.1    
+[10] AnnotationDbi_1.38.2   IRanges_2.10.5         S4Vectors_0.14.7      
+[13] CLL_1.16.0             affy_1.54.0            Biobase_2.36.2        
+[16] BiocGenerics_0.22.1    knitr_1.20            
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.18          BiocInstaller_1.26.1  compiler_3.4.4       
+ [4] git2r_0.23.0          workflowr_1.1.1.9000  R.methodsS3_1.7.1    
+ [7] R.utils_2.6.0         tools_3.4.4           zlibbioc_1.22.0      
+[10] digest_0.6.15         bit_1.1-12            evaluate_0.11        
+[13] RSQLite_2.1.0         memoise_1.1.0         preprocessCore_1.38.1
+[16] pkgconfig_2.0.1       DBI_1.0.0             yaml_2.2.0           
+[19] rprojroot_1.3-2       bit64_0.9-7           rmarkdown_1.10       
+[22] blob_1.1.1            magrittr_1.5          whisker_0.3-2        
+[25] backports_1.1.2-9000  htmltools_0.3.6       stringi_1.2.4        
+[28] affyio_1.46.0         R.oo_1.22.0          </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
