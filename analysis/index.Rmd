@@ -12,6 +12,7 @@ Case studies:
 
 * 2 groups: [Breast Cancer VDX](vdx.html)
 * 3 groups: [leukemiasEset: ALL v. AML v. CML](leukemiasEset.html)
+* 2x2 factorial: [Effect of low temperature on Arabidopsis](arabidopsis.html)
 
 * [Chapter 1](ch01.html)
 * [Chapter 2](ch02.html)
