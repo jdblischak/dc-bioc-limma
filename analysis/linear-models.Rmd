@@ -1,47 +1,54 @@
 ---
-title: "Introduction to differential expression analysis"
+title: "Understanding linear models"
 author: "John Blischak"
-date: 2018-02-10
+date: "2018-08-20"
 output: workflowr::wflow_html
 ---
 
-```{r setup}
-gexp <- readRDS("../data/ch01.rds")
-stats <- readRDS("../data/ch01-stats.rds")
-de <- readRDS("../data/de.rds")
-single_gene <- readRDS("../data/single_gene.rds")
-compare <- readRDS("../data/compare.rds")
-```
+## Introduction
 
-## What is a linear model? (Video)
+The goal is to provide some visualizations to help you understand linear models.
 
-Review the basics of multiple linear regression (dependent vs independent
-variables, continuous vs discrete covariates, intercept term, error term).
-Demonstrate how to specify equations in R (e.g. `lm` and `model.matrix`).
+## Setup
 
-```{r}
+```{r packages, message=FALSE}
+library("broom")
+library("cowplot")
 library("dplyr")
 library("ggplot2")
+theme_set(theme_classic(base_size = 16))
+library("knitr")
+opts_chunk$set(fig.width = 10, fig.height = 5, message = FALSE)
+```
+
+## Visualize differential expression
+
+Visualize boxplots of a gene that is clearly differentially expressed (a) and
+one that is unclear due to increased variance (b).
+
+```{r boxplots}
 df_vis <- data.frame(status = rep(c("con", "treat"), each = 50)) %>%
   mutate(gene_de = c(rpois(n() / 2, lambda = 12), rpois(n() / 2, lambda = 30)),
          gene_var =c(rpois(n() / 2, lambda = 15) + rnorm(n() / 2, sd = 10),
                      rpois(n() / 2, lambda = 25) + rnorm(n() / 2, sd = 10)))
-ggplot(df_vis, aes(x = status, y = gene_de)) +
+box_de <- ggplot(df_vis, aes(x = status, y = gene_de)) +
   geom_boxplot() +
   theme_classic(base_size = 16) +
   ylim(0, 40) +
-  labs(x = "Treatment status", y = "Gene expression level")
-ggsave("../figure/ch01/gene-de.png", width = 5, height = 6)
-ggplot(df_vis, aes(x = status, y = gene_var)) +
+  labs(x = "Treatment status", y = "Gene expression level",
+       title = "Differential expression")
+box_var <- ggplot(df_vis, aes(x = status, y = gene_var)) +
   geom_boxplot() +
   theme_classic(base_size = 16) +
   ylim(0, 40) +
-  labs(x = "Treatment status", y = "Gene expression level")
-ggsave("../figure/ch01/gene-ambiguous.png", width = 5, height = 6)
+  labs(x = "Treatment status", y = "Gene expression level",
+       title = "High variance")
+plot_grid(box_de, box_var, labels = letters[1:2])
 ```
 
+## Create linear model
 
-**Transcript:** As you just visualized, differential expression describes the
+As you just visualized, differential expression describes the
 situation in which a gene has a different mean expression level between
 conditions. While some gene expression patterns are easily diagnosed as
 differential expression or not from a quick visualization, you also saw some
@@ -55,12 +62,12 @@ and robustness to assumptions allow you to conveniently model data from various
 study designs and data sources.
 
 You should have already been introduced to linear models, for example in a
-DataCamp course such as Correlation and Regression, or in an introductory
-statistics course. Here I'll review the terminology we will use in the remainder
-of the course, how to specify a linear model in R, and the intuition behind
-linear models.
+DataCamp course such as [Correlation and Regression][dc-regression], or in an
+introductory statistics course. Here I'll review the terminology we will use in
+the remainder of the course, how to specify a linear model in R, and the
+intuition behind linear models.
 
-![Temperature experiment](../figure/ch01/temperature.png)
+[dc-regression]: https://www.datacamp.com/courses/correlation-and-regression
 
 $$ Y =  \beta_0 + \beta_1 X_1 + \epsilon $$
 
@@ -90,15 +97,13 @@ $$ Y =  \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon $$
 lm(y ~ x1 + x2)
 ```
 
-Building some intuition.
+## Building some intuition via simulation
 
-```{r inuition, fig.width = 10, fig.height = 5, message=FALSE}
-library("broom")
-library("cowplot")
-library("dplyr")
-library("ggplot2")
-theme_set(theme_classic(base_size = 16))
+The simulation below demonstrates how the statistical significance of the
+computed F-statistic of a linear model is equally affected by the noise (the
+residual sum of squares) and the signal (the explained sum of squares).
 
+```{r inuition}
 # Simulate a linear regression.
 #
 # n = sample size
@@ -168,153 +173,43 @@ plot_ss_exp <- function(d) {
     labs(title = "Explained sum of squares") +
     ylim(-60, 60)
 }
+```
 
+## Simulation: Baseline
+
+```{r baseline}
 # baseline
 baseline <- sim_lm(n = 10, effect = 2, error = 5)
 baseline_ss_res <- plot_ss_res(baseline)
-dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
-ggsave("../figure/ch01/baseline_ss_res.png", baseline_ss_res, width = 5, height = 6)
 baseline_ss_exp <- plot_ss_exp(baseline)
-ggsave("../figure/ch01/baseline_ss_exp.png", baseline_ss_exp, width = 5, height = 6)
 plot_grid(baseline_ss_res, baseline_ss_exp)
 baseline$fstat[1]
+```
 
+The baseline simulation has an F-statistic of `r baseline$fstat[1]`.
+
+## Simulation: Increased error
+
+```{r increased-error}
 # Increased error
 more_error <- sim_lm(n = 10, effect = 2, error = 10)
 more_error_ss_res <- plot_ss_res(more_error)
-dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
-ggsave("../figure/ch01/more_error_ss_res.png", more_error_ss_res, width = 5, height = 6)
 more_error_ss_exp <- plot_ss_exp(more_error)
-ggsave("../figure/ch01/more_error_ss_exp.png", more_error_ss_exp, width = 5, height = 6)
 plot_grid(more_error_ss_res, more_error_ss_exp)
 more_error$fstat[1]
+```
 
+Doubling the error decreases the test statistic by a factor of 4.
+
+## Simulation: Decreased signal
+
+```{r decreased-signal}
 # Decreased signal
 less_signal <- sim_lm(n = 10, effect = 1, error = 5)
 less_signal_ss_res <- plot_ss_res(less_signal)
-dir.create("../figure/ch01/", recursive = TRUE, showWarnings = FALSE)
-ggsave("../figure/ch01/less_signal_ss_res.png", less_signal_ss_res, width = 5, height = 6)
 less_signal_ss_exp <- plot_ss_exp(less_signal)
-ggsave("../figure/ch01/less_signal_ss_exp.png", less_signal_ss_exp, width = 5, height = 6)
 plot_grid(less_signal_ss_res, less_signal_ss_exp)
 less_signal$fstat[1]
 ```
 
-## Standard linear model for differential expression of one gene
-
-Run lm on one gene.
-
-```{r}
-head(single_gene)
-
-# Fit the linear model
-mod <- lm(gene ~ group, data = single_gene)
-
-# Summarize the results
-result <- summary(mod)
-result$coefficients
-```
-
-## Standard linear model for differential expression of many genes
-
-Use for loop to run lm on many genes (exact number of genes will be determined
-by 5 sec time limit for DataCamp exercises).
-
-```{r}
-group <- rep(c("con", "treat"), each = ncol(gexp) / 2)
-```
-
-
-```{r}
-dim(gexp)
-print(group)
-
-# Initialize a vector to save the p-value from testing each gene
-p <- numeric(length = nrow(gexp))
-
-# Use a for loop to test each gene
-for (i in 1:length(p)) {
-  # Fit the model
-  mod <- lm(gexp[i, ] ~ group)
-  # Extract the p-value
-  result <- summary(mod)
-  p[i] <- result$coefficients[2, 4]
-}
-
-# Visualize p-value distribution with a histogram
-hist(p)
-```
-
-## Visualize results of standard differential expression analysis
-
-Use geom_point to plot effect size versus variance and color by statistical
-significance.
-
-```{r}
-head(de)
-
-# Plot effect size (y-axis) vs. standard deviation (x-axis)
-ggplot(de, aes(x = std_dev, y = effect_size, color = lm)) +
-  geom_point()
-```
-
-
-## limma: linear models for functional genomics (Video)
-
-Explain the advantages of using limma for functional genomics experiments over
-traditional linear models: 1) share information across genes to reduce
-uncertainty of variance, 2) flexible system for specifying contrasts of
-interest, 3) integrated into standard differential expression workflow.
-Introduce a limma workflow diagram to orient the individual steps in the
-following chapters within the larger analysis.
-
-## limma for differential expression of many genes
-
-Run pre-written limma code to easily test thousands of genes.
-
-
-
-```{r}
-library("limma")
-print(group)
-
-# Setup the study design matrix
-design <- model.matrix(~group)
-colnames(design) <- c("Intercept", "group")
-
-# Fit the model
-fit <- lmFit(gexp, design)
-fit <- eBayes(fit)
-
-# Summarize results
-results <- decideTests(fit[, "group"])
-summary(results)
-```
-
-## Visualize results of limma differential expression analysis
-
-Use geom_point to plot effect size versus variance and color by statistical
-significance.
-
-```{r}
-head(de)
-
-# View the number of discrepancies
-table(de$lm, de$limma)
-
-# Plot effect size (y-axis) vs. standard deviation (x-axis)
-ggplot(de, aes(x = std_dev, y = effect_size, color = limma)) +
-  geom_point()
-```
-
-
-## The benefit of sharing information across genes
-
-Visualize the gene expression pattern of a gene called DE by a traditional
-linear model but not by limma.
-
-```{r}
-
-```
-
-
+Similarly, halving the signal decreases the test statistic by a factor of 4.

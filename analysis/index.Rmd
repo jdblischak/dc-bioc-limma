@@ -18,8 +18,7 @@ Case studies:
 
 Supplement:
 
-* [Understanding stastical signficance of linear models]()
-
-* [Chapter 1](ch01.html)
+* [Understanding linear models](linear-models.html)
+* [The benefit of sharing information across genes](sharing.html)
 
 [limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
