@@ -6,7 +6,8 @@ output:
     toc: false
 ---
 
-Lesson material for differential expression analysis with [limma][].
+Lesson material for my [DataCamp course][dc-limma] on differential expression
+analysis with [limma][].
 
 Case studies:
 
@@ -21,4 +22,6 @@ Supplement:
 * [Understanding linear models](linear-models.html)
 * [The benefit of sharing information across genes](sharing.html)
 
+
+[dc-limma]: https://www.datacamp.com/courses/differential-expression-analysis-in-r-with-limma
 [limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
