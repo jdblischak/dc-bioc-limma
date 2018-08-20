@@ -91,7 +91,6 @@ eset <- ExpressionSet(assayData = assay, phenoData = pdata, featureData = fdata)
 eset <- eset[, eset$timepoint == "16hr"]
 colnames(eset) <- str_replace(colnames(eset), "\\.16hr", "")
 pData(eset)$timepoint <- NULL
-saveRDS(eset, file = "../data/ch04.rds")
 
 # Filter ExpressionSet ---------------------------------------------------------
 

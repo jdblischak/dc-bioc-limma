@@ -16,9 +16,10 @@ Case studies:
 * Pre-processing features (genes): [Raw Arabidopsis data](pre-processing.html)
 * Accounting for technical batch effects: [Response to infection with _Mycobacterium tuberculosis_](batch-effects.html)
 
+Supplement:
+
+* [Understanding stastical signficance of linear models]()
+
 * [Chapter 1](ch01.html)
-* [Chapter 2](ch02.html)
-* [Chapter 3](ch03.html)
-* [Chapter 4](ch04.html)
 
 [limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
