@@ -27,7 +27,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -95,6 +97,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -318,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-02</p>
+<p><strong>Last updated:</strong> 2018-08-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -342,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/50e19496f5d55c16627c8fee0717a6c1672f88cd" target="_blank">50e1949</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/fcc513c1f24fc698aafd3e652529e060f7b84c5f" target="_blank">fcc513c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -350,18 +355,8 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  analysis/table-s1.txt
-    Untracked:  analysis/table-s2.txt
-    Untracked:  code/tb-scratch.R
-    Untracked:  data/counts_per_sample.txt
-    Untracked:  docs/table-s1.txt
-    Untracked:  docs/table-s2.txt
-    Untracked:  factorial-dox.rds
-
-Unstaged changes:
-    Modified:   data/cll-eset.rds
-    Modified:   data/cll-fit2.rds
-    Modified:   data/cll.RData
+    Untracked:  code/counts_per_sample.txt
+    Untracked:  code/table-s1.txt
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -390,6 +385,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/vdx.html" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -492,6 +504,36 @@ dim(eset)</code></pre>
 <pre class="r"><code>boxplot(exprs(eset)[1, ] ~ pData(eset)[, &quot;er&quot;],
         main = fData(eset)[1, &quot;symbol&quot;])</code></pre>
 <p><img src="figure/vdx.Rmd/explore-data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of explore-data-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/figure/vdx.Rmd/explore-data-1.png" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="limma-pipeline" class="section level2">
 <h2>limma pipeline</h2>
@@ -527,10 +569,10 @@ head(fit$t, 3)</code></pre>
 117_at       164.0240  -2.781294</code></pre>
 <pre class="r"><code>results &lt;- decideTests(fit[, &quot;erpositive&quot;])
 summary(results)</code></pre>
-<pre><code>   erpositive
--1       6276
-0       11003
-1        5004</code></pre>
+<pre><code>       erpositive
+Down         6276
+NotSig      11003
+Up           5004</code></pre>
 </div>
 <div id="group-means" class="section level2">
 <h2>group-means</h2>
@@ -576,10 +618,10 @@ head(fit2$coefficients)</code></pre>
 <pre class="r"><code>fit2 &lt;- eBayes(fit2)
 results &lt;- decideTests(fit2)
 summary(results)</code></pre>
-<pre><code>   status
--1   6276
-0   11003
-1    5004</code></pre>
+<pre><code>       status
+Down     6276
+NotSig  11003
+Up       5004</code></pre>
 <pre class="r"><code>topTable(fit2)</code></pre>
 <pre><code>              symbol entrez   chrom    logFC   AveExpr        t
 205225_at       ESR1   2099  6q25.1 3.762901 11.377735 22.68392
@@ -612,10 +654,100 @@ dim(stats)</code></pre>
 <pre><code>[1] 22283     9</code></pre>
 <pre class="r"><code>hist(runif(10000))</code></pre>
 <p><img src="figure/vdx.Rmd/visualize-results-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of visualize-results-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/figure/vdx.Rmd/visualize-results-1.png" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>hist(stats[, &quot;P.Value&quot;])</code></pre>
 <p><img src="figure/vdx.Rmd/visualize-results-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of visualize-results-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/figure/vdx.Rmd/visualize-results-2.png" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>volcanoplot(fit2, highlight = 5, names = fit2$genes[, &quot;symbol&quot;])</code></pre>
 <p><img src="figure/vdx.Rmd/visualize-results-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of visualize-results-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/figure/vdx.Rmd/visualize-results-3.png" target="_blank">ad13021</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="enrichment" class="section level2">
 <h2>Enrichment</h2>
@@ -664,57 +796,63 @@ odds ratio
 
 enrich_kegg &lt;- kegga(fit2, geneid = entrez, species = &quot;Hs&quot;)
 topKEGG(enrich_kegg, number = 4)</code></pre>
-<pre><code>                          Pathway    N  Up Down         P.Up       P.Down
-path:hsa04110          Cell cycle  115  30   82 6.188398e-01 5.027045e-12
-path:hsa05166    HTLV-I infection  233  55  135 8.956123e-01 9.165684e-09
-path:hsa01100  Metabolic pathways 1033 350  373 3.109042e-08 9.969222e-01
-path:hsa04218 Cellular senescence  145  32   88 9.269545e-01 2.249635e-07</code></pre>
+<pre><code>                                              Pathway   N  Up Down
+path:hsa04110                              Cell cycle 115  30   82
+path:hsa05166 Human T-cell leukemia virus 1 infection 233  55  135
+path:hsa04218                     Cellular senescence 145  32   88
+path:hsa05200                      Pathways in cancer 486 128  232
+                   P.Up       P.Down
+path:hsa04110 0.7955186 8.108269e-16
+path:hsa05166 0.9764264 1.694515e-13
+path:hsa04218 0.9784768 9.991751e-11
+path:hsa05200 0.9266670 7.424489e-10</code></pre>
 <pre class="r"><code>enrich_go &lt;- goana(fit2, geneid = entrez, species = &quot;Hs&quot;)
 topGO(enrich_go, ontology = &quot;BP&quot;, number = 3)</code></pre>
-<pre><code>                             Term Ont    N  Up Down P.Up       P.Down
-GO:0002376  immune system process  BP 2235 509 1055    1 8.273520e-38
-GO:0006955        immune response  BP 1562 316  772    1 9.287064e-35
-GO:0045087 innate immune response  BP  673 114  361    1 1.197071e-23</code></pre>
+<pre><code>                                                Term Ont    N   Up Down
+GO:0002376                     immune system process  BP 2348  537 1091
+GO:0006955                           immune response  BP 1650  338  807
+GO:0048518 positive regulation of biological process  BP 4527 1256 1853
+                P.Up       P.Down
+GO:0002376 1.0000000 3.428433e-39
+GO:0006955 1.0000000 2.061265e-37
+GO:0048518 0.9980396 5.444837e-28</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.4.4 (2018-03-15)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.1 LTS
+<pre><code>R version 3.5.0 (2018-04-23)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 17134)
 
 Matrix products: default
-BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
-LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
 
 attached base packages:
 [1] parallel  stats     graphics  grDevices utils     datasets  methods  
 [8] base     
 
 other attached packages:
-[1] limma_3.32.2           breastCancerVDX_1.14.0 Biobase_2.36.2        
-[4] BiocGenerics_0.22.1   
+[1] limma_3.36.1           breastCancerVDX_1.18.0 Biobase_2.40.0        
+[4] BiocGenerics_0.26.0   
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.17         AnnotationDbi_1.38.2 knitr_1.20          
- [4] whisker_0.3-2        magrittr_1.5         workflowr_1.1.1.9000
- [7] IRanges_2.10.5       bit_1.1-12           org.Hs.eg.db_3.4.1  
-[10] blob_1.1.1           stringr_1.3.0        tools_3.4.4         
+ [1] Rcpp_0.12.17         AnnotationDbi_1.42.1 knitr_1.20          
+ [4] whisker_0.3-2        magrittr_1.5         workflowr_1.1.1     
+ [7] IRanges_2.14.10      bit_1.1-14           org.Hs.eg.db_3.6.0  
+[10] blob_1.1.1           stringr_1.3.1        tools_3.5.0         
 [13] R.oo_1.22.0          DBI_1.0.0            git2r_0.21.0        
 [16] htmltools_0.3.6      bit64_0.9-7          yaml_2.1.19         
-[19] rprojroot_1.3-2      digest_0.6.15        S4Vectors_0.14.7    
-[22] R.utils_2.6.0        memoise_1.1.0        RSQLite_2.1.0       
-[25] evaluate_0.10.1      rmarkdown_1.9        stringi_1.2.2       
-[28] compiler_3.4.4       GO.db_3.4.1          backports_1.1.2-9000
-[31] R.methodsS3_1.7.1    stats4_3.4.4         pkgconfig_2.0.1     </code></pre>
+[19] rprojroot_1.3-2      digest_0.6.15        S4Vectors_0.18.3    
+[22] R.utils_2.6.0        memoise_1.1.0        RSQLite_2.1.1       
+[25] evaluate_0.10.1      rmarkdown_1.10       stringi_1.2.3       
+[28] compiler_3.5.0       GO.db_3.6.0          backports_1.1.2     
+[31] R.methodsS3_1.7.1    stats4_3.5.0         pkgconfig_2.0.1     </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -733,7 +871,7 @@ footer is added to webpages before the MathJax javascript. -->
 <p>
   This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
   analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
 </p>
 <hr>
 

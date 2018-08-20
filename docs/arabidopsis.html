@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-08</p>
+<p><strong>Last updated:</strong> 2018-08-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -347,7 +347,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/457f59b7b2d41abd39f642b4b655820debf317d6" target="_blank">457f59b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/fcc513c1f24fc698aafd3e652529e060f7b84c5f" target="_blank">fcc513c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -355,18 +355,8 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  analysis/table-s1.txt
-    Untracked:  analysis/table-s2.txt
-    Untracked:  code/tb-scratch.R
-    Untracked:  data/counts_per_sample.txt
-    Untracked:  docs/table-s1.txt
-    Untracked:  docs/table-s2.txt
-    Untracked:  factorial-dox.rds
-
-Unstaged changes:
-    Modified:   data/cll-eset.rds
-    Modified:   data/cll-fit2.rds
-    Modified:   data/cll.RData
+    Untracked:  code/counts_per_sample.txt
+    Untracked:  code/table-s1.txt
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -395,6 +385,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/5cf7b98d2f409450709d5bc7d9ca01c8ce0005ae/docs/arabidopsis.html" target="_blank">5cf7b98</a>
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:left;">
+2018-08-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -535,47 +542,48 @@ fit2 &lt;- eBayes(fit2)
 # Summarize results
 results &lt;- decideTests(fit2)
 summary(results)</code></pre>
-<pre><code>   type_normal type_low temp_vte2 temp_col interaction
--1           0      466      1635     1885         128
-0        11871    10915      7635     6989       11640
-1            0      490      2601     2997         103</code></pre>
+<pre><code>       type_normal type_low temp_vte2 temp_col interaction
+Down             0      466      1635     1885         128
+NotSig       11871    10915      7635     6989       11640
+Up               0      490      2601     2997         103</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.4.4 (2018-03-15)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.1 LTS
+<pre><code>R version 3.5.0 (2018-04-23)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 17134)
 
 Matrix products: default
-BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
-LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
 
 attached base packages:
 [1] parallel  stats     graphics  grDevices utils     datasets  methods  
 [8] base     
 
 other attached packages:
-[1] stringr_1.3.1       limma_3.32.2        GEOquery_2.42.0    
-[4] Biobase_2.36.2      BiocGenerics_0.22.1
+[1] stringr_1.3.1       limma_3.36.1        GEOquery_2.48.0    
+[4] Biobase_2.40.0      BiocGenerics_0.26.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.18         knitr_1.20           whisker_0.3-2       
- [4] magrittr_1.5         workflowr_1.1.1.9000 R6_2.2.2            
- [7] httr_1.3.1           tools_3.4.4          R.oo_1.22.0         
-[10] git2r_0.23.0         htmltools_0.3.6      yaml_2.2.0          
-[13] rprojroot_1.3-2      digest_0.6.15        R.utils_2.6.0       
-[16] bitops_1.0-6         RCurl_1.95-4.11      evaluate_0.11       
-[19] rmarkdown_1.10       stringi_1.2.4        compiler_3.4.4      
-[22] backports_1.1.2-9000 R.methodsS3_1.7.1    XML_3.98-1.11       </code></pre>
+ [1] Rcpp_0.12.17      xml2_1.2.0        bindr_0.1.1      
+ [4] knitr_1.20        whisker_0.3-2     magrittr_1.5     
+ [7] workflowr_1.1.1   hms_0.4.2         tidyselect_0.2.4 
+[10] R6_2.2.2          rlang_0.2.1       dplyr_0.7.5      
+[13] tools_3.5.0       R.oo_1.22.0       git2r_0.21.0     
+[16] htmltools_0.3.6   yaml_2.1.19       rprojroot_1.3-2  
+[19] digest_0.6.15     assertthat_0.2.0  tibble_1.4.2     
+[22] bindrcpp_0.2.2    tidyr_0.8.1       readr_1.1.1      
+[25] purrr_0.2.5       R.utils_2.6.0     glue_1.2.0       
+[28] evaluate_0.10.1   rmarkdown_1.10    stringi_1.2.3    
+[31] pillar_1.2.3      compiler_3.5.0    backports_1.1.2  
+[34] R.methodsS3_1.7.1 pkgconfig_2.0.1  </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -594,7 +602,7 @@ footer is added to webpages before the MathJax javascript. -->
 <p>
   This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
   analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1.9000
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
 </p>
 <hr>
 
