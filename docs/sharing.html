@@ -27,9 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -118,7 +117,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -138,6 +136,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,18 +194,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -323,107 +417,207 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-20</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
+<p>
+<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#details">Details</a>
+</li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="details" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-01-09
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.1.1.9001). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</h4>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</h4>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(12345)</code> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</h4>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
 <p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</h4>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/fcc513c1f24fc698aafd3e652529e060f7b84c5f" target="_blank">fcc513c</a> </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/f440a87dab57459b871f06dbb7f728e2d95266cb" target="_blank">f440a87</a> </a>
+</h4>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a" class="panel-collapse collapse">
+<div class="panel-body">
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    figure/.DS_Store
+    Ignored:    figure/ch02/.DS_Store
 
 Untracked files:
+    Untracked:  audition-extra.md
+    Untracked:  audition-figure/
+    Untracked:  audition.md
     Untracked:  code/counts_per_sample.txt
     Untracked:  code/table-s1.txt
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  data/test.rds
+    Untracked:  docs/figure/alternative.Rmd/
+    Untracked:  docs/figure/ch04.Rmd/
+    Untracked:  factorial-dox.rds
+    Untracked:  notes.md
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/sharing.html" target="_blank">4976490</a>
+<td>
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/sharing.html" target="_blank">f440a87</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/jdblischak/dc-bioc-limma/blob/192083341b74a84f8295ca7bf85f48e443865751/analysis/sharing.Rmd" target="_blank">1920833</a>
+<td>
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/sharing.html" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/192083341b74a84f8295ca7bf85f48e443865751/analysis/sharing.Rmd" target="_blank">1920833</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2018-08-20
+</td>
+<td>
 Refactor first edition of chapter 1 into distinct lessons.
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>The simulation and visualizations below demonsrate the differences in the results due to limma sharing information across genes to shrink the estimates of the variance.</p>
@@ -483,36 +677,43 @@ rownames(gexp) &lt;- genes
 
 heatmap(gexp)</code></pre>
 <p><img src="figure/sharing.Rmd/simulation-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of simulation-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-simulation-1" style="display: block; margin: auto;">
+Past versions of simulation-1.png
+</button>
+</p>
+<div id="fig-simulation-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/simulation-1.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="standard-linear-model" class="section level2">
 <h2>Standard linear model</h2>
@@ -529,36 +730,43 @@ for (i in 1:length(lm_p)) {
 }
 hist(lm_p, xlab = &quot;p-values&quot;, main = &quot;Standard linear model&quot;)</code></pre>
 <p><img src="figure/sharing.Rmd/lm-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of lm-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-lm-1" style="display: block; margin: auto;">
+Past versions of lm-1.png
+</button>
+</p>
+<div id="fig-lm-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/lm-1.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="limma-linear-model" class="section level2">
 <h2>limma linear model</h2>
@@ -578,43 +786,50 @@ gene06  5.878178  3.9361382</code></pre>
 <pre class="r"><code>fit &lt;- eBayes(fit)
 results &lt;- decideTests(fit[, 2])
 summary(results)</code></pre>
-<pre><code>       treat
-Down      15
-NotSig    71
-Up        14</code></pre>
+<pre><code>   treat
+-1    15
+0     71
+1     14</code></pre>
 <pre class="r"><code>stats &lt;- topTable(fit, coef = &quot;treat&quot;, number = nrow(fit), sort.by = &quot;none&quot;)
 hist(stats[, &quot;P.Value&quot;], xlab = &quot;p-values&quot;, main = &quot;limma linear model&quot;)</code></pre>
 <p><img src="figure/sharing.Rmd/limma-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of limma-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-limma-1" style="display: block; margin: auto;">
+Past versions of limma-1.png
+</button>
+</p>
+<div id="fig-limma-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/limma-1.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="comparison" class="section level2">
 <h2>Comparison</h2>
@@ -678,102 +893,123 @@ table(de$lm, de$limma)</code></pre>
 ggplot(de, aes(x = std_dev, y = effect_size, color = limma)) +
   geom_point()</code></pre>
 <p><img src="figure/sharing.Rmd/comparison-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of comparison-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-comparison-1" style="display: block; margin: auto;">
+Past versions of comparison-1.png
+</button>
+</p>
+<div id="fig-comparison-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/comparison-1.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(stats, aes(x = sd, y = logFC, color = labels)) +
   geom_point()</code></pre>
 <p><img src="figure/sharing.Rmd/comparison-2.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of comparison-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-comparison-2" style="display: block; margin: auto;">
+Past versions of comparison-2.png
+</button>
+</p>
+<div id="fig-comparison-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/comparison-2.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 <pre class="r"><code>ggplot(stats, aes(x = logFC, y = -log10(P.Value), color = labels)) +
   geom_point()</code></pre>
 <p><img src="figure/sharing.Rmd/comparison-3.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of comparison-3.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-comparison-3" style="display: block; margin: auto;">
+Past versions of comparison-3.png
+</button>
+</p>
+<div id="fig-comparison-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/comparison-3.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
+</div>
+</div>
 </div>
 <div id="example-genes" class="section level2">
 <h2>Example genes</h2>
@@ -819,74 +1055,80 @@ ggplot(compare, aes(x = group, y = gene)) +
   geom_boxplot() +
   facet_wrap(~type, nrow = 1)</code></pre>
 <p><img src="figure/sharing.Rmd/example-genes-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of example-genes-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>
+<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#fig-example-genes-1" style="display: block; margin: auto;">
+Past versions of example-genes-1.png
+</button>
+</p>
+<div id="fig-example-genes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/49764900d3ce4ebe074d21c8736c0acaf1c94e97/docs/figure/sharing.Rmd/example-genes-1.png" target="_blank">4976490</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
 </tr>
 </tbody>
 </table>
-<p></details></p>
 </div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+</div>
+<p>
+<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.0 (2018-04-23)
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 17134)
-
-Matrix products: default
+<pre><code>R version 3.3.3 (2017-03-06)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X Yosemite 10.10.5
 
 locale:
-[1] LC_COLLATE=English_United States.1252 
-[2] LC_CTYPE=English_United States.1252   
-[3] LC_MONETARY=English_United States.1252
-[4] LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.1252    
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] bindrcpp_0.2.2 limma_3.36.1   tidyr_0.8.1    stringr_1.3.1 
-[5] knitr_1.20     dplyr_0.7.5    cowplot_0.9.2  ggplot2_2.2.1 
+[1] bindrcpp_0.2.2 limma_3.30.13  tidyr_0.8.1    stringr_1.3.1 
+[5] knitr_1.20     dplyr_0.7.7    cowplot_0.9.2  ggplot2_2.2.1 
 
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.17      compiler_3.5.0    pillar_1.2.3     
- [4] git2r_0.21.0      plyr_1.8.4        workflowr_1.1.1  
- [7] bindr_0.1.1       R.methodsS3_1.7.1 R.utils_2.6.0    
-[10] tools_3.5.0       digest_0.6.15     evaluate_0.10.1  
-[13] tibble_1.4.2      gtable_0.2.0      pkgconfig_2.0.1  
-[16] rlang_0.2.1       yaml_2.1.19       rprojroot_1.3-2  
-[19] grid_3.5.0        tidyselect_0.2.4  glue_1.2.0       
-[22] R6_2.2.2          rmarkdown_1.10    purrr_0.2.5      
-[25] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
-[28] scales_0.5.0      htmltools_0.3.6   assertthat_0.2.0 
-[31] colorspace_1.3-2  labeling_0.3      stringi_1.2.3    
-[34] lazyeval_0.2.1    munsell_0.5.0     R.oo_1.22.0      </code></pre>
+ [1] Rcpp_1.0.0           bindr_0.1.1          whisker_0.3-2       
+ [4] magrittr_1.5         workflowr_1.1.1.9001 htmldeps_0.1.1      
+ [7] tidyselect_0.2.3     munsell_0.5.0        colorspace_1.3-2    
+[10] R6_2.2.2             rlang_0.3.0.1        plyr_1.8.4          
+[13] tools_3.3.3          grid_3.3.3           gtable_0.2.0        
+[16] git2r_0.23.0         htmltools_0.3.6      assertthat_0.2.0    
+[19] yaml_2.2.0           lazyeval_0.2.1       rprojroot_1.3-2     
+[22] digest_0.6.13        tibble_1.4.2         purrr_0.2.5         
+[25] fs_1.2.6             glue_1.2.0.9000      evaluate_0.10.1     
+[28] rmarkdown_1.10.14    labeling_0.3         stringi_1.2.3       
+[31] pillar_1.2.2         scales_0.5.0         backports_1.1.2     
+[34] pkgconfig_2.0.1     </code></pre>
 </div>
+</div>
+
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -895,18 +1137,10 @@ the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
+  MathJax.Hub.Config({{
+    "HTML-CSS": {{ availableFonts: ["TeX"] }}
+  }});
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>

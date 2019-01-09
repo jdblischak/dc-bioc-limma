@@ -22,9 +22,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -113,7 +112,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -133,6 +131,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -154,18 +189,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -221,500 +315,596 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-20</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
-</details>
+<p>
+<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#details">Details</a>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/fcc513c1f24fc698aafd3e652529e060f7b84c5f" target="_blank">fcc513c</a> </summary></p>
+<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="details" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-01-09
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.1.1.9001). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="report" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</h4>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/f440a87dab57459b871f06dbb7f728e2d95266cb" target="_blank">f440a87</a> </a>
+</h4>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a" class="panel-collapse collapse">
+<div class="panel-body">
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    figure/.DS_Store
+    Ignored:    figure/ch02/.DS_Store
 
 Untracked files:
+    Untracked:  audition-extra.md
+    Untracked:  audition-figure/
+    Untracked:  audition.md
     Untracked:  code/counts_per_sample.txt
     Untracked:  code/table-s1.txt
+    Untracked:  data/counts_per_sample.txt
+    Untracked:  data/test.rds
+    Untracked:  docs/figure/alternative.Rmd/
+    Untracked:  docs/figure/ch04.Rmd/
+    Untracked:  factorial-dox.rds
+    Untracked:  notes.md
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<p>Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/jdblischak/dc-bioc-limma/blob/192083341b74a84f8295ca7bf85f48e443865751/analysis/index.Rmd" target="_blank">1920833</a>
-</td>
-<td style="text-align:left;">
-John Blischak
-</td>
-<td style="text-align:left;">
-2018-08-20
-</td>
-<td style="text-align:left;">
-Refactor first edition of chapter 1 into distinct lessons.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/192083341b74a84f8295ca7bf85f48e443865751/docs/index.html" target="_blank">1920833</a>
+<td>
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/index.html" target="_blank">f440a87</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/fcc513c1f24fc698aafd3e652529e060f7b84c5f/analysis/index.Rmd" target="_blank">fcc513c</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2018-08-20
+</td>
+<td>
+Link to my course of DataCamp.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/192083341b74a84f8295ca7bf85f48e443865751/analysis/index.Rmd" target="_blank">1920833</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2018-08-20
+</td>
+<td>
 Refactor first edition of chapter 1 into distinct lessons.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-Rmd
+<td>
+html
 </td>
-<td style="text-align:left;">
-<a href="https://github.com/jdblischak/dc-bioc-limma/blob/31cf81af265ad3e7a12be683b839beee67f80178/analysis/index.Rmd" target="_blank">31cf81a</a>
+<td>
+<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/192083341b74a84f8295ca7bf85f48e443865751/docs/index.html" target="_blank">1920833</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-20
 </td>
-<td style="text-align:left;">
+<td>
+Refactor first edition of chapter 1 into distinct lessons.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/dc-bioc-limma/blob/31cf81af265ad3e7a12be683b839beee67f80178/analysis/index.Rmd" target="_blank">31cf81a</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2018-08-20
+</td>
+<td>
 Remove data files associated with unused lessons.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f2c019838de274f56a90856daa58f966bd9ac7a4/docs/index.html" target="_blank">f2c0198</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/68935429a3e5859c5fe5f7b22bc0c2dcb4034f21/analysis/index.Rmd" target="_blank">6893542</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 Organize analysis of batch effects in TB data.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/eafed69178bd4014f636362efd7e513baf60f66c/docs/index.html" target="_blank">eafed69</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/75f3f79dd8619be055388a537446724f523f45f7/analysis/index.Rmd" target="_blank">75f3f79</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-09
 </td>
-<td style="text-align:left;">
+<td>
 Organize analysis of pre-processing raw Arabidopsis data.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/5cf7b98d2f409450709d5bc7d9ca01c8ce0005ae/docs/index.html" target="_blank">5cf7b98</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/457f59b7b2d41abd39f642b4b655820debf317d6/analysis/index.Rmd" target="_blank">457f59b</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Organize analysis of Arabidopsis used in slides to demo 2x2 factorial study.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/651524acc9e8be3e4c39c706be53e5794fd0fde0/docs/index.html" target="_blank">651524a</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/d2c5c34407d50887e618ce898b26f23147890fda/analysis/index.Rmd" target="_blank">d2c5c34</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-08
 </td>
-<td style="text-align:left;">
+<td>
 Organize analysis of leukemiasEset used in slides to demo study with 3 groups.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/index.html" target="_blank">ad13021</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-02
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/010a04c84a39603405b544c84e3faf05580931e1/analysis/index.Rmd" target="_blank">010a04c</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-08-02
 </td>
-<td style="text-align:left;">
+<td>
 Convert vdx analysis to Rmd and increase font size in figs.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/9b58c2521a3c4a74cb302637d4ac089ad8573273/docs/index.html" target="_blank">9b58c25</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-23
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/79a1ea4f672305aab1ce2ba4ab93f8522a8bafb3/docs/index.html" target="_blank">79a1ea4</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-23
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/3e36241704d031a2f9ac82661fdbb77fa7a490fd/analysis/index.Rmd" target="_blank">3e36241</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-23
 </td>
-<td style="text-align:left;">
+<td>
 Update to 1.0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/3e36241704d031a2f9ac82661fdbb77fa7a490fd/docs/index.html" target="_blank">3e36241</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-05-23
 </td>
-<td style="text-align:left;">
+<td>
 Update to 1.0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/6209669b434b5aacc26962044a6402ec0fe85e33/docs/index.html" target="_blank">6209669</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-02-16
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/221239f35e6a05d0c7e3da55ddee2e49da2b562d/analysis/index.Rmd" target="_blank">221239f</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-02-10
 </td>
-<td style="text-align:left;">
+<td>
 Add scaffolding for ch01 from index.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/cf73f4645bc527e45e8b39c24ac2b0faeed6f51f/docs/index.html" target="_blank">cf73f46</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-26
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/d61faa988ca9e89a904c6fe718890ba6a3103657/analysis/index.Rmd" target="_blank">d61faa9</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-26
 </td>
-<td style="text-align:left;">
+<td>
 Add Chapter 02 analysis.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/3bcf1680c57f2c944ef2f5e02a59facd86f4f565/docs/index.html" target="_blank">3bcf168</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-12
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/20cdf3d9439396d493c0b7dbf4b5c8e9ac597512/analysis/index.Rmd" target="_blank">20cdf3d</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-12
 </td>
-<td style="text-align:left;">
+<td>
 Fix typo in links.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/6395f07170f487947a75ccfd7d4bc0b8561148b3/analysis/index.Rmd" target="_blank">6395f07</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-11
 </td>
-<td style="text-align:left;">
+<td>
 Start organizing Ch 03
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/17de7de555ee8b1aa6ded38e5184293bc4b8c996/docs/index.html" target="_blank">17de7de</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-11
 </td>
-<td style="text-align:left;">
+<td>
 Build site.
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 Rmd
 </td>
-<td style="text-align:left;">
+<td>
 <a href="https://github.com/jdblischak/dc-bioc-limma/blob/93052d7ede44f1ba759d913b7cb84f6e8538e801/analysis/index.Rmd" target="_blank">93052d7</a>
 </td>
-<td style="text-align:left;">
+<td>
 John Blischak
 </td>
-<td style="text-align:left;">
+<td>
 2018-01-11
 </td>
-<td style="text-align:left;">
+<td>
 Apply workflowr infrastructure. Committed files manually.
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
+</div>
+<hr>
+</div>
+</div>
+</div>
 <p>Lesson material for my <a href="https://www.datacamp.com/courses/differential-expression-analysis-in-r-with-limma">DataCamp course</a> on differential expression analysis with <a href="https://bioconductor.org/packages/release/bioc/html/limma.html">limma</a>.</p>
 <p>Case studies:</p>
 <ul>
@@ -730,6 +920,7 @@ Apply workflowr infrastructure. Committed files manually.
 <li><a href="sharing.html">The benefit of sharing information across genes</a></li>
 </ul>
 
+
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
 http://docs.mathjax.org/en/latest/configuration.html.  This will make
@@ -737,18 +928,10 @@ the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
+  MathJax.Hub.Config({{
+    "HTML-CSS": {{ availableFonts: ["TeX"] }}
+  }});
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 
