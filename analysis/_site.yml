@@ -20,3 +20,4 @@ output:
     toc_float: true
     theme: cosmo
     highlight: textmate
+    css: style.css
