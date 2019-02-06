@@ -316,14 +316,14 @@ div.section {
 
 
 <p>
-<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-report">
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
 <ul class="nav nav-tabs">
 <li class="active">
-<a data-toggle="tab" href="#details">Details</a>
+<a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
 <a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
@@ -333,9 +333,15 @@ div.section {
 </li>
 </ul>
 <div class="tab-content">
-<div id="details" class="tab-pane fade in active">
+<div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-01-09
+<strong>Last updated:</strong> 2019-02-06
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>dc-bioc-limma/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
@@ -347,9 +353,9 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
+<p class="panel-title">
 <a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
-</h4>
+</p>
 </div>
 <div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
@@ -359,13 +365,15 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/f440a87dab57459b871f06dbb7f728e2d95266cb" target="_blank">f440a87</a> </a>
-</h4>
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeef5ea09f1d2e12af8757d2d77a68e16466947a65targetblankef5ea09a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/ef5ea09f1d2e12af8757d2d77a68e16466947a65" target="_blank">ef5ea09</a> </a>
+</p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeef5ea09f1d2e12af8757d2d77a68e16466947a65targetblankef5ea09a" class="panel-collapse collapse">
 <div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
@@ -388,7 +396,9 @@ Untracked files:
     Untracked:  notes.md
 
 </code></pre>
-<p>Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.</p>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
 </div>
 </div>
 </div>
@@ -427,7 +437,24 @@ Message
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/index.html" target="_blank">f440a87</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/2372aa1e60c379d881b48e77a44fed980fc69c22/docs/index.html" target="_blank">2372aa1</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-01-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/index.html" target="_blank">f440a87</a>
 </td>
 <td>
 John Blischak
@@ -478,7 +505,7 @@ Refactor first edition of chapter 1 into distinct lessons.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/192083341b74a84f8295ca7bf85f48e443865751/docs/index.html" target="_blank">1920833</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/192083341b74a84f8295ca7bf85f48e443865751/docs/index.html" target="_blank">1920833</a>
 </td>
 <td>
 John Blischak
@@ -512,7 +539,7 @@ Remove data files associated with unused lessons.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f2c019838de274f56a90856daa58f966bd9ac7a4/docs/index.html" target="_blank">f2c0198</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/f2c019838de274f56a90856daa58f966bd9ac7a4/docs/index.html" target="_blank">f2c0198</a>
 </td>
 <td>
 John Blischak
@@ -546,7 +573,7 @@ Organize analysis of batch effects in TB data.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/eafed69178bd4014f636362efd7e513baf60f66c/docs/index.html" target="_blank">eafed69</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/eafed69178bd4014f636362efd7e513baf60f66c/docs/index.html" target="_blank">eafed69</a>
 </td>
 <td>
 John Blischak
@@ -580,7 +607,7 @@ Organize analysis of pre-processing raw Arabidopsis data.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/5cf7b98d2f409450709d5bc7d9ca01c8ce0005ae/docs/index.html" target="_blank">5cf7b98</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/5cf7b98d2f409450709d5bc7d9ca01c8ce0005ae/docs/index.html" target="_blank">5cf7b98</a>
 </td>
 <td>
 John Blischak
@@ -614,7 +641,7 @@ Organize analysis of Arabidopsis used in slides to demo 2x2 factorial study.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/651524acc9e8be3e4c39c706be53e5794fd0fde0/docs/index.html" target="_blank">651524a</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/651524acc9e8be3e4c39c706be53e5794fd0fde0/docs/index.html" target="_blank">651524a</a>
 </td>
 <td>
 John Blischak
@@ -648,7 +675,7 @@ Organize analysis of leukemiasEset used in slides to demo study with 3 groups.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/index.html" target="_blank">ad13021</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/ad13021a19b206e560ecbdc2addbaae6be9f6e1d/docs/index.html" target="_blank">ad13021</a>
 </td>
 <td>
 John Blischak
@@ -682,7 +709,7 @@ Convert vdx analysis to Rmd and increase font size in figs.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/9b58c2521a3c4a74cb302637d4ac089ad8573273/docs/index.html" target="_blank">9b58c25</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/9b58c2521a3c4a74cb302637d4ac089ad8573273/docs/index.html" target="_blank">9b58c25</a>
 </td>
 <td>
 John Blischak
@@ -699,7 +726,7 @@ Build site.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/79a1ea4f672305aab1ce2ba4ab93f8522a8bafb3/docs/index.html" target="_blank">79a1ea4</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/79a1ea4f672305aab1ce2ba4ab93f8522a8bafb3/docs/index.html" target="_blank">79a1ea4</a>
 </td>
 <td>
 John Blischak
@@ -733,7 +760,7 @@ Update to 1.0
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/3e36241704d031a2f9ac82661fdbb77fa7a490fd/docs/index.html" target="_blank">3e36241</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/3e36241704d031a2f9ac82661fdbb77fa7a490fd/docs/index.html" target="_blank">3e36241</a>
 </td>
 <td>
 John Blischak
@@ -750,7 +777,7 @@ Update to 1.0
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/6209669b434b5aacc26962044a6402ec0fe85e33/docs/index.html" target="_blank">6209669</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/6209669b434b5aacc26962044a6402ec0fe85e33/docs/index.html" target="_blank">6209669</a>
 </td>
 <td>
 John Blischak
@@ -784,7 +811,7 @@ Add scaffolding for ch01 from index.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/cf73f4645bc527e45e8b39c24ac2b0faeed6f51f/docs/index.html" target="_blank">cf73f46</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/cf73f4645bc527e45e8b39c24ac2b0faeed6f51f/docs/index.html" target="_blank">cf73f46</a>
 </td>
 <td>
 John Blischak
@@ -818,7 +845,7 @@ Add Chapter 02 analysis.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/3bcf1680c57f2c944ef2f5e02a59facd86f4f565/docs/index.html" target="_blank">3bcf168</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/3bcf1680c57f2c944ef2f5e02a59facd86f4f565/docs/index.html" target="_blank">3bcf168</a>
 </td>
 <td>
 John Blischak
@@ -869,7 +896,7 @@ Start organizing Ch 03
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/17de7de555ee8b1aa6ded38e5184293bc4b8c996/docs/index.html" target="_blank">17de7de</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/17de7de555ee8b1aa6ded38e5184293bc4b8c996/docs/index.html" target="_blank">17de7de</a>
 </td>
 <td>
 John Blischak
@@ -928,9 +955,9 @@ the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({{
-    "HTML-CSS": {{ availableFonts: ["TeX"] }}
-  }});
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
 </script>
 
 

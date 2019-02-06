@@ -418,14 +418,14 @@ div.section {
 
 
 <p>
-<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-report">
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
 <ul class="nav nav-tabs">
 <li class="active">
-<a data-toggle="tab" href="#details">Details</a>
+<a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
 <a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
@@ -435,9 +435,15 @@ div.section {
 </li>
 </ul>
 <div class="tab-content">
-<div id="details" class="tab-pane fade in active">
+<div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-01-09
+<strong>Last updated:</strong> 2019-02-06
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>dc-bioc-limma/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
@@ -449,9 +455,9 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
+<p class="panel-title">
 <a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
-</h4>
+</p>
 </div>
 <div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
@@ -461,9 +467,9 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
+<p class="panel-title">
 <a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
-</h4>
+</p>
 </div>
 <div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
@@ -473,9 +479,9 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
+<p class="panel-title">
 <a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
-</h4>
+</p>
 </div>
 <div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
 <div class="panel-body">
@@ -485,9 +491,9 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
+<p class="panel-title">
 <a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
-</h4>
+</p>
 </div>
 <div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
 <div class="panel-body">
@@ -497,13 +503,27 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
-<h4 class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/f440a87dab57459b871f06dbb7f728e2d95266cb" target="_blank">f440a87</a> </a>
-</h4>
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreef440a87dab57459b871f06dbb7f728e2d95266cbtargetblankf440a87a" class="panel-collapse collapse">
+<div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeef5ea09f1d2e12af8757d2d77a68e16466947a65targetblankef5ea09a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/ef5ea09f1d2e12af8757d2d77a68e16466947a65" target="_blank">ef5ea09</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeef5ea09f1d2e12af8757d2d77a68e16466947a65targetblankef5ea09a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
@@ -526,7 +546,9 @@ Untracked files:
     Untracked:  notes.md
 
 </code></pre>
-<p>Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.</p>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
 </div>
 </div>
 </div>
@@ -565,7 +587,24 @@ Message
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/leukemiasEset.html" target="_blank">f440a87</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/2372aa1e60c379d881b48e77a44fed980fc69c22/docs/leukemiasEset.html" target="_blank">2372aa1</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-01-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/f440a87dab57459b871f06dbb7f728e2d95266cb/docs/leukemiasEset.html" target="_blank">f440a87</a>
 </td>
 <td>
 John Blischak
@@ -582,7 +621,7 @@ Build site.
 html
 </td>
 <td>
-<a href="https://cdn.rawgit.com/jdblischak/dc-bioc-limma/651524acc9e8be3e4c39c706be53e5794fd0fde0/docs/leukemiasEset.html" target="_blank">651524a</a>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/651524acc9e8be3e4c39c706be53e5794fd0fde0/docs/leukemiasEset.html" target="_blank">651524a</a>
 </td>
 <td>
 John Blischak
@@ -773,9 +812,10 @@ summary(results)</code></pre>
 -1     898    3401    1890
 0    18323   13194   16408
 1      951    3577    1874</code></pre>
+<br> <br>
 <p>
-<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-Session information
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
@@ -814,9 +854,9 @@ the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({{
-    "HTML-CSS": {{ availableFonts: ["TeX"] }}
-  }});
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
 </script>
 
 
