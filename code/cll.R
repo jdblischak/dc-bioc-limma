@@ -37,14 +37,14 @@ save(list = c("x", "f", "p"), file = "../data/cll.RData")
 saveRDS(eset, file = "../data/cll-eset.rds")
 dim(eset)
 
-# Subset to only include the 1000th gene (row) and the first 10 samples
-eset_sub <- eset[1000, 1:10]
+# Subset to only include the first 10 samples (columns)
+eset_sub <- eset[, 1:10]
 
 # Check the dimensions of the subset
 dim(eset_sub)
 
-# Create a boxplot of the first gene in eset_sub
-boxplot(exprs(eset_sub)[1, ] ~ pData(eset_sub)[, "Disease"], main = fData(eset_sub)[1, "symbol"])
+# Create a boxplot of the 1000th gene in eset_sub
+boxplot(exprs(eset_sub)[1000, ] ~ pData(eset_sub)[, "Disease"], main = fData(eset_sub)[1000, "symbol"])
 
 # limma pipeline ---------------------------------------------------------------
 
