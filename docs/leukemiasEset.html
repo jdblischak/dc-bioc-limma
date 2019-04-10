@@ -77,9 +77,7 @@ h6 {
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -197,8 +195,6 @@ $(document).ready(function () {
   menuAnchor.closest('li.dropdown').addClass('active');
 });
 </script>
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -357,6 +353,16 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
 <div class="col-xs-12 col-sm-4 col-md-3">
@@ -415,8 +421,8 @@ div.section {
 
 
 <h1 class="title toc-ignore">3 groups: leukemiasEset</h1>
-<h4 class="author"><em>John Blischak</em></h4>
-<h4 class="date"><em>2018-08-08</em></h4>
+<h4 class="author">John Blischak</h4>
+<h4 class="date">2018-08-08</h4>
 
 </div>
 
@@ -432,7 +438,7 @@ div.section {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#report"> Report <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -441,7 +447,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-02-26
+<strong>Last updated:</strong> 2019-04-10
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -451,11 +457,11 @@ div.section {
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0.9000). The <em>Report</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.2.0.9000). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
-<div id="report" class="tab-pane fade">
+<div id="checks" class="tab-pane fade">
 <div id="workflowr-checks" class="panel-group">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -520,10 +526,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeed5105b4507b640b7b19ee081b4a232ff4fb9b45targetblanked5105ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/ed5105b4507b640b7b19ee081b4a232ff4fb9b45" target="_blank">ed5105b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatree6f4d83b51640a0b5af65f590f35cfbf00ef45b92targetblank6f4d83ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/dc-bioc-limma/tree/6f4d83b51640a0b5af65f590f35cfbf00ef45b92" target="_blank">6f4d83b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatreeed5105b4507b640b7b19ee081b4a232ff4fb9b45targetblanked5105ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakdcbioclimmatree6f4d83b51640a0b5af65f590f35cfbf00ef45b92targetblank6f4d83ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -538,7 +544,6 @@ Untracked files:
     Untracked:  analysis/table-s2.txt
     Untracked:  code/tb-scratch.R
     Untracked:  data/counts_per_sample.txt
-    Untracked:  docs/style.css
     Untracked:  docs/table-s1.txt
     Untracked:  docs/table-s2.txt
     Untracked:  factorial-dox.rds
@@ -580,6 +585,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jdblischak/dc-bioc-limma/41b57eef2720b8f405efe2967a15d4a88be89b5e/docs/leukemiasEset.html" target="_blank">41b57ee</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-02-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -793,7 +815,7 @@ summary(results)</code></pre>
 Down       898    3401    1890
 NotSig   18323   13194   16408
 Up         951    3577    1874</code></pre>
-<br> <br>
+<br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
@@ -801,7 +823,7 @@ Up         951    3577    1874</code></pre>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.2 (2018-12-20)
+<pre><code>R version 3.5.3 (2019-03-11)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.2 LTS
 
@@ -826,13 +848,13 @@ other attached packages:
 [4] BiocGenerics_0.28.0 
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.2.0.9000 Rcpp_1.0.0           digest_0.6.18       
- [4] rprojroot_1.2        backports_1.1.3      git2r_0.24.0        
- [7] magrittr_1.5         evaluate_0.13        stringi_1.3.1       
-[10] fs_1.2.6             whisker_0.3-2        rmarkdown_1.11      
-[13] tools_3.5.2          stringr_1.4.0        glue_1.3.0          
-[16] xfun_0.5             yaml_2.2.0           compiler_3.5.2      
-[19] htmltools_0.3.6      knitr_1.21          </code></pre>
+ [1] workflowr_1.2.0.9000 Rcpp_1.0.1           digest_0.6.18       
+ [4] rprojroot_1.2        backports_1.1.3      git2r_0.25.1        
+ [7] magrittr_1.5         evaluate_0.13        stringi_1.4.3       
+[10] fs_1.2.7             whisker_0.3-2        rmarkdown_1.12      
+[13] tools_3.5.3          stringr_1.4.0        glue_1.3.1          
+[16] xfun_0.6             yaml_2.2.0           compiler_3.5.3      
+[19] htmltools_0.3.6      knitr_1.22.6        </code></pre>
 </div>
 </div>
 
